@@ -167,15 +167,10 @@ h1, h2, h3 { text-wrap: balance; }
 .btn.block { width: 100%; }
 .btn.grow { flex: 1; }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
-.prefchips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
-.prefchips::-webkit-scrollbar { display: none; }
-.pref { flex: none; display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--line); background: var(--app); border-radius: 999px; padding: 7px 15px; font-weight: 700; font-size: 13.5px; color: var(--ink); }
-.pref i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
 .p-halal i { background: var(--lv-certified); }
 .p-jain i { background: var(--sun-2); }
 .p-veg i { background: var(--veg); }
 .p-vegan i { background: var(--lv-checked); }
-.pref[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--app); }
 .chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .chips::-webkit-scrollbar { display: none; }
 .fchip { flex: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--chip); border-radius: 12px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--ink); }
@@ -229,9 +224,6 @@ h1, h2, h3 { text-wrap: balance; }
 .hero .eyebrow { color: var(--on-brand); opacity: 0.8; }
 .hero h1 { margin: 10px 0 12px; font-size: clamp(34px, 4.6vw, 58px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; max-width: 13ch; }
 .hero p { margin: 0; font-size: 17px; opacity: 0.92; max-width: 46ch; }
-.hero-prefs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
-.hero-pref { border: 1.5px solid color-mix(in srgb, var(--on-brand) 45%, transparent); background: color-mix(in srgb, var(--on-brand) 10%, transparent); color: var(--on-brand); padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 15px; }
-.hero-pref[aria-pressed="true"] { background: var(--app); color: var(--ink); border-color: var(--app); }
 .hero-art { position: relative; height: 300px; }
 .float { position: absolute; border-radius: 26px; display: grid; place-items: center; overflow: hidden; box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22); }
 .float svg { position: relative; z-index: 1; }
@@ -495,8 +487,10 @@ input[type="radio"], input[type="checkbox"] { width: 18px; height: 18px; accent-
 .switch-ui input:checked + span { background: var(--brand-fill); }
 .switch-ui input:checked + span::after { transform: translateX(20px); }
 .switch-ui input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 2px; }
-.profile-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
-@media (max-width: 860px) { .profile-grid { grid-template-columns: minmax(0, 1fr); } }
+.switch-ui input:disabled { cursor: not-allowed; }
+.switch-ui input:disabled + span { opacity: 0.45; }
+.togglecard.dim { opacity: 0.6; }
+.profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 18px; align-items: start; }
 .linkrow { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-weight: 700; font-size: 14.5px; }
 .linkrow:first-of-type { border-top: 0; }
 .linkrow .lr-ic { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); flex: none; }
@@ -665,6 +659,57 @@ input[type="radio"], input[type="checkbox"] { width: 18px; height: 18px; accent-
 .toast { display: flex; align-items: center; gap: 10px; background: var(--ink); color: var(--app); padding: 13px 15px; border-radius: 16px; font-size: 14px; font-weight: 600; box-shadow: var(--shadow-2); animation: up 0.25s ease; }
 .toast .ic { width: 18px; height: 18px; color: var(--sun); }
 
+/* ---------- Your view, alerts, app chooser ---------- */
+.yourview { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; padding: 6px 6px 6px 14px; border-radius: 999px; background: var(--app); border: 1px solid var(--line); box-shadow: var(--shadow-1); max-width: 100%; }
+.yv-l { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.yv-l .ic { width: 14px; height: 14px; }
+.yv-prefs { display: inline-flex; flex-wrap: wrap; gap: 6px 12px; }
+.yv-pref { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14.5px; }
+.yv-pref i { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.yv-change { border: 0; background: var(--brand-soft); color: var(--brand); font-weight: 800; font-size: 13px; padding: 7px 14px; border-radius: 999px; }
+.yourview.onbrand { margin-top: 26px; background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.32); box-shadow: none; color: var(--on-brand); }
+.yourview.onbrand .yv-l { color: inherit; opacity: 0.85; }
+.yourview.onbrand .yv-pref i { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9); }
+.yourview.onbrand .yv-change { background: #ffffff; color: #1a2fa8; }
+.mobile-prefs .yourview, .map-prefs .yourview { display: flex; flex-wrap: nowrap; border-radius: 18px; }
+.mobile-prefs .yv-prefs, .map-prefs .yv-prefs { flex: 1; min-width: 0; }
+.mobile-prefs .yv-change, .map-prefs .yv-change { margin-left: auto; flex: none; }
+html.embed { scrollbar-width: none; }
+html.embed::-webkit-scrollbar { display: none; }
+.yv-link { justify-self: start; margin-top: 8px; }
+.bell { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--app); color: var(--ink); display: grid; place-items: center; flex: none; margin-left: 6px; }
+.bell-dot { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: var(--danger); color: #ffffff; font-size: 11px; font-weight: 800; display: grid; place-items: center; border: 2px solid var(--app); }
+.sheet-h { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.sheet-ic { width: 56px; height: 56px; border-radius: 18px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; }
+.sheet-ic .ic { width: 26px; height: 26px; }
+.notif-list { display: grid; gap: 4px; }
+.notif { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 40px minmax(0, 1fr) 10px; gap: 12px; align-items: start; padding: 12px; border-radius: 16px; }
+.notif:hover { background: var(--app-2); }
+.notif.unread { background: var(--brand-soft); }
+.notif:focus-visible { outline: 2px solid var(--brand); }
+.n-ic { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; color: var(--on-level); }
+.n-ic .ic { width: 19px; height: 19px; }
+.k-upgrade { background: var(--lv-checked); }
+.k-new { background: var(--brand-fill); }
+.k-offer { background: var(--sun-2); color: var(--on-sun); }
+.n-body b { display: block; font-size: 14.5px; font-weight: 800; line-height: 1.3; }
+.n-body small { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+.n-body .n-when { font-size: 12px; font-weight: 700; margin-top: 4px; }
+.n-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--brand-fill); margin-top: 6px; }
+.applist { display: grid; gap: 8px; }
+.applist h4 { margin: 4px 0 0; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 800; }
+.app-badge { margin-left: auto; font-size: 11.5px; font-weight: 800; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+.app-badge.on { background: var(--ok-soft); color: var(--ok); }
+.app-badge.off { background: var(--app-2); color: var(--muted); }
+.checkrow { display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; }
+.prefcards.compact .pc-img { height: 56px; }
+.prefcards.compact .pc-img svg { height: 50px; width: 70px; }
+.prefcards.compact .pc small { font-size: 12px; }
+.dm-note { font-size: 12px; font-weight: 700; opacity: 0.7; white-space: nowrap; }
+@media (max-width: 900px) { .dm-note { display: none; } }
+.private-note { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); background: var(--app-2); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; margin-top: 10px; }
+.private-note .ic { width: 16px; height: 16px; color: var(--brand); margin-top: 1px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
@@ -717,6 +762,9 @@ const ICONS = {
   doc: { d: ['M7 3h7l4 4v14H7z', 'M14 3v4h4', 'M10 12h5', 'M10 16h5'] },
   upload: { d: ['M12 15V4', 'M7.5 8.5L12 4l4.5 4.5', 'M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4'] },
   arrow: { d: ['M5 12h14', 'M13 6l6 6-6 6'] },
+  lock: { d: ['M7.5 11V8a4.5 4.5 0 0 1 9 0v3', 'M5.5 11h13v9.5h-13z'] },
+  bell: { d: ['M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z', 'M10 20.5a2 2 0 0 0 4 0'] },
+  tag: { d: ['M3.5 12.6V4h8.6l8.4 8.4-8 8z'], c: [[8, 8, 1.6]] },
 };
 function I(name, cls) {
   const p = ICONS[name];
@@ -873,6 +921,39 @@ const OWNER_TAGS = [
 ];
 const REASONS = ['Not halal as listed', 'Pork found or served', 'Not Jain or veg as listed', 'Closed or moved', 'Wrong details'];
 const HINTS = ['Search "biryani"', 'Search "Jain thali"', 'Search "kebab rolls"', 'Search "vegan bowl"'];
+const viewLabel = (prefs) => prefs.map((p) => PREF_LABEL[p]).join(' + ');
+
+/* The live app asks the phone which of these apps are installed; the demo pretends Zomato and Google Maps are. */
+const ORDER_APPS = [
+  { name: 'Zomato', logo: 'Z', on: true, sub: 'Delivery and table booking' },
+  { name: 'Swiggy', logo: 'S', on: false, sub: 'Delivery and Dineout' },
+];
+const MAP_APPS = [
+  { name: 'Google Maps', logo: 'G', on: true, sub: 'Turn-by-turn directions' },
+  { name: 'Mappls MapmyIndia', logo: 'M', on: false, sub: 'Indian maps app' },
+];
+const APPS_NOTE = 'Demo: it pretends Zomato and Google Maps are on this phone. On Android the live app checks which apps are installed; on a computer it opens the websites.';
+const appMsg = (app, what) => (app.on ? 'Opening ' + what + ' in the ' + app.name + ' app.' : app.name + " isn't on this phone, so we open " + what + ' on its website.');
+
+const TOPICS = [
+  ['newPlaces', 'New places near you', 'When a place that matches your view opens or is added'],
+  ['upgrades', 'Trust upgrades', 'When a place near you becomes Certified or Checked by us'],
+  ['offers', 'Offers', 'Deals from matching places near you'],
+];
+const NOTIF_DEFAULT = { asked: false, on: false, topics: { newPlaces: true, upgrades: true, offers: true } };
+const NOTIFS = [
+  { id: 'n1', city: 'Pune', prefs: ['halal'], kind: 'upgrade', placeId: 'kondhwa', title: 'Kondhwa Grill House is now Checked by us', text: 'Our team visited and checked its kitchen and suppliers for halal.', when: '2 hours ago', unread: true },
+  { id: 'n2', city: 'Pune', prefs: ['halal'], kind: 'offer', placeId: 'noor', title: 'Noor Mahal Biryani: 10% off Friday lunch', text: 'Offer from a certified halal place 0.6 km away.', when: 'Yesterday', unread: true },
+  { id: 'n3', city: 'Pune', prefs: ['halal'], kind: 'new', placeId: 'bawarchi', title: 'New near you: Bawarchi Corner', text: 'Added by Viman Nagar IT Foodies as Community halal.', when: '3 days ago', unread: false },
+  { id: 'n4', city: 'Pune', prefs: ['jain'], kind: 'upgrade', placeId: 'annapurna', title: 'Annapurna Jain Bhojanalay passed our visit', text: 'Now Checked by us for Jain: no root vegetables.', when: 'Yesterday', unread: true },
+  { id: 'n5', city: 'Pune', prefs: ['veg', 'vegan'], kind: 'new', placeId: 'greenbowl', title: 'New near you: Green Bowl Vegan Kitchen', text: 'Veg-only kitchen in Baner, checked by our team.', when: '4 days ago', unread: true },
+  { id: 'n6', city: 'Ahmedabad', prefs: ['jain', 'veg'], kind: 'offer', placeId: 'navjain', title: 'Navrangpura Jain Rasoi: Paryushan thali', text: 'Special Jain menu this week, from a certified kitchen.', when: 'Today', unread: true },
+  { id: 'n7', city: 'Ahmedabad', prefs: ['halal'], kind: 'new', placeId: 'juhapura', title: 'New certified halal place: Juhapura Kebab Co.', text: 'Certificate checked by our team.', when: '2 days ago', unread: true },
+  { id: 'n8', city: 'Ahmedabad', prefs: ['vegan'], kind: 'upgrade', placeId: 'bodakdev', title: 'Bodakdev Vegan Co. is now Checked by us', text: 'Our team checked: no dairy, no eggs.', when: '5 days ago', unread: false },
+];
+/* Inside the phone preview frame the app runs with #embed: no demo bar, and the frame drives it with postMessage. */
+const EMBED = (() => { try { return /embed/.test(window.location.hash); } catch (e) { return false; } })();
+if (EMBED) document.documentElement.classList.add('embed');
 
 const CITIES = {
   Pune: {
@@ -1018,6 +1099,9 @@ function validity(iso) {
   return { text, pct: Math.max(0, Math.min(100, Math.round((days / 365) * 100))) };
 }
 const initials = (n) => n.split(' ').map((w) => w[0]).filter((ch) => /[A-Za-z]/.test(ch)).slice(0, 2).join('').toUpperCase() || 'U';
+function visibleNotifs(s) {
+  return s.notifs.filter((n) => n.city === s.city && n.prefs.some((pr) => s.prefs.includes(pr)) && (n.kind !== 'offer' || s.notif.topics.offers));
+}
 const filtersActive = (s) => s.filters.certifiedOnly || s.filters.openNow || s.filters.topRated || s.strict.noAlcohol || s.strict.noPork || !!s.cat || !!s.query || s.sort !== 'trust';
 
 const STORE_KEY = 'trustplate-web-v1';
@@ -1025,20 +1109,23 @@ function loadStored() {
   try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
 }
 function persist(s) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved })); } catch (e) { /* storage unavailable: the app still works */ }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved, askOnOpen: s.askOnOpen, notif: s.notif })); } catch (e) { /* storage unavailable: the app still works */ }
 }
 function initialState(useStored) {
   const st = useStored ? loadStored() : null;
   const onboarded = st && typeof st.onboarded === 'boolean' ? st.onboarded : true;
+  const askOnOpen = st && typeof st.askOnOpen === 'boolean' ? st.askOnOpen : true;
+  const notif = st && st.notif && st.notif.topics
+    ? { asked: !!st.notif.asked, on: !!st.notif.on, topics: { ...NOTIF_DEFAULT.topics, ...st.notif.topics } } : clone(NOTIF_DEFAULT);
   return {
-    role: 'diner', onboarded,
+    role: 'diner', onboarded, askOnOpen, notif, notifs: clone(NOTIFS),
     prefs: st && Array.isArray(st.prefs) && st.prefs.length ? st.prefs : ['halal'],
     strict: st && st.strict ? { noAlcohol: !!st.strict.noAlcohol, noPork: !!st.strict.noPork } : { noAlcohol: false, noPork: false },
     city: st && CITIES[st.city] ? st.city : 'Pune',
     saved: st && Array.isArray(st.saved) ? st.saved : [],
     screen: onboarded ? 'explore' : 'onboard', from: 'explore',
     filters: { certifiedOnly: false, openNow: false, topRated: false }, sort: 'trust', cat: null, query: '',
-    placeId: null, sheet: null, checkedIn: {}, pin: null,
+    placeId: null, sheet: onboarded && askOnOpen ? { type: 'prefs', launch: true } : null, checkedIn: {}, pin: null,
     places: clone(PLACES), queue: clone(QUEUE), owner: clone(OWNER_START),
     toasts: [], nextId: 1,
   };
@@ -1066,7 +1153,7 @@ function reducer(s, a) {
       return next;
     }
     case 'back': return { ...s, screen: s.from || 'explore', sheet: null };
-    case 'finishOnboarding': return { ...s, onboarded: true, screen: 'explore', prefs: a.prefs, strict: a.strict, city: a.city, cat: null };
+    case 'finishOnboarding': return { ...s, onboarded: true, screen: 'explore', prefs: a.prefs, strict: a.strict, city: a.city, cat: null, askOnOpen: a.askOnOpen === undefined ? s.askOnOpen : a.askOnOpen };
     case 'togglePref': {
       const has = s.prefs.includes(a.id);
       const prefs = has ? s.prefs.filter((p) => p !== a.id) : [...s.prefs, a.id];
@@ -1079,9 +1166,16 @@ function reducer(s, a) {
     case 'resetFilters': return { ...s, filters: { certifiedOnly: false, openNow: false, topRated: false }, strict: { noAlcohol: false, noPork: false }, cat: null, query: '', sort: 'trust' };
     case 'cat': return { ...s, cat: s.cat === a.id ? null : a.id };
     case 'banner':
-      if (a.id === 'certified') return { ...s, prefs: ['halal'], filters: { ...s.filters, certifiedOnly: true }, cat: null, screen: 'explore' };
-      if (a.id === 'jain') return { ...s, prefs: ['jain'], filters: { ...s.filters, certifiedOnly: false }, cat: null, screen: 'explore' };
+      if (a.id === 'certified') return { ...s, filters: { ...s.filters, certifiedOnly: true }, cat: null, screen: 'explore' };
       return s;
+    case 'savePrefs': return { ...s, prefs: a.prefs.length ? a.prefs : s.prefs, strict: a.strict, askOnOpen: a.askOnOpen, sheet: null, cat: null, pin: null };
+    case 'askOnOpen': return { ...s, askOnOpen: !s.askOnOpen };
+    case 'notifOn': return { ...s, notif: { asked: true, on: true, topics: a.topics || s.notif.topics }, sheet: null };
+    case 'notifLater': return { ...s, notif: { ...s.notif, asked: true }, sheet: null };
+    case 'notifToggle': return { ...s, notif: { ...s.notif, asked: true, on: !s.notif.on } };
+    case 'notifTopic': return { ...s, notif: { ...s.notif, topics: { ...s.notif.topics, [a.key]: !s.notif.topics[a.key] } } };
+    case 'readNotif': return { ...s, notifs: s.notifs.map((n) => (n.id === a.id ? { ...n, unread: false } : n)) };
+    case 'readAll': return { ...s, notifs: s.notifs.map((n) => (n.city === s.city ? { ...n, unread: false } : n)) };
     case 'city': return { ...s, city: a.city, pin: null };
     case 'query': return { ...s, query: a.value };
     case 'pin': return { ...s, pin: a.id };
@@ -1117,6 +1211,12 @@ function reducer(s, a) {
       const setLevel = (id, pref, info) => places.map((p) => (p.id === id ? { ...p, levels: { ...p.levels, [pref]: info } } : p));
       if (item.type === 'certificate' && a.ok) places = setLevel(item.placeId, item.pref, { level: 'certified', issuer: item.issuer, number: item.number, validUntil: item.validUntil, validISO: item.validISO });
       if (item.type === 'visit' && a.ok) places = setLevel(item.placeId, item.pref, { level: 'checked', visited: 'Today', checks: item.checks });
+      // Approvals reach diners whose view matches, as an in-app update (and a push alert in the live app).
+      const notes = [];
+      const note = (pl, prefs, kind, title, text) => notes.push({ id: 'nt' + (s.nextId + notes.length), city: pl.city, prefs, kind, placeId: pl.id, title, text, when: 'Just now', unread: true });
+      const target = item.placeId ? places.find((p) => p.id === item.placeId) : null;
+      if (target && a.ok === true && item.type === 'certificate') note(target, [item.pref], 'upgrade', target.name + ' is now Certified', PREF_LABEL[item.pref] + ' certificate checked by our team.');
+      if (target && a.ok === true && item.type === 'visit') note(target, [item.pref], 'upgrade', target.name + ' is now Checked by us', 'Our team visited and checked it for ' + PREF_LABEL[item.pref].toLowerCase() + '.');
       if ((item.type === 'certificate' || item.type === 'visit') && item.fromOwner && a.ok) owner = { ...owner, status: 'verified', verifiedBy: item.type };
       if (item.type === 'report' && a.ok === 'hide') places = places.map((p) => (p.id === item.placeId ? { ...p, hidden: true } : p));
       if (item.type === 'community' && a.ok) {
@@ -1132,7 +1232,11 @@ function reducer(s, a) {
           return { ...s, places, owner: clone(OWNER_START), queue: queue.filter((q) => q.placeId !== item.place.id) };
         }
       }
-      return { ...s, places, owner, queue };
+      if (a.ok === true && (item.type === 'community' || item.type === 'owner')) {
+        const prs = Object.keys(item.place.levels);
+        note(item.place, prs, 'new', 'New near you: ' + item.place.name, (item.type === 'owner' ? 'Listed by the owner as ' : 'Added by the community as ') + prs.map((pr) => PREF_LABEL[pr]).join(', ') + '.');
+      }
+      return { ...s, places, owner, queue, notifs: notes.length ? [...notes, ...s.notifs] : s.notifs, nextId: s.nextId + notes.length };
     }
     case 'owner': return { ...s, owner: { ...s.owner, ...a.patch } };
     case 'ownerReset': return { ...s, owner: clone(OWNER_START) };
@@ -1193,12 +1297,18 @@ function openText(p) {
 function Empty({ title, text, action }) {
   return html`<div className="empty"><b>${title}</b><span>${text}</span>${action || null}</div>`;
 }
-function Toggle({ id, checked, onChange, label }) {
-  return html`<span className="switch-ui"><input id=${id} type="checkbox" role="switch" aria-label=${label} checked=${checked} onChange=${onChange} /><span></span></span>`;
+function Toggle({ id, checked, onChange, label, disabled }) {
+  return html`<span className="switch-ui"><input id=${id} type="checkbox" role="switch" aria-label=${label} checked=${checked} disabled=${!!disabled} onChange=${onChange} /><span></span></span>`;
 }
-function PrefChips({ s, d }) {
-  return html`<div className="prefchips" role="group" aria-label="Food preference">
-    ${PREFS.map((p) => html`<button key=${p.id} className=${'pref p-' + p.id} aria-pressed=${s.prefs.includes(p.id)} onClick=${() => d({ type: 'togglePref', id: p.id })}><i></i>${p.label}</button>`)}
+function ViewPills({ prefs }) {
+  return html`<span className="yv-prefs">${prefs.map((p) => html`<span key=${p} className=${'yv-pref p-' + p}><i></i>${PREF_LABEL[p]}</span>`)}</span>`;
+}
+// Your food view is personal and stays fixed until you change it; it is not a quick toggle.
+function YourView({ s, d, tone }) {
+  return html`<div className=${'yourview' + (tone ? ' ' + tone : '')}>
+    <span className="yv-l">${I('lock')}Your view</span>
+    <${ViewPills} prefs=${s.prefs} />
+    <button className="yv-change" onClick=${() => d({ type: 'sheet', sheet: { type: 'prefs' } })} aria-label="Change your food view">Change</button>
   </div>`;
 }
 function FilterChips({ s, d }) {
@@ -1246,7 +1356,8 @@ function DemoBar({ s, d, onTour, onReset }) {
     <div className="container">
       <div className="dm-l"><span className="demo-pill">Demo</span><span>Sample data · nothing here is a real restaurant</span></div>
       <div className="dm-r">
-        <div className="dseg" role="group" aria-label="View as">
+        <span className="dm-note">View as · demo only</span>
+        <div className="dseg" role="group" aria-label="View as (demo only)">
           ${ROLES.map((r) => html`<button key=${r.id} aria-pressed=${s.role === r.id} aria-label=${r.label} onClick=${() => d({ type: 'role', role: r.id })}><span className="full">${r.label}</span><span className="short">${r.short}</span></button>`)}
         </div>
         <button className="dbtn tour-link" onClick=${onTour}>How it works</button>
@@ -1281,6 +1392,7 @@ function TopNav({ s, d }) {
   const city = CITIES[s.city];
   const other = s.city === 'Pune' ? 'Ahmedabad' : 'Pune';
   const cur = s.screen === 'place' ? s.from : s.screen;
+  const unread = visibleNotifs(s).filter((n) => n.unread).length;
   const link = (k, label, icon) => html`<button key=${k} className="nav-link" aria-current=${cur === k ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: k })}>${I(icon)}<span className="lbl">${label}</span></button>`;
   return html`<header className="topnav"><div className="container nav-inner">
     <${Logo} d=${d} cls="logo-d" />
@@ -1301,6 +1413,7 @@ function TopNav({ s, d }) {
       ${link('saved', 'Saved', 'bookmark')}
       <button className="btn outline sm nav-cta" onClick=${() => d({ type: 'go', screen: 'add' })}>${I('plus')}Add a place</button>
       <button className="nav-link nav-cta nav-for" onClick=${() => d({ type: 'role', role: 'owner' })}>${I('store')}<span className="lbl">For restaurants</span></button>
+      <button className="bell" onClick=${() => d({ type: 'sheet', sheet: { type: 'notifs' } })} aria-label=${unread ? 'Updates near you, ' + unread + ' new' : 'Updates near you'}>${I('bell')}${unread ? html`<span className="bell-dot">${unread}</span>` : null}</button>
       <button className="avatar" aria-current=${s.screen === 'profile' ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: 'profile' })} aria-label="Your profile and preferences">${I('user')}</button>
     </nav>
   </div></header>`;
@@ -1318,13 +1431,14 @@ function Filters({ s, d }) {
   const opt = (id, label, checked, onChange, extra) => html`<label className="fopt" htmlFor=${id}><input id=${id} type="checkbox" checked=${checked} onChange=${onChange} />${label}${extra || null}</label>`;
   return html`<aside className="filters" aria-label="Filters">
     <div className="filters-h"><b>${I('sliders')}Filters</b>${filtersActive(s) ? html`<button className="linkbtn" onClick=${() => d({ type: 'resetFilters' })}>Clear all</button>` : null}</div>
+    <div className="fgroup">
+      <h3>Your view</h3>
+      <${ViewPills} prefs=${s.prefs} />
+      <button className="linkbtn yv-link" onClick=${() => d({ type: 'sheet', sheet: { type: 'prefs' } })}>Change your view</button>
+    </div>
     <div className="fgroup" role="radiogroup" aria-label="Sort by">
       <h3>Sort by</h3>
       ${SORTS.map((k) => html`<label key=${k} className="fopt" htmlFor=${'sort-' + k}><input type="radio" name="sort" id=${'sort-' + k} checked=${s.sort === k} onChange=${() => d({ type: 'setSort', sort: k })} />${SORT_LABEL[k]}</label>`)}
-    </div>
-    <div className="fgroup">
-      <h3>What you eat</h3>
-      ${PREFS.map((p) => html`<label key=${p.id} className=${'fopt p-' + p.id} htmlFor=${'fp-' + p.id}><input id=${'fp-' + p.id} type="checkbox" checked=${s.prefs.includes(p.id)} onChange=${() => d({ type: 'togglePref', id: p.id })} />${p.label}<i></i></label>`)}
     </div>
     <div className="fgroup">
       <h3>Hide places with</h3>
@@ -1343,10 +1457,16 @@ function Filters({ s, d }) {
 function Explore({ s, d }) {
   const list = visiblePlaces(s);
   const city = CITIES[s.city];
+  const view = viewLabel(s.prefs);
   const cityPlaces = s.places.filter((p) => p.city === s.city && !p.hidden);
-  const certHalal = cityPlaces.filter((p) => p.levels.halal && p.levels.halal.level === 'certified').length;
-  const jainChecked = cityPlaces.filter((p) => p.levels.jain && LEVELS[p.levels.jain.level].rank >= 3).length;
+  const certCount = cityPlaces.filter((p) => s.prefs.some((pr) => p.levels[pr] && p.levels[pr].level === 'certified')).length;
+  const unread = visibleNotifs(s).filter((n) => n.unread).length;
+  const viewDish = (PREFS.find((x) => x.id === s.prefs[0]) || PREFS[0]).dish;
+  const cats = CATS.filter((c) => c.id === s.cat || visiblePlaces({ ...s, cat: c.id }).length > 0);
   const catLabel = s.cat ? CATS.find((c) => c.id === s.cat).label : null;
+  const alertsBanner = s.notif.on
+    ? html`<${Banner} tone="b-sun" dish="chai" title="What's new near you" sub=${unread ? unread + ' new ' + (unread === 1 ? 'update' : 'updates') + ' for your view' : 'New places and upgrades for your view'} cta="See updates" onClick=${() => d({ type: 'sheet', sheet: { type: 'notifs' } })} />`
+    : html`<${Banner} tone="b-sun" dish="chai" title="Never miss a new place" sub=${'Alerts when a ' + view + ' place opens or gets certified near you'} cta="Turn on alerts" onClick=${() => d({ type: 'sheet', sheet: { type: 'alerts' } })} />`;
   return html`<div>
     <section className="hero">
       <div className="container hero-inner">
@@ -1354,9 +1474,7 @@ function Explore({ s, d }) {
           <p className="eyebrow">${city.home}, ${s.city}</p>
           <h1>Eat out without having to ask.</h1>
           <p>Restaurants that match how you eat, each with a trust level and proof you can check: certificates, our visits and real check-in reviews.</p>
-          <div className="hero-prefs" role="group" aria-label="Food preference">
-            ${PREFS.map((p) => html`<button key=${p.id} className="hero-pref" aria-pressed=${s.prefs.includes(p.id)} onClick=${() => d({ type: 'togglePref', id: p.id })}>${p.label}</button>`)}
-          </div>
+          <${YourView} s=${s} d=${d} tone="onbrand" />
         </div>
         <div className="hero-art" aria-hidden="true">
           <span className="float f1 dishbg d-biryani">${Dish('biryani')}</span>
@@ -1366,16 +1484,16 @@ function Explore({ s, d }) {
       </div>
     </section>
     <div className="container">
-      <div className="mobile-prefs"><${PrefChips} s=${s} d=${d} /></div>
+      <div className="mobile-prefs"><${YourView} s=${s} d=${d} /></div>
       <div className="banners">
-        <${Banner} tone="b-brand" dish="biryani" title="Certified halal near you" sub=${certHalal + (certHalal === 1 ? ' place' : ' places') + ' with checked certificates'} cta="Show me" onClick=${() => d({ type: 'banner', id: 'certified' })} />
-        <${Banner} tone="b-sun" dish="thali" title="Jain thalis you can trust" sub=${jainChecked + (jainChecked === 1 ? ' kitchen' : ' kitchens') + ' certified or checked by our team'} cta="Explore" onClick=${() => d({ type: 'banner', id: 'jain' })} />
+        <${Banner} tone="b-brand" dish=${viewDish} title="Certified near you" sub=${certCount + (certCount === 1 ? ' place' : ' places') + ' for ' + view + ', certificates checked'} cta="Show me" onClick=${() => d({ type: 'banner', id: 'certified' })} />
+        ${alertsBanner}
         <${Banner} tone="b-coral" dish="roll" title="Know a great place?" sub="Add it for your community" cta="Add a place" onClick=${() => d({ type: 'go', screen: 'add' })} />
       </div>
       <section className="cats-sec" aria-labelledby="h-cats">
         <h2 className="sec-title" id="h-cats">What's on your mind?</h2>
         <div className="cats" role="group" aria-label="Dishes">
-          ${CATS.map((c) => html`<button key=${c.id} className="cat" aria-pressed=${s.cat === c.id} onClick=${() => d({ type: 'cat', id: c.id })}>
+          ${cats.map((c) => html`<button key=${c.id} className="cat" aria-pressed=${s.cat === c.id} onClick=${() => d({ type: 'cat', id: c.id })}>
             <span className=${'cat-img dishbg d-' + c.id}>${Dish(c.id)}</span><span>${c.label}</span></button>`)}
         </div>
       </section>
@@ -1385,7 +1503,7 @@ function Explore({ s, d }) {
           <div className="results-h">
             <div>
               <h2 className="sec-title" id="h-results">${list.length} ${list.length === 1 ? 'place' : 'places'} for you</h2>
-              <p className="note">${SORT_LABEL[s.sort]} first${catLabel ? ' · ' + catLabel : ''}${s.query ? ' · "' + s.query + '"' : ''}</p>
+              <p className="note">${view} · ${SORT_LABEL[s.sort]} first${catLabel ? ' · ' + catLabel : ''}${s.query ? ' · "' + s.query + '"' : ''}</p>
             </div>
             <div className="seg" role="group" aria-label="View">
               <button aria-pressed="true">${I('grid')}Grid</button>
@@ -1465,7 +1583,7 @@ function MapView({ s, d }) {
             <button aria-pressed="true">${I('map')}Map</button>
           </div>
         </div>
-        <${PrefChips} s=${s} d=${d} />
+        <${YourView} s=${s} d=${d} />
         <${FilterChips} s=${s} d=${d} />
       </div>
       <div className="maplist-items" ref=${listRef}>
@@ -1484,7 +1602,7 @@ function MapView({ s, d }) {
     </aside>
     <div className="mapcanvas">
       <${MapSvg} s=${s} d=${d} list=${list} selId=${selId} />
-      <div className="map-prefs"><${PrefChips} s=${s} d=${d} /></div>
+      <div className="map-prefs"><${YourView} s=${s} d=${d} /></div>
       <div className="map-top"><span className="map-hint">Sketch map · the real app uses OpenStreetMap</span></div>
       <div className="rail" ref=${railRef}>
         ${list.length ? list.map((p) => {
@@ -1527,7 +1645,7 @@ function TrustCard({ pref, info, active }) {
   return html`<div className=${'tcard' + (active ? '' : ' dim')}>
     <div className="tcard-h">
       <span className=${'tcard-ic lv-' + info.level}>${I(L.icon)}</span>
-      <span className="tcard-t"><b>${PREF_LABEL[pref]} · ${L.label}</b><small>${active ? sub : 'Not in your filter · ' + sub}</small></span>
+      <span className="tcard-t"><b>${PREF_LABEL[pref]} · ${L.label}</b><small>${active ? sub : 'Not in your view · ' + sub}</small></span>
     </div>
     ${body}
   </div>`;
@@ -1610,17 +1728,16 @@ function Place({ s, d }) {
           <p className="note">Our team checks every report. Listings are never removed automatically.</p>
         </section>
       </div>
-      <aside className="place-side" aria-label="Order and contact">
+      <aside className="place-side" aria-label="Order and directions">
         <div className="side-card">
           <h2>Order online</h2>
-          <p className="note">We don't deliver. We open the restaurant's own page on the app you choose.</p>
-          <button className="orow" onClick=${() => say('The live app opens ' + p.name + ' on Zomato.')}><span className="o-logo">Z</span><span><b>Zomato</b><small>Delivery and table booking</small></span><span className="arr">${I('arrow')}</span></button>
-          <button className="orow" onClick=${() => say('The live app opens ' + p.name + ' on Swiggy.')}><span className="o-logo">S</span><span><b>Swiggy</b><small>Delivery and Dineout</small></span><span className="arr">${I('arrow')}</span></button>
+          <p className="note">We don't deliver. We open this restaurant in the delivery app on your phone, or on its website if the app isn't there.</p>
+          <${AppList} apps=${ORDER_APPS} onPick=${(app) => say(appMsg(app, p.name))} />
         </div>
         <div className="side-card">
           <div className="side-actions">
             <button className="sact" onClick=${() => say('Sample number ' + p.phone + '. The live app starts a call.')}>${I('phone')}Call</button>
-            <button className="sact" onClick=${() => say('The live app opens directions in your maps app.')}>${I('nav')}Directions</button>
+            <button className="sact" onClick=${() => d({ type: 'sheet', sheet: { type: 'directions', id: p.id } })}>${I('nav')}Directions</button>
             <button className=${'sact' + (saved ? ' on' : '')} aria-pressed=${saved} onClick=${toggleSave}>${I(saved ? 'heartFill' : 'heart')}${saved ? 'Saved' : 'Save'}</button>
           </div>
           <p className="note">Phone: ${p.phone} (sample number)</p>
@@ -1635,7 +1752,7 @@ function PlaceBar({ s, d }) {
   if (!p || p.hidden) return null;
   return html`<div className="placebar">
     <button className="ibtn" aria-label="Call" onClick=${() => d({ type: 'toast', text: 'Sample number ' + p.phone + '. The live app starts a call.' })}>${I('phone')}</button>
-    <button className="ibtn" aria-label="Directions" onClick=${() => d({ type: 'toast', text: 'The live app opens directions in your maps app.' })}>${I('nav')}</button>
+    <button className="ibtn" aria-label="Directions" onClick=${() => d({ type: 'sheet', sheet: { type: 'directions', id: p.id } })}>${I('nav')}</button>
     <button className="btn primary grow" onClick=${() => d({ type: 'sheet', sheet: { type: 'order', id: p.id } })}>Order online</button>
   </div>`;
 }
@@ -1694,22 +1811,32 @@ function AddPlace({ s, d }) {
 }
 
 function Profile({ s, d }) {
-  return html`<div className="container page page-narrow">
+  const on = s.notif.on;
+  return html`<div className="container page">
     <div className="page-h"><p className="eyebrow">Demo user · ${s.city}</p><h1>Your profile</h1><p>We never ask your religion. Only these food choices are stored.</p></div>
     <div className="profile-grid">
       <div className="card">
-        <h2 className="card-h">What you eat</h2>
-        <div className="choice" role="group" aria-label="Food preference">
+        <h2 className="card-h">Your food view</h2>
+        <p className="note">This decides which places you see. Pick more than one if you like, for example pure veg and Jain.</p>
+        <div className="choice" role="group" aria-label="Your food view">
           ${PREFS.map((p) => html`<button key=${p.id} aria-pressed=${s.prefs.includes(p.id)} onClick=${() => d({ type: 'togglePref', id: p.id })}>${p.label}</button>`)}
         </div>
         <label className="togglecard" htmlFor="pf-alcohol"><span>Hide places that serve alcohol</span><${Toggle} id="pf-alcohol" label="Hide places that serve alcohol" checked=${s.strict.noAlcohol} onChange=${() => d({ type: 'strict', key: 'noAlcohol' })} /></label>
         <label className="togglecard" htmlFor="pf-pork"><span>Hide places with pork on the menu</span><${Toggle} id="pf-pork" label="Hide places with pork on the menu" checked=${s.strict.noPork} onChange=${() => d({ type: 'strict', key: 'noPork' })} /></label>
+        <label className="togglecard" htmlFor="pf-ask"><span>Ask when I open the app<small>"What are you looking for today?"</small></span><${Toggle} id="pf-ask" label="Ask what I'm looking for when I open the app" checked=${s.askOnOpen} onChange=${() => d({ type: 'askOnOpen' })} /></label>
         <div className="choice" role="group" aria-label="City">${Object.keys(CITIES).map((c) => html`<button key=${c} aria-pressed=${s.city === c} onClick=${() => d({ type: 'city', city: c })}>${I('pin', 'tiny')}${c}</button>`)}</div>
+      </div>
+      <div className="card">
+        <h2 className="card-h">Alerts</h2>
+        <label className="togglecard" htmlFor="pf-alerts"><span>Alerts on this phone<small>Only for ${viewLabel(s.prefs)} places in ${s.city}</small></span><${Toggle} id="pf-alerts" label="Alerts on this phone" checked=${on} onChange=${() => d({ type: 'notifToggle' })} /></label>
+        ${TOPICS.map(([k, label, sub]) => html`<label key=${k} className=${'togglecard' + (on ? '' : ' dim')} htmlFor=${'pf-' + k}><span>${label}<small>${sub}</small></span>
+          <${Toggle} id=${'pf-' + k} label=${label} checked=${s.notif.topics[k]} disabled=${!on} onChange=${() => d({ type: 'notifTopic', key: k })} /></label>`)}
+        <p className="note">A few alerts a week at most. The live app uses your phone's notification permission.</p>
       </div>
       <div className="card">
         <h2 className="card-h">More in this demo</h2>
         <button className="linkrow" onClick=${() => d({ type: 'role', role: 'owner' })}><span className="lr-ic">${I('store')}</span><span>List your restaurant<small>The restaurant owner's portal</small></span><span className="arr">${I('arrow')}</span></button>
-        <button className="linkrow" onClick=${() => d({ type: 'role', role: 'admin' })}><span className="lr-ic">${I('shield')}</span><span>Our team's review queue<small>Where certificates and reports are checked</small></span><span className="arr">${I('arrow')}</span></button>
+        <button className="linkrow" onClick=${() => d({ type: 'role', role: 'admin' })}><span className="lr-ic">${I('shield')}</span><span>Our team's review queue<small>Private in the live app</small></span><span className="arr">${I('arrow')}</span></button>
         <button className="linkrow" onClick=${() => d({ type: 'go', screen: 'onboard' })}><span className="lr-ic">${I('sparkle')}</span><span>See the welcome screen again<small>The first-time setup</small></span><span className="arr">${I('arrow')}</span></button>
       </div>
     </div>
@@ -1720,7 +1847,8 @@ function Onboard({ s, d }) {
   const [prefs, setPrefs] = useState(s.prefs);
   const [strict, setStrict] = useState(s.strict);
   const [city, setCity] = useState(s.city);
-  const toggle = (id) => setPrefs(prefs.includes(id) ? prefs.filter((x) => x !== id) : [...prefs, id]);
+  const [dontAsk, setDontAsk] = useState(!s.askOnOpen);
+  const toggle = (id) => setPrefs((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
   return html`<div className="onbw">
     <div className="onbw-hero">
       <p className="eyebrow">Welcome to TrustPlate</p>
@@ -1742,8 +1870,9 @@ function Onboard({ s, d }) {
       <label className="togglecard" htmlFor="ob-alcohol"><span>Hide places that serve alcohol</span><${Toggle} id="ob-alcohol" label="Hide places that serve alcohol" checked=${strict.noAlcohol} onChange=${() => setStrict({ ...strict, noAlcohol: !strict.noAlcohol })} /></label>
       <label className="togglecard" htmlFor="ob-pork"><span>Hide places with pork on the menu</span><${Toggle} id="ob-pork" label="Hide places with pork on the menu" checked=${strict.noPork} onChange=${() => setStrict({ ...strict, noPork: !strict.noPork })} /></label>
       <div className="choice" role="group" aria-label="City">${Object.keys(CITIES).map((c) => html`<button key=${c} aria-pressed=${city === c} onClick=${() => setCity(c)}>${I('pin', 'tiny')}${c}</button>`)}</div>
-      <button className="btn primary block" disabled=${!prefs.length} onClick=${() => d({ type: 'finishOnboarding', prefs, strict, city })}>Show places near me${I('arrow')}</button>
-      <p className="note">We never ask your religion. Change this anytime from the top of the page.</p>
+      <label className="checkrow" htmlFor="ob-ask"><input id="ob-ask" type="checkbox" checked=${dontAsk} onChange=${() => setDontAsk(!dontAsk)} />Don't ask me again when I open the app</label>
+      <button className="btn primary block" disabled=${!prefs.length} onClick=${() => d({ type: 'finishOnboarding', prefs, strict, city, askOnOpen: !dontAsk })}>Show places near me${I('arrow')}</button>
+      <p className="note">We never ask your religion. Change your view anytime in your profile.</p>
     </div>
   </div>`;
 }
@@ -1835,16 +1964,100 @@ function ReportSheet({ p, d, close }) {
   </form>`;
 }
 
+function AppList({ apps, onPick }) {
+  const row = (app) => html`<button key=${app.name} className="orow" onClick=${() => onPick(app)}>
+    <span className="o-logo">${app.logo}</span><span><b>${app.name}</b><small>${app.sub}</small></span>
+    <span className=${'app-badge ' + (app.on ? 'on' : 'off')}>${app.on ? 'Opens the app' : 'Opens website'}</span></button>`;
+  const on = apps.filter((a) => a.on);
+  const off = apps.filter((a) => !a.on);
+  return html`<div className="applist">
+    ${on.length ? html`<h4>On your phone</h4>` : null}${on.map(row)}
+    ${off.length ? html`<h4>Not installed</h4>` : null}${off.map(row)}
+  </div>`;
+}
+
 function OrderSheet({ p, d, close }) {
-  const go = (app) => { close(); d({ type: 'toast', text: 'The live app opens ' + p.name + ' on ' + app + '.' }); };
+  const pick = (app) => { close(); d({ type: 'toast', text: appMsg(app, p.name) }); };
   return html`<div className="sbody">
     <h3>Order from ${p.name}</h3>
-    <p className="note">We don't deliver. We open the restaurant's own page on the app you choose.</p>
-    <button className="orow" onClick=${() => go('Zomato')}><span className="o-logo">Z</span><span><b>Zomato</b><small>Delivery and table booking</small></span><span className="arr">${I('arrow')}</span></button>
-    <button className="orow" onClick=${() => go('Swiggy')}><span className="o-logo">S</span><span><b>Swiggy</b><small>Delivery and Dineout</small></span><span className="arr">${I('arrow')}</span></button>
+    <p className="note">We don't deliver. We open this restaurant in the delivery app on your phone, or on its website.</p>
+    <${AppList} apps=${ORDER_APPS} onPick=${pick} />
+    <p className="note">${APPS_NOTE}</p>
     <button className="btn block" onClick=${close}>Cancel</button>
   </div>`;
 }
+
+function DirectionsSheet({ p, d, close }) {
+  const pick = (app) => { close(); d({ type: 'toast', text: appMsg(app, 'directions to ' + p.name) }); };
+  return html`<div className="sbody">
+    <h3>Directions to ${p.name}</h3>
+    <p className="note">${p.area}, ${p.city} · ${p.dist.toFixed(1)} km away</p>
+    <${AppList} apps=${MAP_APPS} onPick=${pick} />
+    <p className="note">${APPS_NOTE}</p>
+    <button className="btn block" onClick=${close}>Cancel</button>
+  </div>`;
+}
+
+// Asked each time the app opens (until "Don't ask me again"), and from "Change" anywhere your view shows.
+function PrefsSheet({ s, d, launch }) {
+  const [prefs, setPrefs] = useState(s.prefs);
+  const [strict, setStrict] = useState(s.strict);
+  const [dontAsk, setDontAsk] = useState(!s.askOnOpen);
+  const toggle = (id) => setPrefs((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
+  const save = () => {
+    d({ type: 'savePrefs', prefs, strict, askOnOpen: !dontAsk });
+    d({ type: 'toast', text: 'Showing ' + viewLabel(prefs) + ' places.' + (dontAsk ? ' Change it anytime in your profile.' : '') });
+  };
+  return html`<div className="sbody">
+    <h3>${launch ? 'What are you looking for today?' : 'Change your view'}</h3>
+    <p className="note">Pick one or more. You only see places that match, and your view stays until you change it.</p>
+    <div className="prefcards compact" role="group" aria-label="Your food view">
+      ${PREFS.map((p) => html`<button key=${p.id} className="pc" aria-pressed=${prefs.includes(p.id)} onClick=${() => toggle(p.id)}>
+        <span className="tick">${I('check')}</span>
+        <span className=${'pc-img dishbg d-' + p.dish}>${Dish(p.dish)}</span>
+        <b>${p.label}</b><small>${PREF_HINT[p.id]}</small>
+      </button>`)}
+    </div>
+    <label className="togglecard" htmlFor="ps-alcohol"><span>Hide places that serve alcohol</span><${Toggle} id="ps-alcohol" label="Hide places that serve alcohol" checked=${strict.noAlcohol} onChange=${() => setStrict({ ...strict, noAlcohol: !strict.noAlcohol })} /></label>
+    <label className="togglecard" htmlFor="ps-pork"><span>Hide places with pork on the menu</span><${Toggle} id="ps-pork" label="Hide places with pork on the menu" checked=${strict.noPork} onChange=${() => setStrict({ ...strict, noPork: !strict.noPork })} /></label>
+    <label className="checkrow" htmlFor="ps-ask"><input id="ps-ask" type="checkbox" checked=${dontAsk} onChange=${() => setDontAsk(!dontAsk)} />Don't ask me again when I open the app</label>
+    <button className="btn primary block" disabled=${!prefs.length} onClick=${save}>${prefs.length ? 'Show ' + viewLabel(prefs) + ' places' : 'Pick at least one'}</button>
+  </div>`;
+}
+
+function AlertsSheet({ s, d }) {
+  const [topics, setTopics] = useState(s.notif.topics);
+  return html`<div className="sbody">
+    <span className="sheet-ic">${I('bell')}</span>
+    <h3>Get alerts that match your view</h3>
+    <p className="note">Only for ${viewLabel(s.prefs)} places in ${s.city}. A few a week at most, never spam.</p>
+    ${TOPICS.map(([k, label, sub]) => html`<label key=${k} className="togglecard" htmlFor=${'al-' + k}><span>${label}<small>${sub}</small></span>
+      <${Toggle} id=${'al-' + k} label=${label} checked=${topics[k]} onChange=${() => setTopics({ ...topics, [k]: !topics[k] })} /></label>`)}
+    <button className="btn primary block" onClick=${() => { d({ type: 'notifOn', topics }); d({ type: 'toast', text: 'Alerts on. In the live app your phone now asks for permission.' }); }}>Turn on alerts</button>
+    <button className="btn block" onClick=${() => d({ type: 'notifLater' })}>Not now</button>
+  </div>`;
+}
+
+function NotifSheet({ s, d }) {
+  const list = visibleNotifs(s);
+  const icon = { upgrade: 'shield', new: 'sparkle', offer: 'tag' };
+  return html`<div className="sbody">
+    <div className="sheet-h"><h3>Updates near you</h3>${list.some((n) => n.unread) ? html`<button className="linkbtn" onClick=${() => d({ type: 'readAll' })}>Mark all read</button>` : null}</div>
+    <p className="note">For your view (${viewLabel(s.prefs)}) in ${s.city}.</p>
+    ${s.notif.on ? null : html`<div className="been"><div><b>Alerts are off</b><small>Turn them on to hear about new places near you.</small></div>
+      <button className="btn primary sm" onClick=${() => d({ type: 'sheet', sheet: { type: 'alerts' } })}>Turn on</button></div>`}
+    <div className="notif-list">
+      ${list.length ? list.map((n) => html`<button key=${n.id} className=${'notif' + (n.unread ? ' unread' : '')} onClick=${() => { d({ type: 'readNotif', id: n.id }); d({ type: 'open', id: n.placeId }); }}>
+        <span className=${'n-ic k-' + n.kind}>${I(icon[n.kind])}</span>
+        <span className="n-body"><b>${n.title}</b><small>${n.text}</small><small className="n-when">${n.kind === 'offer' ? 'Offer · ' : ''}${n.when}</small></span>
+        ${n.unread ? html`<i className="n-dot" aria-label="New"></i>` : html`<i></i>`}
+      </button>`) : html`<p className="note">Nothing new for your view yet.</p>`}
+    </div>
+  </div>`;
+}
+
+const PLACE_SHEETS = { checkin: [CheckInSheet, 'Check in'], review: [ReviewSheet, 'Write a review'], report: [ReportSheet, 'Report a problem'], order: [OrderSheet, 'Order online'], directions: [DirectionsSheet, 'Get directions'] };
+const APP_SHEETS = { prefs: [PrefsSheet, 'Your food view'], alerts: [AlertsSheet, 'Alerts'], notifs: [NotifSheet, 'Updates near you'] };
 
 function Sheets({ s, d }) {
   const sheetRef = useRef(null);
@@ -1856,15 +2069,17 @@ function Sheets({ s, d }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [s.sheet]);
   if (!s.sheet) return null;
-  const p = s.places.find((x) => x.id === s.sheet.id);
-  if (!p) return null;
   const close = () => d({ type: 'sheet', sheet: null });
-  const map = { checkin: [CheckInSheet, 'Check in'], review: [ReviewSheet, 'Write a review'], report: [ReportSheet, 'Report a problem'], order: [OrderSheet, 'Order online'] };
-  const entry = map[s.sheet.type];
-  if (!entry) return null;
+  let entry = APP_SHEETS[s.sheet.type];
+  let p = null;
+  if (!entry) {
+    entry = PLACE_SHEETS[s.sheet.type];
+    p = s.places.find((x) => x.id === s.sheet.id);
+    if (!entry || !p) return null;
+  }
   const [Comp, label] = entry;
   return html`<div className="overlay" onClick=${(e) => { if (e.target === e.currentTarget) close(); }}>
-    <div className="sheet" role="dialog" aria-modal="true" aria-label=${label} tabIndex="-1" ref=${sheetRef}><div className="grab"></div><${Comp} p=${p} s=${s} d=${d} close=${close} /></div>
+    <div className="sheet" role="dialog" aria-modal="true" aria-label=${label} tabIndex="-1" ref=${sheetRef}><div className="grab"></div><${Comp} p=${p} s=${s} d=${d} close=${close} launch=${!!s.sheet.launch} /></div>
   </div>`;
 }
 
@@ -1883,6 +2098,7 @@ function OwnerForm({ s, d }) {
       <label className="field" htmlFor="o-cuisine">Cuisine<input id="o-cuisine" value=${o.cuisine} onChange=${(e) => set({ cuisine: e.target.value })} /></label>
       <label className="field" htmlFor="o-phone">Phone<input id="o-phone" value=${o.phone} onChange=${(e) => set({ phone: e.target.value })} /></label>
     </div>
+    <div className="private-note">${I('lock')}<span>In the live app, owners sign in and verify their phone number with a one-time code before they can list.</span></div>
     <div className="btn-row"><button className="btn primary" disabled=${!o.name.trim()} onClick=${() => set({ step: 2 })}>Next: what you serve${I('arrow')}</button></div>` : null}
     ${o.step === 2 ? html`<div className="field">Your food is
         <div className="choice" role="group" aria-label="Your food is">${PREFS.map((p) => html`<button type="button" key=${p.id} aria-pressed=${o.prefs.includes(p.id)} onClick=${() => set({ prefs: o.prefs.includes(p.id) ? o.prefs.filter((x) => x !== p.id) : [...o.prefs, p.id] })}>${p.label}</button>`)}</div>
@@ -1974,13 +2190,13 @@ function QueueItem({ q, s, d }) {
     detail = html`<div className="qt">${name}</div><div className="qs">${PREF_LABEL[q.pref]} certificate · ${q.submitted}</div>
       <div className="ticket"><div className="trow"><span>Issued by</span><b>${q.issuer}</b></div><div className="trow"><span>Certificate no.</span><b className="mono">${q.number}</b></div><div className="trow"><span>Valid until</span><b>${q.validUntil}</b></div>${q.file ? html`<div className="trow"><span>File</span><b>${q.file}</b></div>` : null}</div>`;
     actions = live
-      ? html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is now Certified for ' + PREF_LABEL[q.pref].toLowerCase() + '.')}>Approve</button><button className="btn sm" onClick=${() => decide(false, 'Certificate rejected. The owner is told why.')}>Reject</button>`
+      ? html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is now Certified for ' + PREF_LABEL[q.pref].toLowerCase() + '. Diners with alerts get notified.')}>Approve</button><button className="btn sm" onClick=${() => decide(false, 'Certificate rejected. The owner is told why.')}>Reject</button>`
       : html`<p className="note">Approve the new listing first.</p>`;
   } else if (q.type === 'visit') {
     label = 'Field visit';
     detail = html`<div className="qt">${name}</div><div className="qs">${PREF_LABEL[q.pref]} · ${q.when}</div><ul className="checklist">${q.checks.map((c) => html`<li key=${c}>${I('checkCircle')}${c}</li>`)}</ul>`;
     actions = live
-      ? html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is now Checked by us for ' + PREF_LABEL[q.pref].toLowerCase() + '.')}>Visit passed</button><button className="btn sm" onClick=${() => decide(false, 'Visit failed. The level stays as it is.')}>Failed</button>`
+      ? html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is now Checked by us for ' + PREF_LABEL[q.pref].toLowerCase() + '. Diners with alerts get notified.')}>Visit passed</button><button className="btn sm" onClick=${() => decide(false, 'Visit failed. The level stays as it is.')}>Failed</button>`
       : html`<p className="note">Approve the new listing first.</p>`;
   } else if (q.type === 'report') {
     label = 'Report';
@@ -1989,11 +2205,11 @@ function QueueItem({ q, s, d }) {
   } else if (q.type === 'community') {
     label = 'Suggested place';
     detail = html`<div className="qt">${name}</div><div className="qs">${q.place.area}, ${q.place.city} · ${Object.keys(q.place.levels).map((pr) => PREF_LABEL[pr]).join(', ')} · by ${q.by} · ${q.confirmations} of 3 confirmations</div>`;
-    actions = html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is live as Community-reported.')}>Approve</button><button className="btn sm" onClick=${() => decide(false, 'Suggestion declined.')}>Decline</button>`;
+    actions = html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is live as Community-reported. Diners with alerts get notified.')}>Approve</button><button className="btn sm" onClick=${() => decide(false, 'Suggestion declined.')}>Decline</button>`;
   } else if (q.type === 'owner') {
     label = 'New listing';
     detail = html`<div className="qt">${name}</div><div className="qs">${q.place.area}, ${q.place.city} · declares ${Object.keys(q.place.levels).map((pr) => PREF_LABEL[pr]).join(', ')}</div>`;
-    actions = html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is live as Owner-declared.')}>Approve listing</button><button className="btn sm" onClick=${() => decide(false, 'Listing declined. The owner is told why.')}>Decline</button>`;
+    actions = html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is live as Owner-declared. Diners with alerts get notified.')}>Approve listing</button><button className="btn sm" onClick=${() => decide(false, 'Listing declined. The owner is told why.')}>Decline</button>`;
   }
   return html`<article className="qcard"><span className=${'qtype t-' + q.type}>${label}</span>${detail}<div className="qactions">${actions}</div></article>`;
 }
@@ -2004,7 +2220,8 @@ function AdminPage({ s, d }) {
   const count = (t) => s.queue.filter((q) => (t === 'new' ? q.type === 'owner' || q.type === 'community' : q.type === t)).length;
   const shown = s.queue.filter((q) => tab === 'all' || (tab === 'new' ? q.type === 'owner' || q.type === 'community' : q.type === tab));
   return html`<div className="container admin">
-    <div className="page-h"><p className="eyebrow">Our team</p><h1>Review queue</h1><p>Every decision shows in the app at once and goes to the audit log.</p></div>
+    <div className="page-h"><p className="eyebrow">Our team</p><h1>Review queue</h1><p>Every decision shows in the app at once and goes to the audit log.</p>
+      <div className="private-note">${I('lock')}<span>Private to the TrustPlate team. In the live app this panel needs a staff account and two-step sign-in, so nobody can change results by mistake.</span></div></div>
     <div className="stat-cards">
       <div className="stat-card"><b>${count('certificate')}</b><span>Certificates to check</span></div>
       <div className="stat-card"><b>${count('visit')}</b><span>Visits to record</span></div>
@@ -2026,11 +2243,12 @@ function AdminPage({ s, d }) {
 /* ---------- How it works ---------- */
 const FLOWS = [
   { id: 'diner', title: 'Diner', icon: 'compass', steps: [
-    { t: 'Pick what you eat', d: 'Halal, Jain, pure veg or vegan, plus alcohol and pork filters. No religion asked.', go: { role: 'diner', screen: 'onboard' }, match: (s) => s.role === 'diner' && s.screen === 'onboard' },
-    { t: 'Browse places, most trusted first', d: 'Filters, dish categories and a trust badge on every card.', go: { role: 'diner', screen: 'explore' }, match: (s) => s.role === 'diner' && s.screen === 'explore' },
+    { t: 'Choose your view', d: 'Halal, Jain, pure veg or vegan, one or more. Asked each time the app opens, until you turn that off.', go: { role: 'diner', screen: 'explore', sheet: { type: 'prefs', launch: true } }, match: (s) => s.role === 'diner' && !!s.sheet && s.sheet.type === 'prefs' },
+    { t: 'Browse places, most trusted first', d: 'Only places that match your view, with a trust badge on every card.', go: { role: 'diner', screen: 'explore' }, match: (s) => s.role === 'diner' && s.screen === 'explore' && !s.sheet },
     { t: 'See them on the map', d: 'List and map side by side; pins coloured by trust level.', go: { role: 'diner', screen: 'map' }, match: (s) => s.role === 'diner' && s.screen === 'map' },
     { t: 'Open a place and check the proof', d: 'Certificate details, expiry, visit checklist and food facts.', go: { role: 'diner', screen: 'place', placeId: 'noor' }, match: (s) => s.role === 'diner' && s.screen === 'place' && !s.sheet },
-    { t: 'Order through Zomato or Swiggy', d: 'We never run delivery; we open the restaurant on their app.', go: { role: 'diner', screen: 'place', placeId: 'noor', sheet: { type: 'order', id: 'noor' } }, match: (s) => s.role === 'diner' && !!s.sheet && s.sheet.type === 'order' },
+    { t: 'Order or get directions', d: 'Opens Zomato, Swiggy or your maps app, whichever is on your phone. We never deliver.', go: { role: 'diner', screen: 'place', placeId: 'noor', sheet: { type: 'order', id: 'noor' } }, match: (s) => s.role === 'diner' && !!s.sheet && (s.sheet.type === 'order' || s.sheet.type === 'directions') },
+    { t: 'Turn on alerts', d: 'New places near you, trust upgrades and offers, only for your view.', go: { role: 'diner', screen: 'explore', sheet: { type: 'alerts' } }, match: (s) => s.role === 'diner' && !!s.sheet && (s.sheet.type === 'alerts' || s.sheet.type === 'notifs') },
     { t: 'Check in, then review', d: 'Only people who were there can review and confirm.', go: { role: 'diner', screen: 'place', placeId: 'noor', sheet: { type: 'checkin', id: 'noor' } }, match: (s) => s.role === 'diner' && !!s.sheet && (s.sheet.type === 'checkin' || s.sheet.type === 'review') },
     { t: 'Report a problem', d: 'Reports go to our team. Nothing is removed automatically.', go: { role: 'diner', screen: 'place', placeId: 'copper', sheet: { type: 'report', id: 'copper' } }, match: (s) => s.role === 'diner' && !!s.sheet && s.sheet.type === 'report' },
   ] },
@@ -2044,8 +2262,8 @@ const FLOWS = [
     { t: 'Track the status', d: 'Owner-declared first, then Certified or Checked by us.', act: { type: 'ownerTrack' }, match: (s) => s.role === 'owner' && s.owner.status !== 'draft' },
   ] },
   { id: 'team', title: 'Our team', icon: 'shield', steps: [
-    { t: 'Work the review queue', d: 'Certificates, visits, reports, new listings and suggestions.', go: { role: 'admin' }, match: (s) => s.role === 'admin' },
-    { t: 'Approve, and the app updates', d: 'Approve the Kondhwa Grill House certificate, then open it as a diner.', go: { role: 'diner', screen: 'place', placeId: 'kondhwa' }, match: () => false },
+    { t: 'Work the review queue', d: 'Certificates, visits, reports, new listings and suggestions. Private in the live app.', go: { role: 'admin' }, match: (s) => s.role === 'admin' },
+    { t: 'Approve, and diners get an alert', d: 'Approve the Kondhwa Grill House certificate, then check the bell as a diner.', go: { role: 'diner', screen: 'place', placeId: 'kondhwa' }, match: () => false },
   ] },
 ];
 
@@ -2061,7 +2279,7 @@ function Tour({ s, d, onClose }) {
     <div className="tour-scrim" onClick=${onClose}></div>
     <aside className="tour" role="dialog" aria-modal="true" aria-label="How TrustPlate works" tabIndex="-1" ref=${panelRef}>
       <div className="tour-h">
-        <div><h2>How TrustPlate works</h2><p>Tap a step to jump there. Use "View as" in the top bar to switch between a diner, a restaurant owner and our team.</p></div>
+        <div><h2>How TrustPlate works</h2><p>Tap a step to jump there. The "View as" switch is only in this demo: in the live app, restaurant owners sign in to their own portal, and our team's panel is private.</p></div>
         <button className="iconbtn" onClick=${onClose} aria-label="Close">${I('x')}</button>
       </div>
       ${FLOWS.map((f) => html`<section key=${f.id} className="flow" aria-labelledby=${'flow-' + f.id}>
@@ -2087,7 +2305,9 @@ function Tour({ s, d, onClose }) {
 function App() {
   const [s, d] = useReducer(reducer, null, () => initialState(true));
   const [tour, setTour] = useState(false);
-  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved]);
+  const sRef = useRef(s);
+  sRef.current = s;
+  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved, s.askOnOpen, s.notif]);
   useEffect(() => {
     if (!s.toasts.length) return undefined;
     const t = setTimeout(() => d({ type: 'untoast', id: s.toasts[0].id }), 3400);
@@ -2099,6 +2319,24 @@ function App() {
     d({ type: 'reset' });
     d({ type: 'toast', text: 'Demo reset to its sample data.' });
   };
+  // Phone preview: the surrounding frame sends tour steps in and gets the current role and screen back.
+  useEffect(() => {
+    if (!EMBED) return undefined;
+    const onMsg = (e) => {
+      const m = e.data;
+      if (e.source !== window.parent || !m || m.tp !== 'trustplate' || !m.action) return;
+      const a = m.action;
+      if (a.type === 'reset') { resetDemo(); return; }
+      if (a.type === 'ownerTrack' && sRef.current.owner.status === 'draft') d({ type: 'toast', text: 'Sample listing submitted so you can follow its status.' });
+      if (['role', 'go', 'ownerTrack'].includes(a.type)) d(a);
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+  useEffect(() => {
+    if (!EMBED) return;
+    try { window.parent.postMessage({ tp: 'trustplate-state', role: s.role, screen: s.screen, sheet: s.sheet ? s.sheet.type : null, ownerStatus: s.owner.status }, '*'); } catch (e) { /* ignore */ }
+  }, [s.role, s.screen, s.sheet, s.owner.status]);
 
   const diner = s.role === 'diner';
   let body = null;
@@ -2114,15 +2352,15 @@ function App() {
 
   const showTabs = diner && s.screen !== 'onboard' && s.screen !== 'place';
   const showBar = diner && s.screen === 'place';
-  const showFooter = !(diner && (s.screen === 'map' || s.screen === 'onboard'));
-  return html`<div className=${'app' + (showTabs ? ' with-tabs' : '') + (showBar ? ' with-bar' : '')}>
-    <${DemoBar} s=${s} d=${d} onTour=${() => setTour(true)} onReset=${resetDemo} />
+  const showFooter = !EMBED && !(diner && (s.screen === 'map' || s.screen === 'onboard'));
+  return html`<div className=${'app' + (showTabs ? ' with-tabs' : '') + (showBar ? ' with-bar' : '') + (EMBED ? ' embed' : '')}>
+    ${EMBED ? null : html`<${DemoBar} s=${s} d=${d} onTour=${() => setTour(true)} onReset=${resetDemo} />`}
     <${TopNav} s=${s} d=${d} />
     <main className="main">${body}</main>
     ${showFooter ? html`<${Footer} d=${d} />` : null}
     ${showTabs ? html`<${MobileTabs} s=${s} d=${d} />` : null}
     ${showBar ? html`<${PlaceBar} s=${s} d=${d} />` : null}
-    <button className="tour-btn" onClick=${() => setTour(true)}>${I('sparkle')}How it works</button>
+    ${EMBED ? null : html`<button className="tour-btn" onClick=${() => setTour(true)}>${I('sparkle')}How it works</button>`}
     <${Sheets} s=${s} d=${d} />
     ${tour ? html`<${Tour} s=${s} d=${d} onClose=${() => setTour(false)} />` : null}
     <div className="toasts" aria-live="polite">${s.toasts.map((t) => html`<div key=${t.id} className="toast">${I('sparkle')}${t.text}</div>`)}</div>
