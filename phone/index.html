@@ -80,6 +80,10 @@ iframe { display: block; width: 390px; height: 800px; border: 0; background: var
 .seg button { flex: 1; border: 0; background: transparent; padding: 8px 6px; border-radius: 11px; font-weight: 700; font-size: 13.5px; color: var(--muted); }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--panel); }
 .small { margin: 0; font-size: 12.5px; color: var(--muted); }
+.go { border: 0; border-radius: 14px; padding: 12px 16px; font-weight: 800; font-size: 15px; background: var(--brand-fill); color: var(--on-brand); box-shadow: 0 10px 22px rgba(35, 70, 232, 0.28); }
+.go-row { display: flex; gap: 8px; }
+.go-row .go { flex: 1; }
+.end { border: 1.5px solid var(--line); background: var(--panel); border-radius: 14px; padding: 10px 14px; font-weight: 700; font-size: 14px; }
 .reset { justify-self: start; border: 1.5px solid var(--line); background: var(--panel); border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; }
 .flow-ic { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
@@ -131,32 +135,9 @@ iframe { display: block; width: 390px; height: 800px; border: 0; background: var
 </div>
 
 <script>
-// Tour steps drive the app inside the frame with postMessage; the app reports back its role and screen.
+// The app inside the frame owns the guided tour; this panel starts it, lists its steps and switches role.
 const WEB_LINK = '../';
 const ROLES = [['diner', 'Diner'], ['owner', 'Restaurant owner'], ['admin', 'Our team']];
-const FLOWS = [
-  { title: 'Diner', steps: [
-    ['Choose your view', 'Halal, Jain, pure veg or vegan. Asked when the app opens, until you turn that off.', { type: 'go', role: 'diner', screen: 'explore', sheet: { type: 'prefs', launch: true } }, (s) => s.role === 'diner' && s.sheet === 'prefs'],
-    ['Browse places, most trusted first', 'Only places that match your view.', { type: 'go', role: 'diner', screen: 'explore' }, (s) => s.role === 'diner' && s.screen === 'explore' && !s.sheet],
-    ['See them on the map', 'Pins coloured by trust level.', { type: 'go', role: 'diner', screen: 'map' }, (s) => s.role === 'diner' && s.screen === 'map'],
-    ['Open a place and check the proof', 'Certificate, expiry, visit checklist, food facts.', { type: 'go', role: 'diner', screen: 'place', placeId: 'noor' }, (s) => s.role === 'diner' && s.screen === 'place' && !s.sheet],
-    ['Order or get directions', 'Opens Zomato, Swiggy or your maps app, whichever is on the phone.', { type: 'go', role: 'diner', screen: 'place', placeId: 'noor', sheet: { type: 'order', id: 'noor' } }, (s) => s.sheet === 'order' || s.sheet === 'directions'],
-    ['Turn on alerts', 'New places, trust upgrades and offers for your view.', { type: 'go', role: 'diner', screen: 'explore', sheet: { type: 'alerts' } }, (s) => s.sheet === 'alerts' || s.sheet === 'notifs'],
-    ['Check in, then review', 'Only people who were there can review.', { type: 'go', role: 'diner', screen: 'place', placeId: 'noor', sheet: { type: 'checkin', id: 'noor' } }, (s) => s.sheet === 'checkin' || s.sheet === 'review'],
-    ['Report a problem', 'Reports go to our team, never auto-removed.', { type: 'go', role: 'diner', screen: 'place', placeId: 'copper', sheet: { type: 'report', id: 'copper' } }, (s) => s.sheet === 'report'],
-  ] },
-  { title: 'Community', steps: [
-    ['Add or suggest a place', "Moderators' places go live as Community-reported.", { type: 'go', role: 'diner', screen: 'add' }, (s) => s.role === 'diner' && s.screen === 'add'],
-  ] },
-  { title: 'Restaurant owner', steps: [
-    ['List the restaurant for free', 'Name, area, food and food facts.', { type: 'go', role: 'owner', ownerStep: 1 }, (s) => s.role === 'owner' && s.ownerStatus === 'draft'],
-    ['Add proof', 'Upload a certificate, or book our visit.', { type: 'go', role: 'owner', ownerStep: 3 }, () => false],
-    ['Track the status', 'Owner-declared first, then Certified or Checked by us.', { type: 'ownerTrack' }, (s) => s.role === 'owner' && s.ownerStatus !== 'draft'],
-  ] },
-  { title: 'Our team (private)', steps: [
-    ['Work the review queue', 'Approve, and diners with alerts are notified.', { type: 'go', role: 'admin' }, (s) => s.role === 'admin'],
-  ] },
-];
 const LEVELS = [
   ['var(--lv-certified)', 'Certified', 'valid certificate, checked by us, expiry tracked'],
   ['var(--lv-checked)', 'Checked by us', 'our team visited the kitchen'],
@@ -165,26 +146,37 @@ const LEVELS = [
 ];
 const frame = document.getElementById('app');
 const side = document.getElementById('side');
-let state = { role: 'diner', screen: 'explore', sheet: null, ownerStatus: 'draft' };
+let state = { role: 'diner', guide: null, steps: [] };
 const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const actions = [];
 function send(action) {
-  try { frame.contentWindow.postMessage({ tp: 'trustplate', action }, '*'); } catch (e) { /* frame not ready */ }
+  try { frame.contentWindow.postMessage({ tp: 'trustplate', action }, '*'); } catch (e) { /* frame not ready yet */ }
 }
 function render() {
   actions.length = 0;
   const act = (a) => actions.push(a) - 1;
+  const g = state.guide;
   const roles = ROLES.map(([id, label]) => '<button data-a="' + act({ type: 'role', role: id }) + '" aria-pressed="' + (state.role === id) + '">' + esc(label) + '</button>').join('');
-  const flows = FLOWS.map((f) => '<section class="box"><h2 class="box-h">' + esc(f.title) + '</h2><ol class="steps">' + f.steps.map(([t, d, a, match], i) =>
-    '<li><button class="step" data-a="' + act(a) + '"' + (match(state) ? ' aria-current="step"' : '') + '><span class="n">' + (i + 1) + '</span><span>' + esc(t) + '<small>' + esc(d) + '</small></span></button></li>').join('') + '</ol></section>').join('');
+  const chapters = [];
+  state.steps.forEach((st, i) => {
+    let ch = chapters[chapters.length - 1];
+    if (!ch || ch.c !== st.c) { ch = { c: st.c, items: [] }; chapters.push(ch); }
+    ch.items.push([st, i]);
+  });
+  const steps = chapters.map((ch) => '<section class="box"><h2 class="box-h">' + esc(ch.c) + '</h2><ol class="steps">' + ch.items.map(([st, i]) =>
+    '<li><button class="step" data-a="' + act({ type: 'guide', step: i }) + '"' + (g === i ? ' aria-current="step"' : '') + '><span class="n">' + (i + 1) + '</span><span>' + esc(st.t) + '</span></button></li>').join('') + '</ol></section>').join('');
   const levels = LEVELS.map(([c, t, d]) => '<div class="lv"><i style="background:' + c + '"></i><span><b>' + esc(t) + '</b>: ' + esc(d) + '</span></div>').join('');
+  const tour = g === null
+    ? '<button class="go" data-a="' + act({ type: 'guide', step: 0 }) + '">Start the guided tour</button>'
+    : '<div class="go-row"><button class="go" data-a="' + act({ type: 'guide', step: Math.min(g + 1, state.steps.length - 1) }) + '">Next step</button><button class="end" data-a="' + act({ type: 'guideEnd' }) + '">End tour</button></div>';
   side.innerHTML =
     '<div class="brand"><span class="logo-mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v5.6c0 4.4-3.1 8.2-7.5 9.4-4.4-1.2-7.5-5-7.5-9.4V6z"/><path d="M8.8 12.2l2.3 2.3 4.3-4.6"/></svg></span><div><b>Trust<span>Plate</span></b><small>Phone app preview · sample data</small></div></div>' +
-    '<p class="lead">The TrustPlate app at phone size. It is the same app as the <a href="' + esc(WEB_LINK) + '" target="_blank" rel="noopener">web version</a>, so both always match. Tap a step to jump there.</p>' +
+    '<p class="lead">The TrustPlate app at phone size: the same app as the <a href="' + esc(WEB_LINK) + '" target="_blank" rel="noopener">web version</a>. The guided tour walks through every screen with Next and Back, inside the phone.</p>' +
+    '<section class="box"><h2 class="box-h">Guided tour' + (g === null ? '' : ' <span class="tag">Step ' + (g + 1) + ' of ' + state.steps.length + '</span>') + '</h2>' + tour + '</section>' +
     '<section class="box"><h2 class="box-h">View as <span class="tag">Demo only</span></h2><div class="seg" role="group" aria-label="View as (demo only)">' + roles + '</div>' +
     '<p class="small">The live app has no switch: restaurant owners sign in to their own portal, and our team\'s panel is private, behind staff accounts and two-step sign-in.</p>' +
     '<button class="reset" data-a="' + act({ type: 'reset' }) + '">Reset demo</button></section>' +
-    flows +
+    (steps || '<p class="small">Loading the steps…</p>') +
     '<section class="box"><h2 class="box-h">Trust levels, strongest first</h2>' + levels + '</section>';
 }
 side.addEventListener('click', (e) => {
@@ -194,7 +186,7 @@ side.addEventListener('click', (e) => {
 window.addEventListener('message', (e) => {
   const m = e.data;
   if (e.source !== frame.contentWindow || !m || m.tp !== 'trustplate-state') return;
-  state = { role: m.role, screen: m.screen, sheet: m.sheet, ownerStatus: m.ownerStatus };
+  state = { role: m.role, guide: typeof m.guide === 'number' ? m.guide : null, steps: Array.isArray(m.steps) ? m.steps : state.steps };
   render();
 });
 function fit() {
