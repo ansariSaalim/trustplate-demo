@@ -165,7 +165,7 @@ h1, h2, h3 { text-wrap: balance; }
 .sub-link .ic { width: 18px; height: 18px; }
 .sub-link:hover { color: var(--ink); }
 .sub-link[aria-current="page"] { color: var(--brand); box-shadow: inset 0 -3px 0 var(--brand); }
-.sub-for { margin-left: auto; }
+.sub-support { margin-left: auto; }
 @media (max-width: 1100px) { .nav-cta .lbl { display: none; } .nav-cta { padding: 9px 11px; } }
 @media (max-width: 860px) {
   .nav-inner { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "loc actions" "search search"; gap: 10px 12px; min-height: 0; padding-block: 10px 12px; }
@@ -894,6 +894,41 @@ html.embed::-webkit-scrollbar { display: none; }
 @media (max-width: 700px) { .guide { padding: 12px 14px; gap: 6px; } .guide h2 { font-size: 16px; } .guide p { font-size: 13px; } }
 .tour .step small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
+/* ---------- Support ---------- */
+.support-hero { background: linear-gradient(135deg, var(--coral), var(--coral-2)); color: var(--on-coral); }
+.support-hero .container { padding-block: 36px 40px; display: grid; gap: 12px; }
+.support-hero .eyebrow { color: inherit; opacity: 0.85; }
+.support-hero h1 { margin: 0; font-size: clamp(28px, 4vw, 46px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.06; max-width: 18ch; }
+.support-hero p { margin: 0; font-size: 16px; opacity: 0.95; max-width: 62ch; }
+.goal { margin-top: 10px; background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 14px 16px; display: grid; gap: 8px; max-width: 560px; }
+.goal-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.goal-top b { font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.goal-top span { font-size: 14px; opacity: 0.92; }
+.goal-bar { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.28); overflow: hidden; }
+.goal-bar i { display: block; height: 100%; background: #ffffff; border-radius: 10px; transition: width 0.4s ease; }
+.goal small { font-size: 12.5px; opacity: 0.85; }
+.thanks { display: flex; gap: 10px; align-items: flex-start; padding: 14px 16px; border-radius: 18px; background: var(--ok-soft); color: var(--ink); margin-bottom: 20px; font-size: 14.5px; }
+.thanks .ic { color: #e5484d; flex: none; margin-top: 2px; }
+.support-tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px; margin: 16px 0 26px; }
+.tier { position: relative; background: var(--app); border: 1.5px solid var(--line); border-radius: 22px; padding: 20px 18px 18px; display: grid; gap: 10px; align-content: start; box-shadow: var(--shadow-1); }
+.tier.popular { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft), var(--shadow-1); }
+.tier-tag { position: absolute; top: -11px; left: 18px; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: var(--brand-fill); color: var(--on-brand); }
+.tier-name { font-size: 16px; font-weight: 800; }
+.tier-price { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tier-price small { font-size: 14px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+.tier ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+.tier li { display: flex; gap: 8px; align-items: flex-start; }
+.tier li .ic { width: 16px; height: 16px; color: var(--ok); flex: none; margin-top: 2px; }
+.support-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; align-items: start; }
+.spend { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 14px; }
+.spend b { font-variant-numeric: tabular-nums; }
+.spend-bar { grid-column: 1 / -1; height: 6px; border-radius: 6px; background: var(--app-2); overflow: hidden; }
+.spend-bar i { display: block; height: 100%; background: var(--coral); border-radius: 6px; }
+.legal { margin-top: 18px; }
+.lvl-chip.sup { background: #fde8ea; color: #c4314b; display: inline-flex; align-items: center; gap: 3px; }
+.lvl-chip .ic { width: 11px; height: 11px; }
+
+
 /* ---------- Responsive polish ---------- */
 @media (max-width: 767px) {
   .linkbtn { padding: 7px 2px; }
@@ -1270,6 +1305,23 @@ const REWARDS = [
   ['Monthly top 3 in each city', 'A thank-you feature on our Instagram and a TrustPlate kit'],
 ];
 
+/* Public support: optional, never buys trust (sample numbers) */
+const SUPPORT_START = { raised: 9450, goal: 15000, supporters: 126, mine: null };
+const TIERS = [
+  { id: 'chai', name: 'Chai', amount: 49, perks: ['Supporter badge on your profile'] },
+  { id: 'thali', name: 'Thali', amount: 199, perks: ['Supporter badge', 'Early access to new cities'], popular: true },
+  { id: 'patron', name: 'Patron', amount: 999, perks: ['Supporter badge', 'Early access to new cities', 'Invite to our yearly community food walk'] },
+];
+const ONE_TIME = [100, 500, 1000];
+const SPEND = [['Field visits and certificate checks', 40], ['Servers, maps and storage', 25], ['Moderation and safety', 20], ['Community food walks and events', 10], ['Payment fees', 5]];
+const PROMISES = [
+  'Support never buys a trust level, a ranking or a badge for any restaurant.',
+  'We publish what we receive and spend every quarter.',
+  'No ads on trust details or certificates.',
+  'Cancel a monthly plan anytime, in two taps.',
+  'Always optional: every feature stays free.',
+];
+
 const NOTIF_DEFAULT = { asked: false, on: false, topics: { newPlaces: true, upgrades: true, offers: true } };
 const NOTIFS = [
   { id: 'n1', city: 'Pune', prefs: ['halal'], kind: 'upgrade', placeId: 'kondhwa', title: 'Kondhwa Grill House is now Checked by us', text: 'Our team visited and checked its kitchen and suppliers for halal.', when: '2 hours ago', unread: true },
@@ -1440,7 +1492,7 @@ function loadStored() {
   try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
 }
 function persist(s) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved, askOnOpen: s.askOnOpen, notif: s.notif, following: s.following, blocked: s.blocked, rulesAccepted: s.rulesAccepted, me: s.me, joined: s.joined })); } catch (e) { /* storage unavailable: the app still works */ }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved, askOnOpen: s.askOnOpen, notif: s.notif, following: s.following, blocked: s.blocked, rulesAccepted: s.rulesAccepted, me: s.me, joined: s.joined, supportMine: s.support.mine })); } catch (e) { /* storage unavailable: the app still works */ }
 }
 function initialState(useStored) {
   const st = useStored ? loadStored() : null;
@@ -1455,6 +1507,7 @@ function initialState(useStored) {
     blocked: st && Array.isArray(st.blocked) ? st.blocked : [], rulesAccepted: !!(st && st.rulesAccepted),
     me: st && st.me && typeof st.me.points === 'number' ? { ...ME_START, ...st.me } : clone(ME_START),
     joined: st && Array.isArray(st.joined) ? st.joined : [], commTab: 'feed',
+    support: { ...SUPPORT_START, mine: st && st.supportMine ? st.supportMine : null },
     prefs: st && Array.isArray(st.prefs) && st.prefs.length ? st.prefs : ['halal'],
     strict: st && st.strict ? { noAlcohol: !!st.strict.noAlcohol, noPork: !!st.strict.noPork } : { noAlcohol: false, noPork: false },
     city: st && CITIES[st.city] ? st.city : 'Pune',
@@ -1546,6 +1599,7 @@ function reducer(s, a) {
     }
     case 'commTab': return { ...s, commTab: a.tab };
     case 'join': return { ...s, joined: s.joined.includes(a.id) ? s.joined.filter((x) => x !== a.id) : [...s.joined, a.id] };
+    case 'support': return { ...s, sheet: null, support: { ...s.support, raised: s.support.raised + a.amount, supporters: s.support.supporters + (s.support.mine ? 0 : 1), mine: { amount: a.amount, monthly: a.monthly, showName: a.showName } } };
     case 'block': return { ...s, blocked: s.blocked.includes(a.author) ? s.blocked : [...s.blocked, a.author] };
     case 'unblock': return { ...s, blocked: s.blocked.filter((x) => x !== a.author) };
     case 'reportPost': return { ...s, sheet: null, nextId: s.nextId + 1, queue: [...s.queue, { id: 'q' + s.nextId, type: 'post', postId: a.id, reason: a.reason, by: 'You (demo)', submitted: 'Just now' }] };
@@ -1805,6 +1859,7 @@ function TopNav({ s, d }) {
         ${link('map', 'Map', 'map')}
         ${link('community', 'Community', 'chat')}
         ${link('saved', 'Saved', 'bookmark')}
+        <button className="sub-link sub-support" aria-current=${cur === 'support' ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: 'support' })}>${I('heart')}Support us</button>
         <button className="sub-link sub-for" onClick=${() => d({ type: 'role', role: 'owner' })}>${I('store')}For restaurants</button>
       </div>
     </nav>
@@ -2350,7 +2405,7 @@ function ContribCard({ s, d }) {
     <div className="contrib-top">
       <span className="contrib-av">${I('user')}</span>
       <div className="contrib-name">
-        <h2 className="card-h">Demo user<span className="lvl-chip">${r.name}</span></h2>
+        <h2 className="card-h">Demo user<span className="lvl-chip">${r.name}</span>${s.support.mine ? html`<span className="lvl-chip sup">${I('heartFill')}Supporter</span>` : null}</h2>
         <p className="note">${me.points} points · ${next ? (next.min - me.points) + ' more to ' + next.name + ': ' + next.perk.toLowerCase() : 'Top level reached'}</p>
       </div>
       <button className="btn outline sm" onClick=${() => d({ type: 'go', screen: 'community', commTab: 'leaders' })}>${I('star')}Leaderboard</button>
@@ -2365,6 +2420,63 @@ function ContribCard({ s, d }) {
       })}
     </div>
     <details className="earn"><summary>How you earn points</summary><ul>${EARN_RULES.map((x) => html`<li key=${x}>${x}</li>`)}</ul></details>
+  </div>`;
+}
+
+
+/* ---------- Support ---------- */
+function Support({ s, d }) {
+  const sp = s.support;
+  const pct = Math.min(100, Math.round((sp.raised / sp.goal) * 100));
+  const rupees = (n) => '₹' + n.toLocaleString('en-IN');
+  return html`<div>
+    <section className="support-hero"><div className="container">
+      <p className="eyebrow">Support TrustPlate</p>
+      <h1>Keep food trust free for everyone.</h1>
+      <p>TrustPlate is free for diners, and restaurants list for free. We are not profitable yet, and we will never sell trust levels. Support from the people who use it pays for the servers, the maps and the visits that check kitchens.</p>
+      <div className="goal">
+        <div className="goal-top"><b>${rupees(sp.raised)}</b><span>of ${rupees(sp.goal)} this month · ${sp.supporters} supporters</span></div>
+        <div className="goal-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow=${pct}><i style=${{ width: pct + '%' }}></i></div>
+        <small>The goal covers this month's running costs. Sample numbers in this demo.</small>
+      </div>
+    </div></section>
+    <div className="container page">
+      ${sp.mine ? html`<div className="thanks">${I('heartFill')}<span><b>Thank you for supporting TrustPlate.</b> ${rupees(sp.mine.amount)}${sp.mine.monthly ? ' a month' : ' once'}. Your supporter badge is on your profile.</span></div>` : null}
+      <h2 className="sec-title">Support every month</h2>
+      <div className="support-tiers">
+        ${TIERS.map((t) => html`<article key=${t.id} className=${'tier' + (t.popular ? ' popular' : '')}>
+          ${t.popular ? html`<span className="tier-tag">Most chosen</span>` : null}
+          <b className="tier-name">${t.name}</b>
+          <span className="tier-price">${rupees(t.amount)}<small>/month</small></span>
+          <ul>${t.perks.map((p) => html`<li key=${p}>${I('check')}${p}</li>`)}</ul>
+          <button className=${'btn block ' + (t.popular ? 'primary' : 'outline')} onClick=${() => d({ type: 'sheet', sheet: { type: 'support', monthly: true, amount: t.amount } })}>Support ${rupees(t.amount)}/month</button>
+        </article>`)}
+      </div>
+      <div className="support-grid">
+        <section className="card">
+          <h2 className="card-h">Or give once</h2>
+          <div className="choice">
+            ${ONE_TIME.map((a) => html`<button key=${a} onClick=${() => d({ type: 'sheet', sheet: { type: 'support', monthly: false, amount: a } })}>${rupees(a)}</button>`)}
+            <button onClick=${() => d({ type: 'sheet', sheet: { type: 'support', monthly: false, amount: 0 } })}>Other amount</button>
+          </div>
+          <p className="note">UPI, card or net banking. Payments from Indian accounts only for now.</p>
+        </section>
+        <section className="card">
+          <h2 className="card-h">Where your support goes</h2>
+          ${SPEND.map(([label, pc]) => html`<div key=${label} className="spend"><span>${label}</span><b>${pc}%</b><div className="spend-bar"><i style=${{ width: pc + '%' }}></i></div></div>`)}
+        </section>
+        <section className="card">
+          <h2 className="card-h">Our promises</h2>
+          <ul className="rules">${PROMISES.map((x) => html`<li key=${x}>${I('shield')}${x}</li>`)}</ul>
+        </section>
+        <section className="card">
+          <h2 className="card-h">Grants, incubators and investors</h2>
+          <p className="note">We are applying to the Startup India Seed Fund and to incubators. If your organisation wants to back trusted food information, talk to the founders.</p>
+          <button className="btn outline" onClick=${() => d({ type: 'toast', text: 'The live app opens a contact form for the founders.' })}>Contact the founders</button>
+        </section>
+      </div>
+      <p className="note legal">TrustPlate is a company, not a charity, so support payments are not tax-deductible donations. We do not collect zakat or any religious giving.</p>
+    </div>
   </div>`;
 }
 
@@ -2452,6 +2564,7 @@ function Profile({ s, d }) {
         <h2 className="card-h">More in this demo</h2>
         <button className="linkrow" onClick=${() => d({ type: 'role', role: 'owner' })}><span className="lr-ic">${I('store')}</span><span>List your restaurant<small>The restaurant owner's portal</small></span><span className="arr">${I('arrow')}</span></button>
         <button className="linkrow" onClick=${() => d({ type: 'role', role: 'admin' })}><span className="lr-ic">${I('shield')}</span><span>Our team's review queue<small>Private in the live app</small></span><span className="arr">${I('arrow')}</span></button>
+        <button className="linkrow" onClick=${() => d({ type: 'go', screen: 'support' })}><span className="lr-ic">${I('heart')}</span><span>Support TrustPlate<small>Optional; keeps the app free</small></span><span className="arr">${I('arrow')}</span></button>
         <button className="linkrow" onClick=${() => d({ type: 'go', screen: 'onboard' })}><span className="lr-ic">${I('sparkle')}</span><span>See the welcome screen again<small>The first-time setup</small></span><span className="arr">${I('arrow')}</span></button>
       </div>
     </div>
@@ -2511,6 +2624,7 @@ function Footer({ d }) {
       <button onClick=${() => d({ type: 'go', screen: 'add' })}>Add a place</button>
       <button onClick=${() => d({ type: 'role', role: 'owner' })}>For restaurants</button>
       <button onClick=${() => d({ type: 'role', role: 'admin' })}>Review queue</button>
+      <button onClick=${() => d({ type: 'go', screen: 'support' })}>Support us</button>
     </div>
   </div></footer>`;
 }
@@ -2754,8 +2868,36 @@ function ListSheet({ s, d, sheet }) {
 }
 
 
+function SupportSheet({ d, sheet, close }) {
+  const [monthly, setMonthly] = useState(!!sheet.monthly);
+  const [amount, setAmount] = useState(sheet.amount ? String(sheet.amount) : '');
+  const [showName, setShowName] = useState(false);
+  const n = Math.round(Number(amount) || 0);
+  const pay = () => {
+    d({ type: 'support', amount: n, monthly, showName });
+    d({ type: 'toast', text: 'Demo only: the live app opens Razorpay here for UPI or card. No money moved.' });
+  };
+  return html`<div className="sbody">
+    <span className="sheet-ic">${I('heartFill')}</span>
+    <h3>Support TrustPlate</h3>
+    <div className="seg" role="group" aria-label="How often">
+      <button aria-pressed=${monthly} onClick=${() => setMonthly(true)}>Every month</button>
+      <button aria-pressed=${!monthly} onClick=${() => setMonthly(false)}>Once</button>
+    </div>
+    <div className="choice" role="group" aria-label="Amount">
+      ${(monthly ? [49, 199, 999] : [100, 500, 1000]).map((a) => html`<button key=${a} aria-pressed=${n === a} onClick=${() => setAmount(String(a))}>₹${a.toLocaleString('en-IN')}</button>`)}
+    </div>
+    <label className="field" htmlFor="sup-amt">Or your own amount (rupees)<input id="sup-amt" type="number" inputMode="numeric" min="10" step="1" value=${amount} onChange=${(e) => setAmount(e.target.value)} /></label>
+    <label className="checkrow" htmlFor="sup-name"><input id="sup-name" type="checkbox" checked=${showName} onChange=${() => setShowName(!showName)} />Show my name on the supporters list</label>
+    <button className="btn primary block" disabled=${n < 10} onClick=${pay}>${n >= 10 ? 'Continue to pay ₹' + n.toLocaleString('en-IN') + (monthly ? ' a month' : '') : 'Enter at least ₹10'}</button>
+    <p className="note">Demo: no payment happens here. The live app uses Razorpay (UPI, cards, net banking), and monthly plans can be cancelled anytime. Support never changes any trust level or ranking.</p>
+    <button className="btn block" onClick=${close}>Not now</button>
+  </div>`;
+}
+
+
 const PLACE_SHEETS = { checkin: [CheckInSheet, 'Check in'], review: [ReviewSheet, 'Write a review'], report: [ReportSheet, 'Report a problem'], order: [OrderSheet, 'Order online'], directions: [DirectionsSheet, 'Get directions'] };
-const APP_SHEETS = { prefs: [PrefsSheet, 'Your food view'], alerts: [AlertsSheet, 'Alerts'], notifs: [NotifSheet, 'Updates near you'], compose: [ComposeSheet, 'Share with the community'], reportPost: [ReportPostSheet, 'Report a post'], list: [ListSheet, 'List'] };
+const APP_SHEETS = { prefs: [PrefsSheet, 'Your food view'], alerts: [AlertsSheet, 'Alerts'], notifs: [NotifSheet, 'Updates near you'], compose: [ComposeSheet, 'Share with the community'], reportPost: [ReportPostSheet, 'Report a post'], list: [ListSheet, 'List'], support: [SupportSheet, 'Support TrustPlate'] };
 
 function Sheets({ s, d }) {
   const sheetRef = useRef(null);
@@ -2969,10 +3111,11 @@ const GUIDE = [
   { c: 'Restaurant owner', t: 'Add proof', b: 'Upload a certificate to become Certified, or book our visit (about ₹999) to become Checked by us.', acts: [{ type: 'go', role: 'owner', ownerStep: 3 }], target: ['.upload'] },
   { c: 'Restaurant owner', t: 'Track the status', b: 'We submitted a sample listing for you. It goes live as Owner-declared once our team approves it, then rises to Certified or Checked by us.', acts: [{ type: 'ownerTrack' }], target: ['.timeline'] },
   { c: 'Our team', t: 'The private review queue', b: 'Certificates, visits, reports, reported posts and new listings. Approve one and the app updates at once, and diners with alerts are notified.', try: 'approve the sample listing, then press Back.', acts: [{ type: 'role', role: 'admin' }], target: ['.qgrid'] },
+  { c: 'Support', t: 'Funded by the people who use it', b: 'TrustPlate stays free and never sells trust. People who value it can support it monthly or once, and support never changes a trust level or ranking.', try: 'pick a plan; no money moves in the demo.', acts: [{ type: 'go', role: 'diner', screen: 'support' }], target: ['.support-tiers'] },
   { c: 'Done', t: "That's TrustPlate", b: 'Explore on your own, or open All steps to jump anywhere. Reset puts the sample data back.', acts: [{ type: 'go', role: 'diner', screen: 'explore' }] },
 ];
 const GUIDE_BRIEF = GUIDE.map((g) => ({ c: g.c, t: g.t }));
-const CHAPTER_ICON = { Welcome: 'sparkle', Diner: 'compass', Community: 'users', 'Restaurant owner': 'store', 'Our team': 'shield', Done: 'check' };
+const CHAPTER_ICON = { Welcome: 'sparkle', Diner: 'compass', Community: 'users', 'Restaurant owner': 'store', 'Our team': 'shield', Support: 'heart', Done: 'check' };
 
 // Finds the first visible element for a step, scrolls it into view and keeps its position fresh.
 function useTargetRect(selectors, key) {
@@ -3094,7 +3237,7 @@ function App() {
   const [s, d] = useReducer(reducer, null, () => initialState(true));
   const [drawer, setDrawer] = useState(false);
   const [guide, setGuide] = useState(null);
-  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved, s.askOnOpen, s.notif, s.following, s.blocked, s.rulesAccepted, s.me, s.joined]);
+  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved, s.askOnOpen, s.notif, s.following, s.blocked, s.rulesAccepted, s.me, s.joined, s.support]);
   useEffect(() => {
     if (!s.toasts.length) return undefined;
     const t = setTimeout(() => d({ type: 'untoast', id: s.toasts[0].id }), 3400);
@@ -3155,6 +3298,7 @@ function App() {
   else if (s.screen === 'add') body = html`<${AddPlace} key=${'add-' + s.city} s=${s} d=${d} />`;
   else if (s.screen === 'profile') body = html`<${Profile} s=${s} d=${d} />`;
   else if (s.screen === 'community') body = html`<${Community} s=${s} d=${d} />`;
+  else if (s.screen === 'support') body = html`<${Support} s=${s} d=${d} />`;
   else body = html`<${Explore} s=${s} d=${d} />`;
 
   const showTabs = diner && s.screen !== 'onboard' && s.screen !== 'place';
