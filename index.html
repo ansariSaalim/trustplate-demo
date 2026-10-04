@@ -60,7 +60,7 @@
   --shadow-2: 0 18px 50px rgba(17, 22, 42, 0.18);
   --font: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   --gutter: clamp(16px, 4vw, 40px);
-  --nav-h: 73px;
+  --nav-h: 119px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -116,46 +116,66 @@ h1, h2, h3 { text-wrap: balance; }
 .dseg { display: inline-flex; border-radius: 999px; padding: 3px; background: color-mix(in srgb, var(--app) 12%, transparent); }
 .dseg button { border: 0; background: transparent; color: inherit; opacity: 0.75; padding: 4px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
 .dseg button[aria-pressed="true"] { background: var(--app); color: var(--ink); opacity: 1; }
-.dbtn { border: 1px solid color-mix(in srgb, var(--app) 30%, transparent); background: transparent; color: inherit; border-radius: 999px; padding: 4px 11px; font-size: 12.5px; font-weight: 700; }
+.dbtn { border: 1px solid color-mix(in srgb, var(--app) 30%, transparent); background: transparent; color: inherit; border-radius: 999px; padding: 4px 11px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.dbtn .ic { width: 14px; height: 14px; }
+.lbl-s { display: none; }
 .dseg .short { display: none; }
+@media (max-width: 1180px) { .dm-l span:not(.demo-pill) { display: none; } }
+@media (max-width: 900px) { .dseg .full { display: none; } .dseg .short { display: inline; } }
 @media (max-width: 640px) {
-  .dm-l span:not(.demo-pill), .dbtn.tour-link, .dseg .full { display: none; }
-  .dseg .short { display: inline; }
+  .dbtn.tour-link { display: none; }
   .demobar .container { flex-wrap: nowrap; }
+  .dbtn-hi .lbl-l { display: none; }
+  .dbtn-hi .lbl-s { display: inline; }
+  .dseg button, .dbtn { padding: 4px 9px; }
 }
+@media (max-width: 640px) { .dm-r { flex-wrap: nowrap; gap: 6px; } }
+@media (max-width: 420px) { .dbtn-reset span { display: none; } .dbtn-reset { padding: 4px 7px; } }
+@media (max-width: 380px) { .demo-pill { display: none; } }
 
 /* ---------- Top navigation ---------- */
 .topnav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: var(--app); border-bottom: 1px solid var(--line); }
-.nav-inner { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-areas: "logo loc search actions"; align-items: center; gap: 18px; min-height: 72px; padding-block: 10px; }
+.nav-inner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "logo finder actions"; align-items: center; gap: 20px; min-height: 72px; padding-block: 10px; }
+.nav-inner.simple { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "logo actions"; }
 .logo { grid-area: logo; all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; letter-spacing: -0.02em; white-space: nowrap; }
 .logo:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 10px; }
 .logo-mark { width: 36px; height: 36px; border-radius: 12px; background: var(--brand-fill); color: var(--on-brand); display: grid; place-items: center; box-shadow: 0 6px 16px var(--brand-glow); }
 .logo .tp { color: var(--brand); }
 .logo small { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); align-self: flex-end; margin-bottom: 3px; }
-.loc { grid-area: loc; all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 9px; cursor: pointer; border-radius: 12px; min-width: 0; }
-.loc:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
-.loc-ic { width: 38px; height: 38px; border-radius: 12px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; flex: none; }
+/* location and search share one bar on wide screens, like the big food apps */
+.finder { grid-area: finder; display: flex; align-items: center; height: 52px; width: 100%; max-width: 780px; justify-self: center; min-width: 0; border-radius: 16px; background: var(--app-2); border: 1px solid var(--line); }
+.finder:focus-within { border-color: var(--brand); background: var(--app); }
+.loc { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 9px; cursor: pointer; flex: none; max-width: 46%; height: 100%; padding: 0 14px 0 7px; border-right: 1px solid var(--line); border-radius: 16px 0 0 16px; }
+.loc:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.loc-ic { width: 36px; height: 36px; border-radius: 11px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; flex: none; }
 .loc-txt { min-width: 0; }
-.loc-txt b { display: flex; align-items: center; gap: 3px; font-size: 16px; font-weight: 800; letter-spacing: -0.015em; white-space: nowrap; }
-.loc-txt small { display: block; font-size: 12px; color: var(--muted); margin-top: -2px; white-space: nowrap; }
-.searchbar { grid-area: search; display: flex; align-items: center; gap: 10px; padding: 0 16px; height: 48px; border-radius: 15px; background: var(--app-2); border: 1px solid var(--line); color: var(--muted); width: 100%; max-width: 640px; justify-self: center; }
-.searchbar:focus-within { border-color: var(--brand); background: var(--app); }
+.loc-txt b { display: flex; align-items: center; gap: 3px; font-size: 15px; font-weight: 800; letter-spacing: -0.015em; white-space: nowrap; }
+.loc-txt small { display: block; font-size: 11.5px; color: var(--muted); margin-top: -2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.searchbar { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; height: 100%; padding: 0 14px; color: var(--muted); cursor: text; }
 .searchbar input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 15px; font-weight: 500; color: var(--ink); }
 .searchbar .mic { padding-left: 11px; border-left: 1px solid var(--line); color: var(--brand); display: flex; }
-.nav-actions { grid-area: actions; display: flex; align-items: center; gap: 4px; justify-self: end; }
-.nav-link { border: 0; background: transparent; display: inline-flex; align-items: center; gap: 7px; padding: 9px 12px; border-radius: 12px; font-weight: 700; font-size: 14px; color: var(--muted); white-space: nowrap; }
-.nav-link:hover { color: var(--ink); background: var(--app-2); }
-.nav-link[aria-current="page"] { color: var(--brand); background: var(--brand-soft); }
-.nav-cta { margin-left: 6px; }
-.avatar { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--sun); color: var(--on-sun); display: grid; place-items: center; flex: none; margin-left: 6px; }
+.nav-actions { grid-area: actions; display: flex; align-items: center; gap: 8px; justify-self: end; }
+.nav-actions .bell { margin-left: 0; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--sun); color: var(--on-sun); display: grid; place-items: center; flex: none; }
 .avatar[aria-current="page"] { box-shadow: 0 0 0 3px var(--brand); }
-@media (max-width: 1439px) { .nav-for { display: none; } }
-@media (max-width: 1440px) { .nav-link .lbl { display: none; } .nav-link { padding: 10px; } }
+.subnav { border-top: 1px solid var(--line); }
+.subnav-inner { display: flex; align-items: stretch; gap: 4px; height: 46px; overflow-x: auto; scrollbar-width: none; }
+.subnav-inner::-webkit-scrollbar { display: none; }
+.sub-link { border: 0; background: transparent; display: inline-flex; align-items: center; gap: 7px; padding: 0 14px; font-weight: 700; font-size: 14px; color: var(--muted); white-space: nowrap; box-shadow: inset 0 -3px 0 transparent; }
+.sub-link .ic { width: 18px; height: 18px; }
+.sub-link:hover { color: var(--ink); }
+.sub-link[aria-current="page"] { color: var(--brand); box-shadow: inset 0 -3px 0 var(--brand); }
+.sub-for { margin-left: auto; }
+@media (max-width: 1100px) { .nav-cta .lbl { display: none; } .nav-cta { padding: 9px 11px; } }
 @media (max-width: 860px) {
   .nav-inner { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "loc actions" "search search"; gap: 10px 12px; min-height: 0; padding-block: 10px 12px; }
-  .nav-inner.simple { grid-template-areas: "logo actions"; }
-  .logo-d, .nav-actions .nav-link, .nav-actions .nav-cta { display: none; }
-  .searchbar { max-width: none; height: 46px; }
+  .finder { display: contents; }
+  .loc { grid-area: loc; max-width: none; height: auto; padding: 0; border-right: 0; border-radius: 12px; }
+  .loc-ic { width: 38px; height: 38px; border-radius: 12px; }
+  .loc-txt b { font-size: 16px; }
+  .searchbar { grid-area: search; height: 46px; border-radius: 15px; background: var(--app-2); border: 1px solid var(--line); }
+  .searchbar:focus-within { border-color: var(--brand); background: var(--app); }
+  .logo-d, .nav-actions .nav-cta, .subnav { display: none; }
 }
 @media (max-width: 480px) { .logo small { display: none; } }
 
@@ -239,19 +259,19 @@ h1, h2, h3 { text-wrap: balance; }
 @media (max-width: 640px) { .mobile-prefs { display: block; } }
 
 .banners { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
-.banner { all: unset; box-sizing: border-box; cursor: pointer; position: relative; overflow: hidden; height: 150px; border-radius: 24px; padding: 18px; display: flex; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.banner { all: unset; box-sizing: border-box; cursor: pointer; position: relative; overflow: hidden; min-height: 150px; border-radius: 24px; padding: 18px; display: flex; align-items: stretch; gap: 6px; transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .banner:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
 .banner:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .banner::before { content: ""; position: absolute; right: -40px; top: -50px; width: 170px; height: 170px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); }
 .b-brand { background: linear-gradient(135deg, #3d5cf0, #1a2fa8); color: #ffffff; }
 .b-sun { background: linear-gradient(135deg, var(--sun), var(--sun-2)); color: var(--on-sun); }
 .b-coral { background: linear-gradient(135deg, var(--coral), var(--coral-2)); color: var(--on-coral); }
-.b-txt { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; max-width: 60%; }
+.b-txt { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
 .b-txt b { font-size: 18px; font-weight: 800; line-height: 1.15; letter-spacing: -0.015em; }
 .b-txt small { font-size: 13px; opacity: 0.92; line-height: 1.3; }
 .b-cta { margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; background: rgba(255, 255, 255, 0.24); padding: 6px 12px; border-radius: 999px; }
 .b-cta .ic { width: 14px; height: 14px; }
-.b-art { position: absolute; right: -2px; bottom: -6px; width: 160px; height: 120px; }
+.b-art { position: relative; z-index: 1; flex: none; align-self: flex-end; width: clamp(92px, 34%, 150px); aspect-ratio: 4 / 3; margin: 0 -8px -14px 0; }
 .b-art svg { width: 100%; height: 100%; }
 @media (max-width: 1023px) {
   .banners { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); }
@@ -848,7 +868,6 @@ html.embed::-webkit-scrollbar { display: none; }
 
 /* ---------- Guided tour ---------- */
 .dbtn-hi { background: var(--sun); color: var(--on-sun); border-color: var(--sun); }
-@media (max-width: 640px) { .dbtn-hi { display: none; } }
 .spot { position: fixed; z-index: 96; border-radius: 16px; box-shadow: 0 0 0 3px var(--sun), 0 0 0 9999px rgba(9, 12, 24, 0.42); pointer-events: none; transition: left 0.25s ease, top 0.25s ease, width 0.25s ease, height 0.25s ease; }
 .guide { position: fixed; z-index: 97; width: 384px; max-width: calc(100% - 24px); background: var(--app); color: var(--ink); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow-2); padding: 14px 16px; display: grid; gap: 8px; animation: up 0.25s ease; }
 .guide.pos-right { right: 20px; bottom: 20px; }
@@ -874,6 +893,20 @@ html.embed::-webkit-scrollbar { display: none; }
 .g-actions .btn .ic { width: 16px; height: 16px; }
 @media (max-width: 700px) { .guide { padding: 12px 14px; gap: 6px; } .guide h2 { font-size: 16px; } .guide p { font-size: 13px; } }
 .tour .step small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---------- Responsive polish ---------- */
+@media (max-width: 767px) {
+  .linkbtn { padding: 7px 2px; }
+  .pa { min-height: 34px; }
+  .pa.sm { min-height: 32px; padding: 5px 10px; }
+  .pa.flag { min-width: 38px; justify-content: center; }
+  .report { padding: 8px 0; }
+}
+@media (min-width: 761px) {
+  .prefcards.compact { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sheet:has(.prefcards.compact) { max-width: 660px; }
+}
+@media (min-width: 1600px) { .container { max-width: 1400px; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
@@ -928,6 +961,7 @@ const ICONS = {
   upload: { d: ['M12 15V4', 'M7.5 8.5L12 4l4.5 4.5', 'M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4'] },
   arrow: { d: ['M5 12h14', 'M13 6l6 6-6 6'] },
   lock: { d: ['M7.5 11V8a4.5 4.5 0 0 1 9 0v3', 'M5.5 11h13v9.5h-13z'] },
+  reset: { d: ['M4.5 12a7.5 7.5 0 1 0 2.2-5.3', 'M4.5 4.5v4h4'] },
   bell: { d: ['M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z', 'M10 20.5a2 2 0 0 0 4 0'] },
   tag: { d: ['M3.5 12.6V4h8.6l8.4 8.4-8 8z'], c: [[8, 8, 1.6]] },
   chat: { d: ['M4.5 5h15v10.5H10l-4.5 3.8v-3.8h-1z'] },
@@ -1708,9 +1742,9 @@ function DemoBar({ s, d, onGuide, onTour, onReset }) {
         <div className="dseg" role="group" aria-label="View as (demo only)">
           ${ROLES.map((r) => html`<button key=${r.id} aria-pressed=${s.role === r.id} aria-label=${r.label} onClick=${() => d({ type: 'role', role: r.id })}><span className="full">${r.label}</span><span className="short">${r.short}</span></button>`)}
         </div>
-        <button className="dbtn dbtn-hi" onClick=${onGuide}>Guided tour</button>
+        <button className="dbtn dbtn-hi" onClick=${onGuide}>${I('sparkle')}<span className="lbl-l">Guided tour</span><span className="lbl-s">Tour</span></button>
         <button className="dbtn tour-link" onClick=${onTour}>All steps</button>
-        <button className="dbtn" onClick=${onReset}>Reset</button>
+        <button className="dbtn dbtn-reset" onClick=${onReset} aria-label="Reset demo">${I('reset')}<span>Reset</span></button>
       </div>
     </div>
   </div>`;
@@ -1742,31 +1776,39 @@ function TopNav({ s, d }) {
   const other = s.city === 'Pune' ? 'Ahmedabad' : 'Pune';
   const cur = s.screen === 'place' ? s.from : s.screen;
   const unread = visibleNotifs(s).filter((n) => n.unread).length;
-  const link = (k, label, icon) => html`<button key=${k} className="nav-link" title=${label} aria-label=${label} aria-current=${cur === k ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: k })}>${I(icon)}<span className="lbl">${label}</span></button>`;
-  return html`<header className="topnav"><div className="container nav-inner">
-    <${Logo} d=${d} cls="logo-d" />
-    <button className="loc" onClick=${() => d({ type: 'city', city: other })} aria-label=${'Location ' + city.home + ', ' + s.city + '. Switch to ' + other}>
-      <span className="loc-ic">${I('pin')}</span>
-      <span className="loc-txt"><b>${city.home}${I('chevron', 'tiny')}</b><small>${s.city}, ${city.state}</small></span>
-    </button>
-    <label className="searchbar" htmlFor="search">
-      ${I('search')}
-      <input id="search" type="search" placeholder=${HINTS[hint]} aria-label="Search places or dishes" value=${s.query}
-        onChange=${(e) => d({ type: 'query', value: e.target.value })}
-        onFocus=${() => { if (!BROWSE.includes(s.screen)) d({ type: 'go', screen: 'explore' }); }} />
-      <span className="mic">${I('mic')}</span>
-    </label>
-    <nav className="nav-actions" aria-label="Main">
-      ${link('explore', 'Explore', 'compass')}
-      ${link('map', 'Map', 'map')}
-      ${link('community', 'Community', 'chat')}
-      ${link('saved', 'Saved', 'bookmark')}
-      <button className="btn outline sm nav-cta" onClick=${() => d({ type: 'go', screen: 'add' })}>${I('plus')}Add a place</button>
-      <button className="nav-link nav-cta nav-for" onClick=${() => d({ type: 'role', role: 'owner' })}>${I('store')}<span className="lbl">For restaurants</span></button>
-      <button className="bell" onClick=${() => d({ type: 'sheet', sheet: { type: 'notifs' } })} aria-label=${unread ? 'Updates near you, ' + unread + ' new' : 'Updates near you'}>${I('bell')}${unread ? html`<span className="bell-dot">${unread}</span>` : null}</button>
-      <button className="avatar" aria-current=${s.screen === 'profile' ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: 'profile' })} aria-label="Your profile and preferences">${I('user')}</button>
+  const link = (k, label, icon) => html`<button key=${k} className="sub-link" aria-current=${cur === k ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: k })}>${I(icon)}${label}</button>`;
+  return html`<header className="topnav">
+    <div className="container nav-inner">
+      <${Logo} d=${d} cls="logo-d" />
+      <div className="finder">
+        <button className="loc" onClick=${() => d({ type: 'city', city: other })} aria-label=${'Location ' + city.home + ', ' + s.city + '. Switch to ' + other}>
+          <span className="loc-ic">${I('pin')}</span>
+          <span className="loc-txt"><b>${city.home}${I('chevron', 'tiny')}</b><small>${s.city}, ${city.state}</small></span>
+        </button>
+        <label className="searchbar" htmlFor="search">
+          ${I('search')}
+          <input id="search" type="search" placeholder=${HINTS[hint]} aria-label="Search places or dishes" value=${s.query}
+            onChange=${(e) => d({ type: 'query', value: e.target.value })}
+            onFocus=${() => { if (!BROWSE.includes(s.screen)) d({ type: 'go', screen: 'explore' }); }} />
+          <span className="mic">${I('mic')}</span>
+        </label>
+      </div>
+      <div className="nav-actions">
+        <button className="btn outline sm nav-cta" onClick=${() => d({ type: 'go', screen: 'add' })} aria-label="Add a place">${I('plus')}<span className="lbl">Add a place</span></button>
+        <button className="bell" onClick=${() => d({ type: 'sheet', sheet: { type: 'notifs' } })} aria-label=${unread ? 'Updates near you, ' + unread + ' new' : 'Updates near you'}>${I('bell')}${unread ? html`<span className="bell-dot">${unread}</span>` : null}</button>
+        <button className="avatar" aria-current=${s.screen === 'profile' ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: 'profile' })} aria-label="Your profile and preferences">${I('user')}</button>
+      </div>
+    </div>
+    <nav className="subnav" aria-label="Main">
+      <div className="container subnav-inner">
+        ${link('explore', 'Explore', 'compass')}
+        ${link('map', 'Map', 'map')}
+        ${link('community', 'Community', 'chat')}
+        ${link('saved', 'Saved', 'bookmark')}
+        <button className="sub-link sub-for" onClick=${() => d({ type: 'role', role: 'owner' })}>${I('store')}For restaurants</button>
+      </div>
     </nav>
-  </div></header>`;
+  </header>`;
 }
 
 /* ---------- Explore ---------- */
@@ -3126,7 +3168,6 @@ function App() {
     ${showFooter ? html`<${Footer} d=${d} />` : null}
     ${showTabs ? html`<${MobileTabs} s=${s} d=${d} />` : null}
     ${showBar ? html`<${PlaceBar} s=${s} d=${d} />` : null}
-    ${guide === null ? html`<button className="tour-btn" onClick=${() => startGuide(0)}>${I('sparkle')}Guided tour</button>` : null}
     <${Sheets} s=${s} d=${d} />
     ${guide !== null && !drawer ? html`<${Guide} s=${s} i=${guide} onGo=${setGuide} onEnd=${endGuide} onAll=${() => setDrawer(true)} />` : null}
     ${drawer ? html`<${Tour} guide=${guide} onPick=${startGuide} onClose=${() => setDrawer(false)} />` : null}
