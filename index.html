@@ -1,0 +1,2135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Clickable prototype of TrustPlate. Find restaurants that match how you eat, each with a trust level and proof. Sample data only.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="TrustPlate: find halal, Jain, pure veg and vegan food you can trust">
+<meta property="og:description" content="Clickable prototype of TrustPlate. Find restaurants that match how you eat, each with a trust level and proof. Sample data only.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2346e8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TrustPlate Web App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a real web app — sticky top nav, filter sidebar + card grid, list/map split, two-column restaurant page; collapses to the phone app layout (bottom tabs, sheets) under 860px */
+:root {
+  /* palette: cobalt for trust, turmeric for warmth, pastel dish tiles as food imagery */
+  --page: #f3f4f8;
+  --app: #ffffff;
+  --app-2: #f4f5f9;
+  --ink: #11162a;
+  --muted: #687089;
+  --line: #e6e8ef;
+  --chip: #ffffff;
+  --brand: #2346e8;
+  --brand-fill: #2346e8;
+  --brand-2: #1a2fa8;
+  --brand-soft: #e9edff;
+  --brand-glow: rgba(35, 70, 232, 0.26);
+  --on-brand: #ffffff;
+  --sun: #ffc233;
+  --sun-2: #ff9f1c;
+  --on-sun: #2b1d00;
+  --coral: #ff7a59;
+  --coral-2: #f0457a;
+  --on-coral: #ffffff;
+  --rating: #1f8f43;
+  --on-rating: #ffffff;
+  --star: #e8a400;
+  --ok: #10876b;
+  --ok-soft: #e2f4ee;
+  --warn: #b86200;
+  --warn-soft: #fdf0de;
+  --danger: #dc3a40;
+  --danger-soft: #fde9ea;
+  --veg: #129b48;
+  --veg-soft: #e3f5ea;
+  --nonveg: #8a3a12;
+  --lv-certified: #2346e8; --lv-certified-soft: #e9edff; --lv-certified-ink: #2346e8;
+  --lv-checked: #0f8a6e; --lv-checked-soft: #e1f4ee; --lv-checked-ink: #0d7a61;
+  --lv-owner: #4b5468; --lv-owner-soft: #eceff4; --lv-owner-ink: #4b5468;
+  --lv-community: #7146d4; --lv-community-soft: #efe8fc; --lv-community-ink: #6a3fce;
+  --on-level: #ffffff;
+  --scrim: rgba(9, 12, 24, 0.5);
+  --dish-dim: rgba(0, 0, 0, 0);
+  --map-land: #edf0f5; --map-road: #ffffff; --map-casing: #dde2ea; --map-water: #c9dcf6; --map-park: #d8eedc; --map-label: #7a8299;
+  --shadow-1: 0 1px 2px rgba(17, 22, 42, 0.05), 0 4px 14px rgba(17, 22, 42, 0.06);
+  --shadow-2: 0 18px 50px rgba(17, 22, 42, 0.18);
+  --font: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --gutter: clamp(16px, 4vw, 40px);
+  --nav-h: 73px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #090c15; --app: #10141f; --app-2: #0c1019; --ink: #eef1f8; --muted: #9aa3ba; --line: #232a3d; --chip: #161b29;
+    --brand: #8296ff; --brand-fill: #4a62f2; --brand-2: #2a3cb8; --brand-soft: #1b2350; --brand-glow: rgba(74, 98, 242, 0.35);
+    --rating: #24a050; --star: #f5b82e; --ok: #3ccaa6; --ok-soft: #0f2e27; --warn: #f2a43a; --warn-soft: #33240f; --danger: #ff6b70; --danger-soft: #3b1a1d;
+    --veg: #3ccf6e; --veg-soft: #10301d; --nonveg: #e69866;
+    --lv-certified: #3a55e6; --lv-certified-soft: #1b2350; --lv-certified-ink: #8fa1ff;
+    --lv-checked: #0f8a6e; --lv-checked-soft: #0f2e27; --lv-checked-ink: #45d3b0;
+    --lv-owner: #4b5468; --lv-owner-soft: #20283a; --lv-owner-ink: #b0b9cc;
+    --lv-community: #7146d4; --lv-community-soft: #271f45; --lv-community-ink: #b99bff;
+    --scrim: rgba(0, 0, 0, 0.62); --dish-dim: rgba(0, 0, 0, 0.18);
+    --map-land: #161c2b; --map-road: #262f45; --map-casing: #1d2436; --map-water: #1c3558; --map-park: #183028; --map-label: #8d97ae;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3); --shadow-2: 0 18px 50px rgba(0, 0, 0, 0.55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #090c15; --app: #10141f; --app-2: #0c1019; --ink: #eef1f8; --muted: #9aa3ba; --line: #232a3d; --chip: #161b29;
+  --brand: #8296ff; --brand-fill: #4a62f2; --brand-2: #2a3cb8; --brand-soft: #1b2350; --brand-glow: rgba(74, 98, 242, 0.35);
+  --rating: #24a050; --star: #f5b82e; --ok: #3ccaa6; --ok-soft: #0f2e27; --warn: #f2a43a; --warn-soft: #33240f; --danger: #ff6b70; --danger-soft: #3b1a1d;
+  --veg: #3ccf6e; --veg-soft: #10301d; --nonveg: #e69866;
+  --lv-certified: #3a55e6; --lv-certified-soft: #1b2350; --lv-certified-ink: #8fa1ff;
+  --lv-checked: #0f8a6e; --lv-checked-soft: #0f2e27; --lv-checked-ink: #45d3b0;
+  --lv-owner: #4b5468; --lv-owner-soft: #20283a; --lv-owner-ink: #b0b9cc;
+  --lv-community: #7146d4; --lv-community-soft: #271f45; --lv-community-ink: #b99bff;
+  --scrim: rgba(0, 0, 0, 0.62); --dish-dim: rgba(0, 0, 0, 0.18);
+  --map-land: #161c2b; --map-road: #262f45; --map-casing: #1d2436; --map-water: #1c3558; --map-park: #183028; --map-label: #8d97ae;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3); --shadow-2: 0 18px 50px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+@media (max-width: 860px) { :root { --nav-h: 118px; } }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+h1, h2, h3 { text-wrap: balance; }
+.ic { width: 20px; height: 20px; flex: none; }
+.ic.tiny { width: 14px; height: 14px; }
+.boot { color: var(--muted); padding: 60px 16px; text-align: center; }
+.container { width: 100%; max-width: 1260px; margin-inline: auto; padding-inline: var(--gutter); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Demo bar ---------- */
+.demobar { background: var(--ink); color: var(--app); font-size: 13px; }
+.demobar .container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; padding-block: 7px; }
+.dm-l { display: flex; align-items: center; gap: 8px; font-weight: 600; min-width: 0; }
+.dm-l span { opacity: 0.8; }
+.demo-pill { font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--sun); color: var(--on-sun); }
+.dm-r { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dseg { display: inline-flex; border-radius: 999px; padding: 3px; background: color-mix(in srgb, var(--app) 12%, transparent); }
+.dseg button { border: 0; background: transparent; color: inherit; opacity: 0.75; padding: 4px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+.dseg button[aria-pressed="true"] { background: var(--app); color: var(--ink); opacity: 1; }
+.dbtn { border: 1px solid color-mix(in srgb, var(--app) 30%, transparent); background: transparent; color: inherit; border-radius: 999px; padding: 4px 11px; font-size: 12.5px; font-weight: 700; }
+.dseg .short { display: none; }
+@media (max-width: 640px) {
+  .dm-l span:not(.demo-pill), .dbtn.tour-link, .dseg .full { display: none; }
+  .dseg .short { display: inline; }
+  .demobar .container { flex-wrap: nowrap; }
+}
+
+/* ---------- Top navigation ---------- */
+.topnav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: var(--app); border-bottom: 1px solid var(--line); }
+.nav-inner { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; grid-template-areas: "logo loc search actions"; align-items: center; gap: 18px; min-height: 72px; padding-block: 10px; }
+.logo { grid-area: logo; all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 21px; letter-spacing: -0.02em; white-space: nowrap; }
+.logo:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 10px; }
+.logo-mark { width: 36px; height: 36px; border-radius: 12px; background: var(--brand-fill); color: var(--on-brand); display: grid; place-items: center; box-shadow: 0 6px 16px var(--brand-glow); }
+.logo .tp { color: var(--brand); }
+.logo small { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); align-self: flex-end; margin-bottom: 3px; }
+.loc { grid-area: loc; all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 9px; cursor: pointer; border-radius: 12px; min-width: 0; }
+.loc:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+.loc-ic { width: 38px; height: 38px; border-radius: 12px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; flex: none; }
+.loc-txt { min-width: 0; }
+.loc-txt b { display: flex; align-items: center; gap: 3px; font-size: 16px; font-weight: 800; letter-spacing: -0.015em; white-space: nowrap; }
+.loc-txt small { display: block; font-size: 12px; color: var(--muted); margin-top: -2px; white-space: nowrap; }
+.searchbar { grid-area: search; display: flex; align-items: center; gap: 10px; padding: 0 16px; height: 48px; border-radius: 15px; background: var(--app-2); border: 1px solid var(--line); color: var(--muted); width: 100%; max-width: 640px; justify-self: center; }
+.searchbar:focus-within { border-color: var(--brand); background: var(--app); }
+.searchbar input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 15px; font-weight: 500; color: var(--ink); }
+.searchbar .mic { padding-left: 11px; border-left: 1px solid var(--line); color: var(--brand); display: flex; }
+.nav-actions { grid-area: actions; display: flex; align-items: center; gap: 4px; justify-self: end; }
+.nav-link { border: 0; background: transparent; display: inline-flex; align-items: center; gap: 7px; padding: 9px 12px; border-radius: 12px; font-weight: 700; font-size: 14px; color: var(--muted); white-space: nowrap; }
+.nav-link:hover { color: var(--ink); background: var(--app-2); }
+.nav-link[aria-current="page"] { color: var(--brand); background: var(--brand-soft); }
+.nav-cta { margin-left: 6px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--sun); color: var(--on-sun); display: grid; place-items: center; flex: none; margin-left: 6px; }
+.avatar[aria-current="page"] { box-shadow: 0 0 0 3px var(--brand); }
+@media (max-width: 1439px) { .nav-for { display: none; } }
+@media (max-width: 1180px) { .nav-link .lbl { display: none; } .nav-link { padding: 10px; } }
+@media (max-width: 860px) {
+  .nav-inner { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "loc actions" "search search"; gap: 10px 12px; min-height: 0; padding-block: 10px 12px; }
+  .nav-inner.simple { grid-template-areas: "logo actions"; }
+  .logo-d, .nav-actions .nav-link, .nav-actions .nav-cta { display: none; }
+  .searchbar { max-width: none; height: 46px; }
+}
+@media (max-width: 480px) { .logo small { display: none; } }
+
+/* ---------- Buttons, chips, pills ---------- */
+.btn { border: 0; border-radius: 15px; padding: 13px 18px; font-weight: 800; font-size: 15px; background: var(--app-2); color: var(--ink); display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+.btn.primary { background: var(--brand-fill); color: var(--on-brand); box-shadow: 0 10px 22px var(--brand-glow); }
+.btn.outline { background: var(--app); border: 1.5px solid var(--line); }
+.btn.sm { padding: 9px 14px; font-size: 13.5px; border-radius: 12px; box-shadow: none; }
+.btn.block { width: 100%; }
+.btn.grow { flex: 1; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+.prefchips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.prefchips::-webkit-scrollbar { display: none; }
+.pref { flex: none; display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--line); background: var(--app); border-radius: 999px; padding: 7px 15px; font-weight: 700; font-size: 13.5px; color: var(--ink); }
+.pref i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.p-halal i { background: var(--lv-certified); }
+.p-jain i { background: var(--sun-2); }
+.p-veg i { background: var(--veg); }
+.p-vegan i { background: var(--lv-checked); }
+.pref[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--app); }
+.chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.chips::-webkit-scrollbar { display: none; }
+.fchip { flex: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--chip); border-radius: 12px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--ink); }
+.fchip .ic { width: 15px; height: 15px; }
+.fchip[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
+.seg { display: inline-flex; flex: none; background: var(--app); border: 1px solid var(--line); border-radius: 13px; padding: 3px; }
+.seg button { border: 0; background: transparent; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 10px; font-weight: 700; font-size: 13.5px; color: var(--muted); }
+.seg button .ic { width: 16px; height: 16px; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--app); }
+.tpill { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 800; padding: 5px 10px 5px 7px; border-radius: 999px; line-height: 1; white-space: nowrap; }
+.tpill .ic { width: 13px; height: 13px; }
+.tpill.lv-certified { background: var(--lv-certified-soft); color: var(--lv-certified-ink); }
+.tpill.lv-checked { background: var(--lv-checked-soft); color: var(--lv-checked-ink); }
+.tpill.lv-owner { background: var(--lv-owner-soft); color: var(--lv-owner-ink); }
+.tpill.lv-community { background: var(--lv-community-soft); color: var(--lv-community-ink); }
+.tpill.solid { color: var(--on-level); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14); }
+.tpill.solid.lv-certified { background: var(--lv-certified); }
+.tpill.solid.lv-checked { background: var(--lv-checked); }
+.tpill.solid.lv-owner { background: var(--lv-owner); }
+.tpill.solid.lv-community { background: var(--lv-community); }
+.rate { flex: none; display: inline-flex; align-items: center; gap: 3px; background: var(--rating); color: var(--on-rating); font-weight: 800; font-size: 12.5px; padding: 3px 7px; border-radius: 8px; font-variant-numeric: tabular-nums; }
+.rate .ic { width: 11px; height: 11px; }
+.rate.new { background: var(--app-2); color: var(--muted); border: 1px solid var(--line); }
+.vegmark { flex: none; width: 15px; height: 15px; border: 1.6px solid currentColor; border-radius: 3px; display: inline-grid; place-items: center; }
+.vegmark::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.vegmark.veg { color: var(--veg); }
+.vegmark.nonveg { color: var(--nonveg); }
+.vegmark.nonveg::after { width: 0; height: 0; border-radius: 0; background: none; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 7px solid currentColor; }
+.okt { color: var(--ok); font-weight: 700; }
+.badt { color: var(--danger); font-weight: 700; }
+.note { margin: 0; font-size: 13px; color: var(--muted); }
+.eyebrow { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand); }
+.sec-title { margin: 0; font-size: clamp(19px, 2vw, 24px); font-weight: 800; letter-spacing: -0.02em; }
+.empty { padding: 30px 20px; text-align: center; border-radius: 22px; background: var(--app); border: 1.5px dashed var(--line); color: var(--muted); display: grid; gap: 8px; justify-items: center; grid-column: 1 / -1; }
+.empty b { color: var(--ink); font-size: 16px; }
+
+/* dish tiles: artwork backgrounds, the same in both themes, dimmed slightly in dark mode */
+.dishbg { position: relative; }
+.dishbg::after { content: ""; position: absolute; inset: 0; background: var(--dish-dim); pointer-events: none; z-index: 2; }
+.d-biryani { background: linear-gradient(140deg, #ffe9c9 0%, #ffc78a 100%); }
+.d-thali { background: linear-gradient(140deg, #ffeadf 0%, #ffc2a8 100%); }
+.d-kebab { background: linear-gradient(140deg, #ffe1d6 0%, #ffae94 100%); }
+.d-dosa { background: linear-gradient(140deg, #fff3cc 0%, #ffd772 100%); }
+.d-roll { background: linear-gradient(140deg, #e6f0ff 0%, #bdd6ff 100%); }
+.d-bowl { background: linear-gradient(140deg, #e2f6e7 0%, #b9e6c6 100%); }
+.d-chai { background: linear-gradient(140deg, #f5ebe1 0%, #e6cbb0 100%); }
+
+/* ---------- Explore ---------- */
+.hero { background: linear-gradient(135deg, var(--brand-fill), var(--brand-2)); color: var(--on-brand); overflow: hidden; }
+.hero-inner { position: relative; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: center; gap: 24px; padding-block: 44px 54px; }
+.hero .eyebrow { color: var(--on-brand); opacity: 0.8; }
+.hero h1 { margin: 10px 0 12px; font-size: clamp(34px, 4.6vw, 58px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; max-width: 13ch; }
+.hero p { margin: 0; font-size: 17px; opacity: 0.92; max-width: 46ch; }
+.hero-prefs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.hero-pref { border: 1.5px solid color-mix(in srgb, var(--on-brand) 45%, transparent); background: color-mix(in srgb, var(--on-brand) 10%, transparent); color: var(--on-brand); padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 15px; }
+.hero-pref[aria-pressed="true"] { background: var(--app); color: var(--ink); border-color: var(--app); }
+.hero-art { position: relative; height: 300px; }
+.float { position: absolute; border-radius: 26px; display: grid; place-items: center; overflow: hidden; box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22); }
+.float svg { position: relative; z-index: 1; }
+.f1 { width: 210px; height: 180px; right: 10%; top: 0; transform: rotate(5deg); }
+.f1 svg { width: 190px; height: 144px; }
+.f2 { width: 150px; height: 132px; right: 52%; top: 120px; transform: rotate(-8deg); }
+.f2 svg { width: 136px; height: 102px; }
+.f3 { width: 140px; height: 124px; right: 0; top: 170px; transform: rotate(9deg); }
+.f3 svg { width: 126px; height: 96px; }
+@media (max-width: 960px) { .hero-inner { grid-template-columns: minmax(0, 1fr); padding-block: 30px 34px; } .hero-art { display: none; } }
+@media (max-width: 640px) { .hero { display: none; } }
+.mobile-prefs { display: none; padding-top: 14px; }
+@media (max-width: 640px) { .mobile-prefs { display: block; } }
+
+.banners { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+.banner { all: unset; box-sizing: border-box; cursor: pointer; position: relative; overflow: hidden; height: 150px; border-radius: 24px; padding: 18px; display: flex; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.banner:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.banner:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.banner::before { content: ""; position: absolute; right: -40px; top: -50px; width: 170px; height: 170px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); }
+.b-brand { background: linear-gradient(135deg, #3d5cf0, #1a2fa8); color: #ffffff; }
+.b-sun { background: linear-gradient(135deg, var(--sun), var(--sun-2)); color: var(--on-sun); }
+.b-coral { background: linear-gradient(135deg, var(--coral), var(--coral-2)); color: var(--on-coral); }
+.b-txt { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; max-width: 60%; }
+.b-txt b { font-size: 18px; font-weight: 800; line-height: 1.15; letter-spacing: -0.015em; }
+.b-txt small { font-size: 13px; opacity: 0.92; line-height: 1.3; }
+.b-cta { margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; background: rgba(255, 255, 255, 0.24); padding: 6px 12px; border-radius: 999px; }
+.b-cta .ic { width: 14px; height: 14px; }
+.b-art { position: absolute; right: -2px; bottom: -6px; width: 160px; height: 120px; }
+.b-art svg { width: 100%; height: 100%; }
+@media (max-width: 1023px) {
+  .banners { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); }
+  .banners::-webkit-scrollbar { display: none; }
+  .banner { flex: 0 0 min(84%, 400px); scroll-snap-align: start; }
+}
+
+.cats-sec { margin-top: 34px; }
+.cats { display: flex; gap: 18px; overflow-x: auto; padding: 14px 2px 6px; scrollbar-width: none; }
+.cats::-webkit-scrollbar { display: none; }
+.cat { flex: none; border: 0; background: transparent; display: grid; justify-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--ink); width: 100px; padding: 4px 0 0; }
+.cat-img { width: 90px; height: 90px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; box-shadow: var(--shadow-1); transition: transform 0.15s ease; }
+.cat-img svg { width: 82px; height: 62px; position: relative; z-index: 1; }
+.cat:hover .cat-img { transform: scale(1.05); }
+.cat[aria-pressed="true"] .cat-img { box-shadow: 0 0 0 3px var(--page), 0 0 0 6px var(--brand); }
+.cat[aria-pressed="true"] { color: var(--brand); }
+@media (max-width: 640px) { .cats { gap: 12px; } .cat { width: 74px; font-size: 12.5px; } .cat-img { width: 66px; height: 66px; } .cat-img svg { width: 60px; height: 46px; } }
+
+.browse { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 28px; align-items: start; margin-top: 30px; padding-bottom: 56px; }
+.filters { position: sticky; top: calc(var(--nav-h) + 16px); background: var(--app); border: 1px solid var(--line); border-radius: 24px; padding: 18px; display: grid; gap: 18px; box-shadow: var(--shadow-1); }
+.filters-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.filters-h b { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.linkbtn { border: 0; background: none; color: var(--brand); font-weight: 700; font-size: 13.5px; padding: 0; }
+.fgroup { display: grid; gap: 2px; padding-top: 14px; border-top: 1px solid var(--line); }
+.fgroup h3 { margin: 0 0 6px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 800; }
+.fopt { display: flex; align-items: center; gap: 10px; padding: 7px 6px; font-size: 14.5px; font-weight: 600; cursor: pointer; border-radius: 10px; }
+.fopt:hover { background: var(--app-2); }
+.fopt i { width: 8px; height: 8px; border-radius: 50%; margin-left: auto; }
+input[type="radio"], input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--brand-fill); margin: 0; flex: none; }
+.results-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.results-h .note { margin-top: 2px; }
+.results .chips { margin-bottom: 16px; }
+@media (min-width: 1024px) { .results .chips { display: none; } }
+@media (max-width: 1023px) { .browse { grid-template-columns: minmax(0, 1fr); margin-top: 24px; } .filters { display: none; } }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
+@media (max-width: 640px) { .grid { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
+
+.pcard { position: relative; background: var(--app); border-radius: 22px; overflow: hidden; box-shadow: var(--shadow-1); border: 1px solid var(--line); transition: transform 0.15s ease, box-shadow 0.15s ease; display: flex; flex-direction: column; }
+.pcard:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
+.pimg { aspect-ratio: 16 / 9; display: block; overflow: hidden; }
+.pimg-art { position: absolute; right: 7%; bottom: -3%; width: 54%; height: 100%; display: grid; place-items: end center; z-index: 1; }
+.pimg-art svg { width: 100%; height: 94%; }
+.pimg .tpill { position: absolute; left: 12px; top: 12px; z-index: 3; }
+.heart { position: absolute; right: 12px; top: 12px; z-index: 4; width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.94); color: #1b2033; display: grid; place-items: center; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12); }
+.heart .ic { width: 19px; height: 19px; }
+.heart.on { color: #e5484d; }
+.heart.on .ic { animation: pop 0.32s ease; }
+@keyframes pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.pimg-meta { position: absolute; left: 12px; bottom: 12px; z-index: 3; display: inline-flex; align-items: center; gap: 4px; background: rgba(255, 255, 255, 0.94); color: #1b2033; font-weight: 700; font-size: 12px; padding: 4px 10px 4px 7px; border-radius: 999px; }
+.pimg-meta .ic { width: 13px; height: 13px; }
+.pbody { padding: 13px 15px 15px; display: grid; gap: 3px; }
+.prow { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.pcard h3 { margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.25; display: flex; align-items: center; gap: 7px; }
+.cardlink { all: unset; cursor: pointer; }
+.cardlink::after { content: ""; position: absolute; inset: 0; z-index: 3; }
+.cardlink:focus-visible::after { outline: 3px solid var(--brand); outline-offset: -3px; border-radius: 22px; }
+.pline { font-size: 13.5px; color: var(--muted); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.pline .ic { width: 14px; height: 14px; }
+.ptags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; position: relative; z-index: 2; }
+.ptag { font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: var(--app-2); color: var(--muted); }
+.ptag.t-alcohol { color: var(--warn); background: var(--warn-soft); }
+.ptag.t-pork { color: var(--danger); background: var(--danger-soft); }
+.ptag.t-ok { color: var(--ok); background: var(--ok-soft); }
+.ptag.t-veg { color: var(--veg); background: var(--veg-soft); }
+
+.footer { border-top: 1px solid var(--line); background: var(--app); }
+.footer-inner { display: flex; flex-wrap: wrap; gap: 14px 36px; justify-content: space-between; align-items: center; padding-block: 26px; color: var(--muted); font-size: 13.5px; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.footer-links button { border: 0; background: none; padding: 0; color: var(--muted); font-weight: 600; }
+.footer-links button:hover { color: var(--brand); }
+
+/* ---------- Map ---------- */
+.mapview { display: grid; grid-template-columns: 440px minmax(0, 1fr); height: calc(100dvh - var(--nav-h)); min-height: 540px; }
+.maplist { background: var(--app); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+.maplist-h { padding: 18px 20px 14px; border-bottom: 1px solid var(--line); display: grid; gap: 12px; }
+.maplist-items { overflow-y: auto; padding: 12px 14px 22px; display: grid; gap: 10px; align-content: start; }
+.mrow { position: relative; display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; padding: 10px; border-radius: 18px; border: 1.5px solid var(--line); background: var(--app); }
+.mrow:hover { border-color: var(--brand); }
+.mrow.active { border-color: var(--brand); background: var(--brand-soft); }
+.mthumb { width: 92px; height: 80px; border-radius: 14px; overflow: hidden; display: grid; place-items: center; }
+.mthumb svg { width: 82px; height: 62px; position: relative; z-index: 1; }
+.mbody { min-width: 0; display: grid; gap: 4px; align-content: start; }
+.mbody h3 { margin: 0; font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.01em; }
+.mapcanvas { position: relative; background: var(--map-land); min-width: 0; overflow: hidden; }
+.mapsvg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pin { cursor: pointer; outline: none; }
+.pin:focus-visible .pin-body { stroke: var(--ink); stroke-width: 3; }
+.map-top { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; pointer-events: none; }
+.map-top > * { pointer-events: auto; }
+.map-hint { background: var(--app); color: var(--muted); font-size: 12px; font-weight: 700; padding: 7px 12px; border-radius: 999px; box-shadow: var(--shadow-1); white-space: nowrap; }
+.map-prefs { display: none; position: absolute; top: 12px; left: 0; right: 0; padding-inline: 14px; }
+.rail { display: none; position: absolute; left: 0; right: 0; bottom: 16px; gap: 10px; overflow-x: auto; padding: 0 16px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.rail::-webkit-scrollbar { display: none; }
+.mini { position: relative; flex: 0 0 min(86%, 380px); scroll-snap-align: center; background: var(--app); border-radius: 20px; box-shadow: var(--shadow-2); display: flex; gap: 11px; padding: 10px; border: 2px solid transparent; }
+.mini.active { border-color: var(--brand); }
+@media (max-width: 1023px) {
+  .mapview { grid-template-columns: minmax(0, 1fr); }
+  .maplist { display: none; }
+  .rail { display: flex; }
+  .map-prefs { display: block; }
+  .map-top { top: 62px; justify-content: center; }
+  .map-top .seg { display: none; }
+}
+@media (max-width: 860px) { .mapview { height: calc(100dvh - var(--nav-h) - 74px); min-height: 460px; } }
+
+/* ---------- Restaurant page ---------- */
+.place { padding-block: 18px 64px; }
+.crumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.crumbs button { border: 0; background: none; padding: 0; color: var(--brand); font-weight: 700; }
+.crumbs .ic { width: 14px; height: 14px; }
+.place-hero { position: relative; height: 330px; border-radius: 30px; overflow: hidden; }
+.hero-dish { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); width: min(44%, 420px); height: 76%; z-index: 1; }
+.hero-dish svg { width: 100%; height: 100%; }
+.fab-btn { width: 42px; height: 42px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.95); color: #1b2033; display: grid; place-items: center; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14); }
+.fab-btn.on { color: #e5484d; }
+.fab-left { position: absolute; left: 16px; top: 16px; z-index: 4; }
+.fab-right { position: absolute; right: 16px; top: 16px; display: flex; gap: 8px; z-index: 4; }
+.place-grid { display: grid; grid-template-columns: minmax(0, 1fr) 370px; gap: 28px; margin-top: 24px; align-items: start; }
+.place-title { display: grid; gap: 6px; }
+.place-title h1 { margin: 0; font-size: clamp(26px, 3vw, 38px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; display: flex; align-items: center; gap: 10px; }
+.pblock { background: var(--app); border: 1px solid var(--line); border-radius: 24px; padding: 20px; display: grid; gap: 14px; margin-top: 18px; }
+.pblock-h { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: -0.015em; display: flex; align-items: center; gap: 9px; }
+.pblock-h .ic { color: var(--brand); }
+.trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.tcard { border-radius: 20px; padding: 14px; display: grid; gap: 12px; border: 1px solid var(--line); align-content: start; }
+.tcard.dim { opacity: 0.72; }
+.tcard-h { display: flex; align-items: center; gap: 11px; }
+.tcard-ic { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; flex: none; color: var(--on-level); }
+.tcard-ic.lv-certified { background: var(--lv-certified); }
+.tcard-ic.lv-checked { background: var(--lv-checked); }
+.tcard-ic.lv-owner { background: var(--lv-owner); }
+.tcard-ic.lv-community { background: var(--lv-community); }
+.tcard-t { min-width: 0; }
+.tcard-t b { display: block; font-size: 15px; font-weight: 800; }
+.tcard-t small { color: var(--muted); font-size: 12.5px; }
+.ticket { position: relative; border-radius: 14px; background: var(--lv-certified-soft); padding: 12px 16px; display: grid; gap: 7px; }
+.ticket::before, .ticket::after { content: ""; position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: var(--app); transform: translateY(-50%); }
+.ticket::before { left: -7px; }
+.ticket::after { right: -7px; }
+.trow { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; }
+.trow span { color: var(--muted); }
+.trow b { font-weight: 700; text-align: right; }
+.mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 12px; }
+.validity { height: 6px; border-radius: 6px; background: var(--app); overflow: hidden; }
+.validity i { display: block; height: 100%; border-radius: 6px; background: var(--lv-certified); }
+.checklist { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.checklist li { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
+.checklist .ic { width: 17px; height: 17px; color: var(--ok); }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 760px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fact { border-radius: 16px; background: var(--app-2); padding: 12px; display: grid; gap: 7px; align-content: start; }
+.fact-ic { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; }
+.fact-ic .ic { width: 17px; height: 17px; }
+.fact small { font-size: 12px; color: var(--muted); font-weight: 600; line-height: 1.25; }
+.fact b { font-size: 14px; font-weight: 800; }
+.fact.good .fact-ic { background: var(--ok-soft); color: var(--ok); }
+.fact.good b { color: var(--ok); }
+.fact.warn .fact-ic { background: var(--warn-soft); color: var(--warn); }
+.fact.warn b { color: var(--warn); }
+.fact.bad .fact-ic { background: var(--danger-soft); color: var(--danger); }
+.fact.bad b { color: var(--danger); }
+.fact.plain .fact-ic { background: var(--app); color: var(--muted); }
+.menu { display: flex; flex-wrap: wrap; gap: 8px; }
+.menu-item { font-size: 13.5px; font-weight: 700; padding: 8px 13px; border-radius: 12px; background: var(--app-2); }
+.been { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 18px; background: var(--brand-soft); flex-wrap: wrap; }
+.been b { display: block; font-size: 15px; font-weight: 800; }
+.been small { color: var(--muted); font-size: 12.5px; line-height: 1.3; display: block; }
+.review { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 11px; padding-top: 14px; border-top: 1px solid var(--line); }
+.rv-av { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 13px; background: var(--sun); color: var(--on-sun); }
+.rv-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 14px; }
+.rv-top b { font-weight: 800; }
+.stars { color: var(--star); letter-spacing: 1px; font-size: 12px; }
+.rv-text { font-size: 14px; margin-top: 2px; }
+.rv-ok { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 11.5px; font-weight: 800; color: var(--ok); background: var(--ok-soft); padding: 3px 8px; border-radius: 8px; }
+.rv-ok .ic { width: 12px; height: 12px; }
+.report { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; color: var(--danger); font-weight: 800; font-size: 14px; }
+.report:focus-visible { outline: 2px solid var(--brand); }
+.place-side { position: sticky; top: calc(var(--nav-h) + 18px); display: grid; gap: 14px; }
+.side-card { background: var(--app); border: 1px solid var(--line); border-radius: 24px; padding: 18px; display: grid; gap: 12px; box-shadow: var(--shadow-1); }
+.side-card h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.orow { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; border: 1.5px solid var(--line); }
+.orow:hover { border-color: var(--brand); }
+.orow:focus-visible { outline: 2px solid var(--brand); }
+.o-logo { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 17px; background: var(--app-2); color: var(--ink); flex: none; }
+.orow b { display: block; font-size: 15px; font-weight: 800; }
+.orow small { color: var(--muted); font-size: 12.5px; }
+.orow .arr { margin-left: auto; color: var(--muted); }
+.side-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.sact { border: 1.5px solid var(--line); background: var(--app); border-radius: 14px; padding: 10px 6px; display: grid; justify-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.sact.on { color: #e5484d; }
+.placebar { display: none; }
+@media (max-width: 1023px) {
+  .place-grid { grid-template-columns: minmax(0, 1fr); }
+  .place-side { display: none; }
+  .placebar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; gap: 10px; padding: 12px var(--gutter) calc(14px + env(safe-area-inset-bottom, 0px)); background: var(--app); border-top: 1px solid var(--line); }
+  .place { padding-bottom: 110px; }
+}
+.ibtn { width: 50px; height: 50px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--app); color: var(--ink); display: grid; place-items: center; flex: none; }
+@media (max-width: 640px) {
+  .place { padding-top: 0; }
+  .crumbs { display: none; }
+  .place-hero { margin-inline: calc(-1 * var(--gutter)); border-radius: 0; height: 250px; }
+  .hero-dish { width: 66%; height: 70%; bottom: 34px; }
+  .place-grid { margin-top: -26px; position: relative; z-index: 5; }
+  .place-title { background: var(--app); border-radius: 26px 26px 0 0; margin-inline: calc(-1 * var(--gutter)); padding: 20px var(--gutter) 6px; }
+  .pblock { padding: 18px; border-radius: 20px; }
+}
+
+/* ---------- Forms, profile, add ---------- */
+.page { padding-block: 28px 64px; }
+.page-narrow { max-width: 860px; }
+.page-h { display: grid; gap: 4px; margin-bottom: 20px; }
+.page-h h1 { margin: 0; font-size: clamp(26px, 3vw, 36px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.page-h p { margin: 4px 0 0; color: var(--muted); }
+.card { background: var(--app); border: 1px solid var(--line); border-radius: 24px; padding: 20px; display: grid; gap: 14px; box-shadow: var(--shadow-1); }
+.card-h { margin: 0; font-size: 16px; font-weight: 800; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid .full { grid-column: 1 / -1; }
+@media (max-width: 760px) { .form-grid { grid-template-columns: minmax(0, 1fr); } }
+.field { display: grid; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.field input, .field select, .field textarea { font-size: 15px; font-weight: 600; color: var(--ink); background: var(--app); border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 14px; width: 100%; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--brand); }
+.field textarea { resize: vertical; }
+.choice { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice button { border: 1.5px solid var(--line); background: var(--app); border-radius: 12px; padding: 9px 13px; font-weight: 700; font-size: 13.5px; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; }
+.choice button[aria-pressed="true"] { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); }
+.togglecard { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: var(--app); border: 1.5px solid var(--line); font-size: 14.5px; font-weight: 600; }
+.togglecard small { display: block; color: var(--muted); font-weight: 500; font-size: 12.5px; margin-top: 2px; }
+.switch-ui { position: relative; width: 48px; height: 28px; flex: none; }
+.switch-ui input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 1; }
+.switch-ui span { position: absolute; inset: 0; border-radius: 999px; background: var(--line); transition: background 0.2s; }
+.switch-ui span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); transition: transform 0.2s; }
+.switch-ui input:checked + span { background: var(--brand-fill); }
+.switch-ui input:checked + span::after { transform: translateX(20px); }
+.switch-ui input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 2px; }
+.profile-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .profile-grid { grid-template-columns: minmax(0, 1fr); } }
+.linkrow { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-weight: 700; font-size: 14.5px; }
+.linkrow:first-of-type { border-top: 0; }
+.linkrow .lr-ic { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); flex: none; }
+.linkrow small { display: block; color: var(--muted); font-weight: 500; font-size: 12.5px; }
+.linkrow .arr { margin-left: auto; color: var(--muted); }
+.linkrow:focus-visible { outline: 2px solid var(--brand); }
+
+/* ---------- Onboarding ---------- */
+.onbw { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: calc(100dvh - var(--nav-h)); }
+.onbw-hero { position: relative; overflow: hidden; background: linear-gradient(160deg, var(--brand-fill), var(--brand-2)); color: var(--on-brand); padding: clamp(28px, 5vw, 72px); display: flex; flex-direction: column; justify-content: center; }
+.onbw-hero .eyebrow { color: var(--on-brand); opacity: 0.8; }
+.onbw-hero h1 { position: relative; z-index: 1; margin: 12px 0 10px; font-size: clamp(34px, 4.6vw, 60px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; max-width: 11ch; }
+.onbw-hero p { position: relative; z-index: 1; margin: 0; font-size: 17px; opacity: 0.9; max-width: 34ch; }
+.onbw-hero .f1 { top: auto; bottom: 8%; right: 6%; }
+.onbw-hero .f2 { top: auto; bottom: 30%; right: 40%; }
+.onbw-hero .f3 { top: 8%; right: 4%; }
+.onbw-panel { padding: clamp(24px, 4vw, 64px); display: grid; gap: 16px; align-content: center; width: 100%; max-width: 680px; }
+.onbw-panel h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.prefcards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.pc { position: relative; border: 2px solid var(--line); background: var(--app); border-radius: 20px; padding: 12px; display: grid; gap: 3px; text-align: left; }
+.pc-img { height: 74px; border-radius: 14px; display: grid; place-items: center; overflow: hidden; margin-bottom: 6px; }
+.pc-img svg { height: 66px; width: 90px; position: relative; z-index: 1; }
+.pc b { font-size: 16px; font-weight: 800; }
+.pc small { font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.pc[aria-pressed="true"] { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
+.pc .tick { position: absolute; right: 10px; top: 10px; width: 26px; height: 26px; border-radius: 50%; background: var(--brand-fill); color: var(--on-brand); display: none; place-items: center; z-index: 3; }
+.pc[aria-pressed="true"] .tick { display: grid; }
+.pc .tick .ic { width: 15px; height: 15px; }
+@media (max-width: 900px) {
+  .onbw { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .onbw-hero { min-height: 300px; padding-bottom: 70px; justify-content: flex-start; }
+  .onbw-hero .f1 { width: 130px; height: 112px; bottom: auto; top: 24px; right: 16px; }
+  .onbw-hero .f1 svg { width: 118px; height: 90px; }
+  .onbw-hero .f2, .onbw-hero .f3 { display: none; }
+  .onbw-panel { margin-top: -30px; position: relative; background: var(--app); border-radius: 30px 30px 0 0; max-width: none; padding-bottom: 40px; }
+}
+
+/* ---------- Restaurant owner portal ---------- */
+.owner-band { background: linear-gradient(135deg, var(--sun), var(--sun-2)); color: var(--on-sun); }
+.owner-band .container { padding-block: 34px; display: grid; gap: 12px; }
+.owner-band .eyebrow { color: var(--on-sun); opacity: 0.75; }
+.owner-band h1 { margin: 0; font-size: clamp(26px, 3.6vw, 42px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.08; max-width: 20ch; }
+.vprops { display: flex; flex-wrap: wrap; gap: 8px; }
+.vprop { display: inline-flex; align-items: center; gap: 7px; background: rgba(255, 255, 255, 0.45); padding: 7px 12px; border-radius: 999px; font-weight: 700; font-size: 13.5px; }
+.vprop .ic { width: 16px; height: 16px; }
+.owner-grid { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 28px; padding-block: 28px 64px; align-items: start; }
+.vstepper { list-style: none; margin: 0; padding: 14px; background: var(--app); border: 1px solid var(--line); border-radius: 24px; display: grid; gap: 4px; position: sticky; top: calc(var(--nav-h) + 16px); box-shadow: var(--shadow-1); }
+.vstep { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px; border-radius: 16px; font-weight: 700; font-size: 14.5px; }
+.vstep .num { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--app-2); color: var(--muted); font-weight: 800; border: 2px solid var(--line); }
+.vstep .num .ic { width: 17px; height: 17px; }
+.vstep small { display: block; color: var(--muted); font-weight: 500; font-size: 12.5px; }
+.vstep.done .num { background: var(--ok); border-color: var(--ok); color: var(--on-level); }
+.vstep.now { background: var(--brand-soft); }
+.vstep.now .num { background: var(--brand-fill); border-color: var(--brand-fill); color: var(--on-brand); }
+.mprogress { display: none; gap: 6px; margin-bottom: 14px; }
+.mprogress span { flex: 1; height: 6px; border-radius: 6px; background: var(--line); }
+.mprogress span.on { background: var(--brand-fill); }
+.upload { display: grid; justify-items: center; gap: 8px; padding: 22px; border: 2px dashed var(--line); border-radius: 20px; background: var(--app-2); text-align: center; color: var(--muted); font-size: 13.5px; font-weight: 600; position: relative; }
+.upload .ic { width: 28px; height: 28px; color: var(--brand); }
+.upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload b { color: var(--ink); font-size: 15px; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.status-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+@media (max-width: 1180px) { .status-grid { grid-template-columns: minmax(0, 1fr); } }
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; }
+.timeline li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; position: relative; padding-bottom: 22px; }
+.timeline li:not(:last-child)::before { content: ""; position: absolute; left: 18px; top: 38px; bottom: 0; width: 2px; background: var(--line); }
+.timeline li.done:not(:last-child)::before { background: var(--ok); }
+.tl-ic { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--app-2); color: var(--muted); border: 2px solid var(--line); }
+.tl-ic .ic { width: 17px; height: 17px; }
+.timeline li.done .tl-ic { background: var(--ok); border-color: var(--ok); color: var(--on-level); }
+.timeline li.now .tl-ic { border-color: var(--brand); color: var(--brand); }
+.timeline b { display: block; font-size: 15px; font-weight: 800; }
+.timeline small { color: var(--muted); font-size: 13px; }
+.flag { font-size: 13.5px; font-weight: 600; color: var(--warn); background: var(--warn-soft); border-radius: 14px; padding: 11px 13px; }
+@media (max-width: 900px) { .owner-grid { grid-template-columns: minmax(0, 1fr); padding-top: 20px; } .vstepper { display: none; } .mprogress { display: flex; } }
+
+/* ---------- Our team ---------- */
+.admin { padding-block: 28px 64px; }
+.stat-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.stat-card { background: var(--app); border: 1px solid var(--line); border-radius: 22px; padding: 16px 18px; display: grid; gap: 2px; box-shadow: var(--shadow-1); }
+.stat-card b { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.stat-card span { color: var(--muted); font-size: 13px; font-weight: 700; }
+@media (max-width: 760px) { .stat-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.qtabs { display: flex; gap: 8px; overflow-x: auto; margin: 22px 0 16px; scrollbar-width: none; }
+.qtabs::-webkit-scrollbar { display: none; }
+.qgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 900px) { .qgrid { grid-template-columns: minmax(0, 1fr); } }
+.qcard { background: var(--app); border-radius: 22px; border: 1px solid var(--line); padding: 16px; display: grid; gap: 10px; box-shadow: var(--shadow-1); font-size: 14px; align-content: start; }
+.qtype { justify-self: start; font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 9px; border-radius: 8px; }
+.qtype.t-certificate { background: var(--lv-certified-soft); color: var(--lv-certified-ink); }
+.qtype.t-visit { background: var(--lv-checked-soft); color: var(--lv-checked-ink); }
+.qtype.t-report { background: var(--danger-soft); color: var(--danger); }
+.qtype.t-community { background: var(--lv-community-soft); color: var(--lv-community-ink); }
+.qtype.t-owner { background: var(--lv-owner-soft); color: var(--lv-owner-ink); }
+.qt { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; }
+.qs { font-size: 13.5px; color: var(--muted); }
+.qactions { display: flex; gap: 8px; flex-wrap: wrap; }
+.qactions .btn { flex: 1; }
+
+/* ---------- Mobile tabs, sheets, tour, toasts ---------- */
+.mtabs { display: none; }
+@media (max-width: 860px) {
+  .mtabs { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; align-items: flex-end; justify-content: space-around; padding: 8px 6px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--app); border-top: 1px solid var(--line); }
+  .with-tabs .main { padding-bottom: 84px; }
+  .with-tabs .footer { padding-bottom: 84px; }
+}
+.tab { border: 0; background: transparent; display: grid; justify-items: center; gap: 3px; font-size: 11px; font-weight: 700; color: var(--muted); padding: 2px 4px; min-width: 58px; }
+.tab .ic { width: 23px; height: 23px; }
+.tab[aria-current="page"] { color: var(--brand); }
+.tab.fab { margin-top: -24px; }
+.fab-c { width: 54px; height: 54px; border-radius: 19px; background: var(--brand-fill); color: var(--on-brand); display: grid; place-items: center; box-shadow: 0 10px 22px var(--brand-glow); }
+.fab-c .ic { width: 26px; height: 26px; }
+.overlay { position: fixed; inset: 0; background: var(--scrim); z-index: 90; display: flex; align-items: flex-end; justify-content: center; animation: fade 0.2s ease; }
+.sheet { width: 100%; max-width: 560px; background: var(--app); border-radius: 30px 30px 0 0; padding: 10px 20px calc(24px + env(safe-area-inset-bottom, 0px)); max-height: 88%; overflow-y: auto; animation: up 0.26s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.grab { width: 42px; height: 5px; border-radius: 5px; background: var(--line); margin: 0 auto 14px; }
+.sheet h3 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+.sheet form, .sbody { display: grid; gap: 14px; }
+@media (min-width: 761px) { .overlay { align-items: center; padding: 24px; } .sheet { border-radius: 26px; padding: 26px; max-height: 86vh; } .grab { display: none; } }
+@keyframes up { from { transform: translateY(40px); opacity: 0.5; } to { transform: none; opacity: 1; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slidein { from { transform: translateX(40px); opacity: 0.5; } to { transform: none; opacity: 1; } }
+.radios { display: grid; gap: 8px; }
+.radio { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--line); font-size: 14.5px; font-weight: 600; cursor: pointer; }
+.radio:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); }
+.starpick { display: flex; gap: 2px; }
+.starpick button { border: 0; background: none; font-size: 34px; line-height: 1; color: var(--line); padding: 0 2px; }
+.starpick button.on { color: var(--star); }
+.qrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 600; flex-wrap: wrap; }
+.yn { display: inline-flex; gap: 6px; }
+.yn button { border: 1.5px solid var(--line); background: var(--app); border-radius: 10px; padding: 7px 16px; font-weight: 800; font-size: 13.5px; }
+.yn button[aria-pressed="true"] { background: var(--ink); color: var(--app); border-color: var(--ink); }
+.locating { display: grid; justify-items: center; gap: 12px; padding: 16px 0 4px; text-align: center; }
+.locating p { margin: 0; }
+.pulse, .done-ic { width: 70px; height: 70px; border-radius: 50%; display: grid; place-items: center; }
+.pulse { background: var(--brand-soft); color: var(--brand); animation: pulse 1.2s ease-in-out infinite; }
+.done-ic { background: var(--ok-soft); color: var(--ok); }
+.pulse .ic, .done-ic .ic { width: 30px; height: 30px; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 var(--brand-glow); } 50% { box-shadow: 0 0 0 16px transparent; } }
+.tour-btn { position: fixed; right: 20px; bottom: 22px; z-index: 70; display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 999px; border: 0; background: var(--ink); color: var(--app); font-weight: 800; font-size: 14px; box-shadow: var(--shadow-2); }
+.tour-btn .ic { color: var(--sun); }
+@media (max-width: 860px) { .with-tabs .tour-btn { bottom: 96px; right: 14px; } .with-bar .tour-btn { bottom: 94px; right: 14px; } .tour-btn { padding: 9px 13px; font-size: 13px; } }
+.tour-scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 94; animation: fade 0.2s ease; }
+.tour { position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100%); z-index: 95; background: var(--app); box-shadow: var(--shadow-2); overflow-y: auto; padding: 22px 20px calc(30px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 16px; align-content: start; animation: slidein 0.25s ease; }
+.tour-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.tour-h h2 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.025em; }
+.tour-h p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.flow { border: 1px solid var(--line); border-radius: 22px; padding: 14px; display: grid; gap: 6px; }
+.flow-h { display: flex; align-items: center; gap: 10px; margin: 0 0 2px; font-size: 15px; font-weight: 800; }
+.flow-ic { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); }
+.flow-ic .ic { width: 18px; height: 18px; }
+.flow ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.step { all: unset; box-sizing: border-box; cursor: pointer; width: 100%; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; padding: 8px; border-radius: 14px; font-size: 14px; font-weight: 700; color: var(--ink); }
+.step:hover { background: var(--app-2); }
+.step:focus-visible { outline: 2px solid var(--brand); }
+.step .n { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; background: var(--app-2); color: var(--muted); font-size: 12.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.step small { display: block; font-weight: 500; color: var(--muted); font-size: 12.5px; line-height: 1.35; margin-top: 2px; }
+.step[aria-current="step"] { background: var(--brand-soft); }
+.step[aria-current="step"] .n { background: var(--brand-fill); color: var(--on-brand); }
+.lrow { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 13.5px; color: var(--muted); }
+@media (max-width: 480px) { .lrow { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+.iconbtn { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--app); color: var(--ink); display: grid; place-items: center; flex: none; }
+.toasts { position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; width: min(440px, calc(100% - 32px)); z-index: 99; pointer-events: none; display: grid; gap: 8px; }
+@media (max-width: 860px) { .with-tabs .toasts { bottom: 96px; } }
+@media (max-width: 1023px) { .with-bar .toasts { bottom: 92px; } }
+.toast { display: flex; align-items: center; gap: 10px; background: var(--ink); color: var(--app); padding: 13px 15px; border-radius: 16px; font-size: 14px; font-weight: 600; box-shadow: var(--shadow-2); animation: up 0.25s ease; }
+.toast .ic { width: 18px; height: 18px; color: var(--sun); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<div id="root"><p class="boot">Loading TrustPlate…</p></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/htm/3.1.1/htm.umd.min.js"></script>
+<script>
+const { useReducer, useEffect, useRef, useState } = React;
+const html = htm.bind(React.createElement);
+
+/* ---------- Icons ---------- */
+const ICONS = {
+  pin: { d: ['M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z'], c: [[12, 9.5, 2.5]] },
+  chevron: { d: ['M6 9l6 6 6-6'] },
+  chevronRight: { d: ['M9 6l6 6-6 6'] },
+  search: { d: ['M20 20l-3.6-3.6'], c: [[11, 11, 7]] },
+  mic: { d: ['M9 6a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z', 'M5 11a7 7 0 0 0 14 0', 'M12 18v3'] },
+  heart: { d: ['M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z'] },
+  heartFill: { d: ['M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z'], fill: true },
+  star: { d: ['M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z'], fill: true },
+  map: { d: ['M9 4L3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4z', 'M9 4v14', 'M15 6v14'] },
+  grid: { d: ['M4 4h7v7H4z', 'M13 4h7v7h-7z', 'M4 13h7v7H4z', 'M13 13h7v7h-7z'] },
+  compass: { d: ['M15.5 8.5l-2 5-5 2 2-5z'], c: [[12, 12, 9]] },
+  bookmark: { d: ['M6.5 3.5h11v17l-5.5-4-5.5 4z'] },
+  plus: { d: ['M12 5v14', 'M5 12h14'] },
+  user: { d: ['M4.5 20.5c1.1-3.8 4-5.8 7.5-5.8s6.4 2 7.5 5.8'], c: [[12, 8, 4]] },
+  back: { d: ['M15 5l-7 7 7 7'] },
+  share: { d: ['M12 3v12', 'M7.5 7.5L12 3l4.5 4.5', 'M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6'] },
+  phone: { d: ['M6.6 3.5h2.9l1.6 4.4-2 1.3a12 12 0 0 0 5.7 5.7l1.3-2 4.4 1.6v2.9a2 2 0 0 1-2.2 2A17 17 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z'] },
+  nav: { d: ['M3.5 10.8L20 4l-6.8 16.5-2.3-7.4z'] },
+  shield: { d: ['M12 3l7.5 3v5.6c0 4.4-3.1 8.2-7.5 9.4-4.4-1.2-7.5-5-7.5-9.4V6z', 'M8.8 12.2l2.3 2.3 4.3-4.6'] },
+  checkCircle: { d: ['M8 12.3l2.6 2.6L16 9.5'], c: [[12, 12, 9]] },
+  check: { d: ['M5 12.5l4.5 4.5L19 7.5'] },
+  x: { d: ['M6 6l12 12', 'M18 6L6 18'] },
+  wine: { d: ['M8 3h8l-.6 5.2a3.4 3.4 0 0 1-6.8 0z', 'M12 11.6V20', 'M8.5 20h7'] },
+  ban: { d: ['M5.6 5.6l12.8 12.8'], c: [[12, 12, 9]] },
+  leaf: { d: ['M5 19C5 11 10 6 19.5 5 19.5 14 14 19 5 19z', 'M5 19l7.5-7.5'] },
+  sort: { d: ['M7 4v16', 'M3.5 16.5L7 20l3.5-3.5', 'M17 20V4', 'M13.5 7.5L17 4l3.5 3.5'] },
+  sliders: { d: ['M4 7h10', 'M18 7h2', 'M4 17h2', 'M10 17h10'], c: [[16, 7, 2], [8, 17, 2]] },
+  clock: { d: ['M12 7.5V12l3 2'], c: [[12, 12, 9]] },
+  flag: { d: ['M5 21V4', 'M5 4h11l-1.8 4L16 12H5'] },
+  store: { d: ['M4 9.5L5.5 4h13L20 9.5', 'M4 9.5v10.5h16V9.5', 'M4 9.5h16', 'M9.5 20v-5.5h5V20'] },
+  users: { d: ['M3 20c.8-3.4 3-5 6-5s5.2 1.6 6 5', 'M16 4.6a3.2 3.2 0 0 1 0 6.3', 'M18 15.3c1.8.7 2.8 2.2 3.2 4.7'], c: [[9, 8.2, 3.3]] },
+  sparkle: { d: ['M12 3.5l1.9 5.2 5.1 1.8-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.8z'], fill: true },
+  doc: { d: ['M7 3h7l4 4v14H7z', 'M14 3v4h4', 'M10 12h5', 'M10 16h5'] },
+  upload: { d: ['M12 15V4', 'M7.5 8.5L12 4l4.5 4.5', 'M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4'] },
+  arrow: { d: ['M5 12h14', 'M13 6l6 6-6 6'] },
+};
+function I(name, cls) {
+  const p = ICONS[name];
+  return html`<svg className=${'ic' + (cls ? ' ' + cls : '')} viewBox="0 0 24 24" aria-hidden="true"
+    fill=${p.fill ? 'currentColor' : 'none'} stroke=${p.fill ? 'none' : 'currentColor'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    ${p.d.map((d, i) => html`<path key=${'p' + i} d=${d} />`)}
+    ${(p.c || []).map((c, i) => html`<circle key=${'c' + i} cx=${c[0]} cy=${c[1]} r=${c[2]} />`)}
+  </svg>`;
+}
+
+/* ---------- Dish illustrations (drawn for the demo) ---------- */
+const SHADOW = 'rgba(80, 40, 10, 0.16)';
+function Dish(kind) {
+  if (kind === 'biryani') return html`<svg viewBox="0 0 120 90" aria-hidden="true">
+    <ellipse cx="60" cy="83" rx="40" ry="5" fill=${SHADOW} />
+    <path d="M24 46 C24 70 40 80 60 80 C80 80 96 70 96 46 Z" fill="#B4532A" />
+    <path d="M30 54 C32 66 41 73 51 75" fill="none" stroke="#D97D4F" strokeWidth="4" strokeLinecap="round" opacity="0.8" />
+    <path d="M25 55 C42 61 78 61 95 55" fill="none" stroke="#8E3E1E" strokeWidth="3" />
+    <ellipse cx="60" cy="46" rx="38" ry="9" fill="#8E3E1E" />
+    <path d="M27 45 C31 28 47 21 60 21 C74 21 89 28 93 45 C80 50 40 50 27 45 Z" fill="#F8E7B5" />
+    <path d="M42 33 C48 37 55 33 61 37" fill="none" stroke="#F2A33A" strokeWidth="3" strokeLinecap="round" />
+    <path d="M63 28 C69 31 74 29 80 33" fill="none" stroke="#F2A33A" strokeWidth="3" strokeLinecap="round" />
+    <circle cx="50" cy="40" r="1.6" fill="#7A3E1D" /><circle cx="70" cy="38" r="1.6" fill="#7A3E1D" />
+    <circle cx="39" cy="42" r="1.4" fill="#7A3E1D" /><circle cx="80" cy="41" r="1.4" fill="#7A3E1D" />
+    <path d="M64 23 C70 15 80 17 83 22 C77 27 70 27 64 23 Z" fill="#3E9B4F" />
+    <path d="M66 23 C72 21 77 21 81 22" fill="none" stroke="#2C7A3B" strokeWidth="1" />
+    <path d="M48 15 C44 11 52 8 48 3" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
+    <path d="M72 15 C68 11 76 8 72 3" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
+  </svg>`;
+  if (kind === 'thali') return html`<svg viewBox="0 0 120 90" aria-hidden="true">
+    <ellipse cx="60" cy="85" rx="40" ry="4" fill=${SHADOW} />
+    <circle cx="60" cy="45" r="39" fill="#C6CFD9" /><circle cx="60" cy="45" r="35" fill="#E9EEF3" />
+    <circle cx="42" cy="29" r="10" fill="#B6C0CC" /><circle cx="42" cy="29" r="7.8" fill="#F2B33D" />
+    <circle cx="40" cy="27" r="1" fill="#A86B12" /><circle cx="44" cy="31" r="1" fill="#A86B12" />
+    <circle cx="61" cy="22" r="10" fill="#B6C0CC" /><circle cx="61" cy="22" r="7.8" fill="#6BA539" />
+    <circle cx="59" cy="21" r="1.4" fill="#F0E6C8" /><circle cx="63" cy="24" r="1.4" fill="#F0E6C8" />
+    <circle cx="79" cy="30" r="10" fill="#B6C0CC" /><circle cx="79" cy="30" r="7.8" fill="#E0663A" />
+    <circle cx="77" cy="29" r="1.6" fill="#F7E3C8" /><circle cx="81" cy="32" r="1.6" fill="#F7E3C8" />
+    <circle cx="83" cy="51" r="9" fill="#B6C0CC" /><circle cx="83" cy="51" r="7" fill="#F6F1E4" />
+    <circle cx="81" cy="50" r="0.9" fill="#6BA539" /><circle cx="85" cy="52" r="0.9" fill="#6BA539" />
+    <ellipse cx="47" cy="54" rx="14" ry="9.5" fill="#FFFFFF" />
+    <circle cx="43" cy="52" r="1" fill="#E6DCC4" /><circle cx="50" cy="55" r="1" fill="#E6DCC4" /><circle cx="47" cy="50" r="1" fill="#E6DCC4" />
+    <circle cx="66" cy="62" r="12" fill="#E7BE7C" />
+    <circle cx="62" cy="59" r="1.6" fill="#C48A40" /><circle cx="70" cy="64" r="1.4" fill="#C48A40" /><circle cx="66" cy="67" r="1.2" fill="#C48A40" /><circle cx="70" cy="58" r="1" fill="#C48A40" />
+    <path d="M33 62 a6 6 0 0 1 12 0 z" fill="#F5D547" />
+    <path d="M38 71 C44 73 50 72 54 69" fill="none" stroke="#3E9B4F" strokeWidth="2.5" strokeLinecap="round" />
+  </svg>`;
+  if (kind === 'kebab') return html`<svg viewBox="0 0 120 90" aria-hidden="true">
+    <ellipse cx="60" cy="85" rx="44" ry="4" fill=${SHADOW} />
+    <ellipse cx="60" cy="68" rx="48" ry="14" fill="#D6DDE6" /><ellipse cx="60" cy="66" rx="44" ry="11.5" fill="#F1F4F8" />
+    <path d="M24 70 C32 64 38 64 44 70" fill="none" stroke="#E2A9C7" strokeWidth="2.5" />
+    <path d="M28 74 C34 69 40 69 46 74" fill="none" stroke="#E2A9C7" strokeWidth="2.5" />
+    <path d="M84 67 a7 7 0 0 1 14 0 z" fill="#F5D547" />
+    <g transform="rotate(-18 60 44)">
+      <line x1="10" y1="44" x2="110" y2="44" stroke="#9A7350" strokeWidth="3" strokeLinecap="round" />
+      <rect x="22" y="35" width="14" height="18" rx="4" fill="#9C4A2A" />
+      <rect x="37" y="36" width="10" height="16" rx="3" fill="#ECDCE8" />
+      <rect x="48" y="35" width="14" height="18" rx="4" fill="#A9552F" />
+      <rect x="63" y="36" width="10" height="16" rx="3" fill="#4E9A45" />
+      <rect x="74" y="35" width="14" height="18" rx="4" fill="#9C4A2A" />
+      <rect x="89" y="36" width="10" height="16" rx="3" fill="#E04B35" />
+      <path d="M25 40h8M25 46h8M51 40h8M51 46h8M77 40h8M77 46h8" stroke="#6E2F17" strokeWidth="1.6" strokeLinecap="round" />
+    </g>
+  </svg>`;
+  if (kind === 'dosa') return html`<svg viewBox="0 0 120 90" aria-hidden="true">
+    <ellipse cx="60" cy="86" rx="44" ry="3.5" fill=${SHADOW} />
+    <ellipse cx="60" cy="62" rx="50" ry="17" fill="#D6DDE6" /><ellipse cx="60" cy="60" rx="46" ry="14.5" fill="#F1F4F8" />
+    <path d="M14 58 L98 37 C106 43 106 55 98 61 Z" fill="#E9A93A" />
+    <path d="M98 37 C106 43 106 55 98 61 C94 55 94 43 98 37 Z" fill="#C9871E" />
+    <path d="M30 56 L92 41 M34 59 L95 49 M40 61 L95 56" stroke="#D48F25" strokeWidth="1.5" strokeLinecap="round" opacity="0.85" />
+    <circle cx="36" cy="73" r="8.5" fill="#B6C0CC" /><circle cx="36" cy="73" r="6.6" fill="#F3EFE2" />
+    <circle cx="34" cy="72" r="0.9" fill="#4E9A45" /><circle cx="38" cy="74" r="0.9" fill="#C0392B" />
+    <circle cx="58" cy="76" r="8.5" fill="#B6C0CC" /><circle cx="58" cy="76" r="6.6" fill="#D9772F" />
+    <circle cx="56" cy="75" r="1" fill="#F2C14E" /><circle cx="60" cy="77" r="1" fill="#6BA539" />
+  </svg>`;
+  if (kind === 'roll') return html`<svg viewBox="0 0 120 90" aria-hidden="true">
+    <ellipse cx="60" cy="82" rx="38" ry="4.5" fill=${SHADOW} />
+    <g transform="rotate(-14 60 48)">
+      <rect x="22" y="34" width="70" height="28" rx="14" fill="#F2D3A0" />
+      <path d="M22 48 a14 14 0 0 1 14 -14 H58 V62 H36 a14 14 0 0 1 -14 -14 Z" fill="#FFFFFF" />
+      <path d="M40 34 V62 M48 34 V62" stroke="#E8553E" strokeWidth="2.5" />
+      <ellipse cx="92" cy="48" rx="9" ry="14" fill="#E9C38A" />
+      <ellipse cx="92" cy="48" rx="6.5" ry="11" fill="#8B4A2B" />
+      <path d="M88 40 C92 37 96 39 97 43" fill="none" stroke="#6BB04F" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="94" cy="53" r="2.2" fill="#E04B35" /><circle cx="89" cy="50" r="1.6" fill="#F5E6B8" />
+    </g>
+  </svg>`;
+  if (kind === 'bowl') return html`<svg viewBox="0 0 120 90" aria-hidden="true">
+    <ellipse cx="60" cy="85" rx="38" ry="4" fill="rgba(20, 60, 30, 0.16)" />
+    <ellipse cx="52" cy="40" rx="11" ry="6" fill="#5DAA4E" transform="rotate(-25 52 40)" />
+    <ellipse cx="70" cy="38" rx="12" ry="6.5" fill="#89C66B" transform="rotate(20 70 38)" />
+    <ellipse cx="40" cy="44" rx="10" ry="5.5" fill="#3E8F44" transform="rotate(-10 40 44)" />
+    <ellipse cx="82" cy="44" rx="10" ry="5.5" fill="#5DAA4E" transform="rotate(15 82 44)" />
+    <circle cx="58" cy="44" r="5.5" fill="#E8553E" /><circle cx="56.5" cy="42.5" r="1.5" fill="#F7A08F" />
+    <circle cx="74" cy="46" r="5" fill="#E8553E" />
+    <circle cx="47" cy="47" r="3.5" fill="#E8C27A" /><circle cx="66" cy="48" r="3.5" fill="#E8C27A" /><circle cx="86" cy="49" r="3.2" fill="#E8C27A" />
+    <path d="M76 40 C80 36 86 37 88 40 C84 43 79 43 76 40 Z" fill="#B7D96B" />
+    <path d="M20 48 C22 72 40 82 60 82 C80 82 98 72 100 48 Z" fill="#FFFFFF" />
+    <path d="M20 48 H100" stroke="#E2E7EE" strokeWidth="2" />
+    <path d="M28 58 C34 70 46 76 58 77" fill="none" stroke="#EEF2F6" strokeWidth="4" strokeLinecap="round" />
+    <path d="M30 63 H90" stroke="#8FC6A0" strokeWidth="3" opacity="0.55" />
+  </svg>`;
+  return html`<svg viewBox="0 0 120 90" aria-hidden="true">
+    <ellipse cx="60" cy="85" rx="38" ry="4" fill=${SHADOW} />
+    <ellipse cx="60" cy="74" rx="36" ry="8" fill="#D6DDE6" /><ellipse cx="60" cy="72.5" rx="31" ry="6" fill="#F1F4F8" />
+    <path d="M38 34 L82 34 L75 72 C67 76 53 76 45 72 Z" fill="#B9663E" />
+    <path d="M40 44 L80 44 L79 50 L41 50 Z" fill="#CF7D52" />
+    <ellipse cx="60" cy="34" rx="22" ry="5.5" fill="#9A4F2C" />
+    <ellipse cx="60" cy="34.5" rx="18.5" ry="3.8" fill="#C98B53" />
+    <path d="M50 26 C46 21 54 18 50 12" fill="none" stroke="#9B735A" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
+    <path d="M60 24 C56 19 64 16 60 10" fill="none" stroke="#9B735A" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
+    <path d="M70 26 C66 21 74 18 70 12" fill="none" stroke="#9B735A" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
+    <circle cx="92" cy="70" r="7" fill="#E3B76A" /><circle cx="90" cy="68" r="1" fill="#C48A40" /><circle cx="94" cy="72" r="1" fill="#C48A40" />
+  </svg>`;
+}
+
+/* ---------- Sample data (all made up) ---------- */
+const PREFS = [
+  { id: 'halal', label: 'Halal', dish: 'biryani' },
+  { id: 'jain', label: 'Jain', dish: 'thali' },
+  { id: 'veg', label: 'Pure veg', dish: 'dosa' },
+  { id: 'vegan', label: 'Vegan', dish: 'bowl' },
+];
+const PREF_LABEL = { halal: 'Halal', jain: 'Jain', veg: 'Pure veg', vegan: 'Vegan' };
+const PREF_HINT = { halal: 'Certified, checked or declared halal', jain: 'No onion, garlic or root vegetables', veg: 'Vegetarian-only kitchens', vegan: 'No dairy, eggs or honey' };
+const LEVELS = {
+  certified: { rank: 4, label: 'Certified', icon: 'shield', about: 'Valid certificate from a recognised body. We check it and track its expiry.' },
+  checked: { rank: 3, label: 'Checked by us', icon: 'checkCircle', about: 'Our team visited and checked the kitchen and suppliers.' },
+  owner: { rank: 2, label: 'Owner-declared', icon: 'user', about: "The owner's word. Nobody has checked it yet." },
+  community: { rank: 1, label: 'Community', icon: 'users', about: 'Added or confirmed by trusted communities (Community-reported).' },
+};
+const LEVEL_COLOR = { certified: 'var(--lv-certified)', checked: 'var(--lv-checked)', owner: 'var(--lv-owner)', community: 'var(--lv-community)' };
+const ROLES = [{ id: 'diner', label: 'Diner', short: 'Diner' }, { id: 'owner', label: 'Restaurant owner', short: 'Owner' }, { id: 'admin', label: 'Our team', short: 'Team' }];
+const CATS = [
+  { id: 'biryani', label: 'Biryani' }, { id: 'thali', label: 'Thali' }, { id: 'kebab', label: 'Kebabs' }, { id: 'dosa', label: 'Dosa' },
+  { id: 'roll', label: 'Rolls' }, { id: 'bowl', label: 'Bowls' }, { id: 'chai', label: 'Chai' },
+];
+const SORTS = ['trust', 'near', 'rating'];
+const SORT_LABEL = { trust: 'Most trusted', near: 'Nearest', rating: 'Top rated' };
+const VISIT_CHECKS = {
+  halal: ['Meat supplier certificate seen', 'Supplier bills seen', 'No pork on the menu', 'Alcohol shown correctly'],
+  jain: ['Veg-only kitchen', 'Separate Jain preparation', 'No root vegetables in Jain dishes'],
+  veg: ['Veg-only kitchen', 'No eggs in the kitchen'],
+  vegan: ['No dairy', 'No eggs', 'Veg-only kitchen'],
+};
+const COMMUNITY = { Pune: 'Camp Food Circle', Ahmedabad: 'Old City Food Walkers' };
+const ADD_DEFAULT = {
+  Pune: { name: 'Mount Road Kebab Stop', area: 'Camp', cuisine: 'Kebabs · Rolls', dish: 'roll' },
+  Ahmedabad: { name: 'Lal Darwaja Chai & Bun', area: 'Relief Road', cuisine: 'Tea · Snacks', dish: 'chai' },
+};
+const OWNER_TAGS = [
+  ['alcohol', 'We serve alcohol'], ['pork', 'Pork is on the menu'], ['sepHalal', 'Separate halal kitchen'],
+  ['vegOnly', 'Veg-only kitchen'], ['noOnionGarlic', 'Jain dishes without onion or garlic'],
+];
+const REASONS = ['Not halal as listed', 'Pork found or served', 'Not Jain or veg as listed', 'Closed or moved', 'Wrong details'];
+const HINTS = ['Search "biryani"', 'Search "Jain thali"', 'Search "kebab rolls"', 'Search "vegan bowl"'];
+
+const CITIES = {
+  Pune: {
+    home: 'Camp', state: 'Maharashtra', you: { x: 190, y: 224 },
+    river: 'M-10,176 C50,160 100,196 150,184 C200,172 230,124 284,132 C320,138 340,112 370,104',
+    riverName: 'Mula-Mutha river', riverLabel: { x: 246, y: 110 },
+    parks: [{ cx: 120, cy: 300, rx: 34, ry: 20 }, { cx: 300, cy: 200, rx: 28, ry: 18 }],
+    roads: ['M0,246 L360,234', 'M186,0 L194,420', 'M30,40 L190,236', 'M194,250 L250,420', 'M194,236 L360,60', 'M0,112 L186,130'],
+    areas: [
+      { name: 'BANER', x: 24, y: 62 }, { name: 'SHIVAJINAGAR', x: 70, y: 102 }, { name: 'KOREGAON PARK', x: 212, y: 178 },
+      { name: 'VIMAN NAGAR', x: 268, y: 50 }, { name: 'CAMP', x: 132, y: 276 }, { name: 'KONDHWA', x: 230, y: 392 },
+    ],
+  },
+  Ahmedabad: {
+    home: 'Navrangpura', state: 'Gujarat', you: { x: 140, y: 178 },
+    river: 'M172,-10 C160,80 192,140 176,210 C162,280 150,330 166,430',
+    riverName: 'Sabarmati river', riverLabel: { x: 182, y: 300 },
+    parks: [{ cx: 60, cy: 140, rx: 26, ry: 16 }, { cx: 270, cy: 300, rx: 32, ry: 20 }],
+    roads: ['M0,150 L360,170', 'M120,0 L110,420', 'M0,262 L360,242', 'M176,210 L360,330', 'M40,30 L176,210'],
+    areas: [
+      { name: 'BODAKDEV', x: 28, y: 62 }, { name: 'NAVRANGPURA', x: 84, y: 128 }, { name: 'SATELLITE', x: 14, y: 232 },
+      { name: 'ASHRAM ROAD', x: 112, y: 238 }, { name: 'RELIEF ROAD', x: 226, y: 186 }, { name: 'JUHAPURA', x: 44, y: 374 },
+    ],
+  },
+};
+
+const PLACES = [
+  { id: 'noor', city: 'Pune', name: 'Noor Mahal Biryani', area: 'Camp', cuisine: 'Mughlai · Biryani', dish: 'biryani', price: '₹₹', rating: 4.5, reviewsCount: 312, open: true, openTill: '11:30 pm', hours: '12:00 pm – 11:30 pm', phone: '+91 00000 10142', x: 204, y: 244, dist: 0.6,
+    levels: { halal: { level: 'certified', issuer: 'Demo Halal Board', number: 'DEMO-HAL-2026-0142', validUntil: '31 Mar 2027', validISO: '2027-03-31' } },
+    tags: { alcohol: false, pork: false }, menu: ['Mutton dum biryani', 'Chicken korma', 'Sheer khurma'],
+    reviewsList: [
+      { name: 'Ayesha K.', stars: 5, text: 'Certificate is on the wall and matches the app. Biryani was excellent.', confirm: 'Confirmed halal', when: '2 days ago' },
+      { name: 'Rohan M.', stars: 4, text: 'Busy on weekends, worth the wait.', confirm: '', when: '1 week ago' },
+    ] },
+  { id: 'tulsi', city: 'Pune', name: 'Tulsi Courtyard', area: 'Camp', cuisine: 'South Indian · Café', dish: 'dosa', price: '₹', rating: 4.2, reviewsCount: 129, open: true, openTill: '10 pm', hours: '7:30 am – 10:00 pm', phone: '+91 00000 10155', x: 170, y: 256, dist: 0.9,
+    levels: { jain: { level: 'owner' }, veg: { level: 'owner' } },
+    tags: { vegOnly: true, noOnionGarlic: true }, menu: ['Jain masala dosa', 'Idli sambhar', 'Filter coffee'],
+    reviewsList: [{ name: 'Mitali S.', stars: 4, text: 'They make Jain dosa on request. Kitchen looked clean.', confirm: '', when: '5 days ago' }] },
+  { id: 'copper', city: 'Pune', name: 'The Copper Pot Bistro', area: 'Koregaon Park', cuisine: 'Continental · Bar', dish: 'kebab', price: '₹₹₹', rating: 4.1, reviewsCount: 96, open: true, openTill: 'midnight', hours: '12:00 pm – 12:00 am', phone: '+91 00000 10163', x: 240, y: 150, dist: 2.1,
+    levels: { halal: { level: 'owner', note: 'The owner says the chicken and mutton are halal.' } },
+    tags: { alcohol: true, pork: true, sepHalal: true }, menu: ['Grilled chicken steak', 'Pork ribs', 'Mushroom risotto'],
+    reviewsList: [{ name: 'Zoya F.', stars: 3, text: 'Good food, but they serve pork and alcohol, so check the tags before you go.', confirm: '', when: '3 weeks ago' }] },
+  { id: 'annapurna', city: 'Pune', name: 'Annapurna Jain Bhojanalay', area: 'Shivajinagar', cuisine: 'Gujarati · Jain thali', dish: 'thali', price: '₹', rating: 4.6, reviewsCount: 410, open: true, openTill: '10:30 pm', hours: '11:00 am – 3:30 pm, 7:00 – 10:30 pm', phone: '+91 00000 10177', x: 118, y: 132, dist: 2.8,
+    levels: {
+      jain: { level: 'checked', visited: '5 Sep 2026', checks: VISIT_CHECKS.jain },
+      veg: { level: 'certified', issuer: 'Demo Veg & Jain Council', number: 'DEMO-VJ-2026-0077', validUntil: '30 Jun 2027', validISO: '2027-06-30' },
+    },
+    tags: { vegOnly: true, noOnionGarlic: true }, menu: ['Jain thali', 'Kadhi khichdi', 'Shrikhand'],
+    reviewsList: [{ name: 'Hetal P.', stars: 5, text: 'Proper Jain food, no root vegetables at all.', confirm: 'Confirmed Jain', when: '1 day ago' }] },
+  { id: 'kondhwa', city: 'Pune', name: 'Kondhwa Grill House', area: 'Kondhwa', cuisine: 'Arabian · Grills', dish: 'kebab', price: '₹₹', rating: 4.3, reviewsCount: 188, open: true, openTill: '1 am', hours: '1:00 pm – 1:00 am', phone: '+91 00000 10189', x: 214, y: 350, dist: 3.4,
+    levels: { halal: { level: 'checked', visited: '12 Sep 2026', checks: VISIT_CHECKS.halal } },
+    tags: { alcohol: false, pork: false }, menu: ['Chicken mandi', 'Shish tawook', 'Kunafa'],
+    reviewsList: [{ name: 'Imran S.', stars: 4, text: 'Mandi was great. They showed me the supplier certificate.', confirm: 'Confirmed halal', when: '4 days ago' }] },
+  { id: 'bawarchi', city: 'Pune', name: 'Bawarchi Corner', area: 'Viman Nagar', cuisine: 'North Indian', dish: 'thali', price: '₹₹', rating: 4.0, reviewsCount: 73, open: true, openTill: '11 pm', hours: '12:00 pm – 11:00 pm', phone: '+91 00000 10194', x: 302, y: 80, dist: 5.6,
+    levels: { halal: { level: 'community', addedBy: 'Viman Nagar IT Foodies', confirmations: 7 } },
+    tags: { alcohol: false, pork: false }, menu: ['Butter chicken', 'Seekh kebab', 'Dal makhani'], reviewsList: [] },
+  { id: 'greenbowl', city: 'Pune', name: 'Green Bowl Vegan Kitchen', area: 'Baner', cuisine: 'Bowls · Salads', dish: 'bowl', price: '₹₹', rating: 4.4, reviewsCount: 154, open: false, opens: '8 am', hours: '8:00 am – 4:00 pm', phone: '+91 00000 10201', x: 52, y: 88, dist: 7.2,
+    levels: { vegan: { level: 'owner' }, veg: { level: 'checked', visited: '20 Aug 2026', checks: VISIT_CHECKS.veg } },
+    tags: { vegOnly: true }, menu: ['Tofu bhurji bowl', 'Millet salad', 'Date energy balls'], reviewsList: [] },
+
+  { id: 'navjain', city: 'Ahmedabad', name: 'Navrangpura Jain Rasoi', area: 'Navrangpura', cuisine: 'Gujarati · Jain', dish: 'thali', price: '₹', rating: 4.7, reviewsCount: 520, open: true, openTill: '10:30 pm', hours: '11:00 am – 10:30 pm', phone: '+91 00000 20114', x: 112, y: 150, dist: 0.4,
+    levels: {
+      jain: { level: 'certified', issuer: 'Demo Veg & Jain Council', number: 'DEMO-VJ-2026-0021', validUntil: '31 Dec 2026', validISO: '2026-12-31' },
+      veg: { level: 'certified', issuer: 'Demo Veg & Jain Council', number: 'DEMO-VJ-2026-0021', validUntil: '31 Dec 2026', validISO: '2026-12-31' },
+    },
+    tags: { vegOnly: true, noOnionGarlic: true }, menu: ['Kathiyawadi thali', 'Dhokla', 'Basundi'],
+    reviewsList: [{ name: 'Parth D.', stars: 5, text: 'Our family eats here every Sunday. Strictly Jain.', confirm: 'Confirmed Jain', when: '3 days ago' }] },
+  { id: 'riverfront', city: 'Ahmedabad', name: 'Riverfront Grill Café', area: 'Ashram Road', cuisine: 'Café · Grills', dish: 'kebab', price: '₹₹₹', rating: 4.0, reviewsCount: 88, open: true, openTill: '11:30 pm', hours: '11:00 am – 11:30 pm', phone: '+91 00000 20127', x: 150, y: 210, dist: 1.3,
+    levels: { halal: { level: 'owner', note: 'The owner says the chicken is halal.' } },
+    tags: { pork: true, sepHalal: true }, menu: ['Peri-peri chicken', 'Pork sausage platter', 'Cold coffee'], reviewsList: [] },
+  { id: 'oldcity', city: 'Ahmedabad', name: 'Old City Biryani Ghar', area: 'Relief Road', cuisine: 'Biryani · Mughlai', dish: 'biryani', price: '₹', rating: 4.2, reviewsCount: 145, open: true, openTill: '11 pm', hours: '12:00 pm – 11:00 pm', phone: '+91 00000 20138', x: 262, y: 212, dist: 2.6,
+    levels: { halal: { level: 'community', addedBy: 'Old City Food Walkers', confirmations: 5 } },
+    tags: { alcohol: false, pork: false }, menu: ['Chicken biryani', 'Nihari', 'Malpua'],
+    reviewsList: [{ name: 'Sameer Q.', stars: 4, text: 'Local favourite for years. Halal as far as everyone here knows.', confirm: 'Confirmed halal', when: '2 weeks ago' }] },
+  { id: 'satellite', city: 'Ahmedabad', name: 'Satellite Thali House', area: 'Satellite', cuisine: 'Gujarati thali', dish: 'thali', price: '₹₹', rating: 4.5, reviewsCount: 340, open: true, openTill: '11 pm', hours: '11:30 am – 3:00 pm, 7:00 – 11:00 pm', phone: '+91 00000 20149', x: 60, y: 200, dist: 3.9,
+    levels: {
+      jain: { level: 'checked', visited: '28 Aug 2026', checks: VISIT_CHECKS.jain },
+      veg: { level: 'certified', issuer: 'Demo Veg & Jain Council', number: 'DEMO-VJ-2026-0054', validUntil: '31 Mar 2027', validISO: '2027-03-31' },
+    },
+    tags: { vegOnly: true, noOnionGarlic: true }, menu: ['Gujarati thali', 'Undhiyu', 'Aamras'], reviewsList: [] },
+  { id: 'bodakdev', city: 'Ahmedabad', name: 'Bodakdev Vegan Co.', area: 'Bodakdev', cuisine: 'Vegan café', dish: 'chai', price: '₹₹', rating: 4.3, reviewsCount: 61, open: false, opens: '9 am', hours: '9:00 am – 6:00 pm', phone: '+91 00000 20152', x: 74, y: 92, dist: 4.5,
+    levels: { vegan: { level: 'checked', visited: '2 Sep 2026', checks: VISIT_CHECKS.vegan }, veg: { level: 'owner' } },
+    tags: { vegOnly: true }, menu: ['Oat milk chai', 'Vegan thepla wrap', 'Cacao smoothie'], reviewsList: [] },
+  { id: 'juhapura', city: 'Ahmedabad', name: 'Juhapura Kebab Co.', area: 'Juhapura', cuisine: 'Kebabs · Rolls', dish: 'roll', price: '₹', rating: 4.4, reviewsCount: 260, open: true, openTill: '1 am', hours: '5:00 pm – 1:00 am', phone: '+91 00000 20166', x: 80, y: 332, dist: 6.1,
+    levels: { halal: { level: 'certified', issuer: 'Demo Halal Board', number: 'DEMO-HAL-2026-0310', validUntil: '15 Jan 2027', validISO: '2027-01-15' } },
+    tags: { alcohol: false, pork: false }, menu: ['Bara kebab', 'Chicken roll', 'Firni'], reviewsList: [] },
+];
+
+const QUEUE = [
+  { id: 'q-cert', type: 'certificate', placeId: 'kondhwa', pref: 'halal', issuer: 'Demo Halal Board', number: 'DEMO-HAL-2026-0388', validUntil: '30 Sep 2027', validISO: '2027-09-30', submitted: 'Today, 10:42' },
+  { id: 'q-visit', type: 'visit', placeId: 'tulsi', pref: 'jain', when: 'Visited today, 11:00', checks: VISIT_CHECKS.jain },
+  { id: 'q-report', type: 'report', placeId: 'copper', reason: 'Says halal, but pork is on the menu', by: 'Imran S.', submitted: 'Yesterday' },
+  { id: 'q-suggest', type: 'community', by: 'Faiz R.', confirmations: 1,
+    place: { id: 'shawarma', city: 'Pune', name: 'Camp Shawarma Point', area: 'Camp', cuisine: 'Lebanese · Rolls', dish: 'roll', price: '₹', rating: null, reviewsCount: 0, open: true, openTill: '12:30 am', hours: '4:00 pm – 12:30 am', phone: '+91 00000 10210', x: 226, y: 266, dist: 1.1,
+      levels: { halal: { level: 'community', addedBy: 'Faiz R. (suggestion)', confirmations: 1 } }, tags: { alcohol: false, pork: false }, menu: ['Chicken shawarma', 'Falafel wrap'], reviewsList: [] } },
+];
+
+const OWNER_START = {
+  step: 1, status: 'draft', name: 'Al-Barkat Kitchen', city: 'Pune', area: 'Kondhwa', cuisine: 'Hyderabadi · Biryani', phone: '+91 00000 30456',
+  prefs: ['halal'], tags: { alcohol: false, pork: false, sepHalal: false, vegOnly: false, noOnionGarlic: false }, certFile: '', bookVisit: true, placeId: null,
+};
+
+/* ---------- Helpers ---------- */
+const clone = (v) => JSON.parse(JSON.stringify(v));
+const rankOf = (p, pref) => (p.levels[pref] ? LEVELS[p.levels[pref].level].rank : 0);
+const bestRank = (p, prefs) => Math.max(0, ...prefs.map((pr) => rankOf(p, pr)));
+function topPref(p, prefs) {
+  const served = prefs.filter((pr) => p.levels[pr]);
+  const pool = served.length ? served : Object.keys(p.levels);
+  return [...pool].sort((a, b) => rankOf(p, b) - rankOf(p, a))[0];
+}
+function visiblePlaces(s) {
+  const q = s.query.trim().toLowerCase();
+  const list = s.places
+    .filter((p) => p.city === s.city && !p.hidden)
+    .filter((p) => s.prefs.some((pr) => p.levels[pr]))
+    .filter((p) => !(s.strict.noAlcohol && p.tags.alcohol))
+    .filter((p) => !(s.strict.noPork && p.tags.pork))
+    .filter((p) => !s.filters.certifiedOnly || bestRank(p, s.prefs) === 4)
+    .filter((p) => !s.filters.openNow || p.open)
+    .filter((p) => !s.filters.topRated || (p.rating || 0) >= 4.3)
+    .filter((p) => !s.cat || p.dish === s.cat)
+    .filter((p) => !q || [p.name, p.area, p.cuisine].concat(p.menu).join(' ').toLowerCase().includes(q));
+  if (s.sort === 'near') return list.sort((a, b) => a.dist - b.dist);
+  if (s.sort === 'rating') return list.sort((a, b) => (b.rating || 0) - (a.rating || 0) || a.dist - b.dist);
+  return list.sort((a, b) => bestRank(b, s.prefs) - bestRank(a, s.prefs) || a.dist - b.dist);
+}
+function tagList(p) {
+  const t = [];
+  if (p.tags.vegOnly) t.push(['Veg-only kitchen', 't-veg']);
+  if (p.tags.noOnionGarlic) t.push(['Jain: no onion, garlic', 't-veg']);
+  if (p.tags.sepHalal) t.push(['Separate halal kitchen', 't-ok']);
+  if (p.tags.alcohol) t.push(['Serves alcohol', 't-alcohol']);
+  if (p.tags.pork) t.push(['Pork on menu', 't-pork']);
+  if (!p.tags.vegOnly && !p.tags.alcohol && !p.tags.pork) t.push(['No alcohol · No pork', 't-ok']);
+  return t;
+}
+function validity(iso) {
+  const end = Date.parse(iso + 'T00:00:00');
+  if (Number.isNaN(end)) return { text: '', pct: 0 };
+  const days = Math.round((end - Date.now()) / 864e5);
+  const text = days > 60 ? 'Valid for ' + Math.round(days / 30) + ' more months' : days > 0 ? 'Expires in ' + days + ' days' : 'Expired: our team will downgrade it';
+  return { text, pct: Math.max(0, Math.min(100, Math.round((days / 365) * 100))) };
+}
+const initials = (n) => n.split(' ').map((w) => w[0]).filter((ch) => /[A-Za-z]/.test(ch)).slice(0, 2).join('').toUpperCase() || 'U';
+const filtersActive = (s) => s.filters.certifiedOnly || s.filters.openNow || s.filters.topRated || s.strict.noAlcohol || s.strict.noPork || !!s.cat || !!s.query || s.sort !== 'trust';
+
+const STORE_KEY = 'trustplate-web-v1';
+function loadStored() {
+  try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+function persist(s) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved })); } catch (e) { /* storage unavailable: the app still works */ }
+}
+function initialState(useStored) {
+  const st = useStored ? loadStored() : null;
+  const onboarded = st && typeof st.onboarded === 'boolean' ? st.onboarded : true;
+  return {
+    role: 'diner', onboarded,
+    prefs: st && Array.isArray(st.prefs) && st.prefs.length ? st.prefs : ['halal'],
+    strict: st && st.strict ? { noAlcohol: !!st.strict.noAlcohol, noPork: !!st.strict.noPork } : { noAlcohol: false, noPork: false },
+    city: st && CITIES[st.city] ? st.city : 'Pune',
+    saved: st && Array.isArray(st.saved) ? st.saved : [],
+    screen: onboarded ? 'explore' : 'onboard', from: 'explore',
+    filters: { certifiedOnly: false, openNow: false, topRated: false }, sort: 'trust', cat: null, query: '',
+    placeId: null, sheet: null, checkedIn: {}, pin: null,
+    places: clone(PLACES), queue: clone(QUEUE), owner: clone(OWNER_START),
+    toasts: [], nextId: 1,
+  };
+}
+const OFFSETS = [[34, -30], [-42, 26], [50, 20], [-28, -44]];
+const BROWSE = ['explore', 'map', 'saved'];
+
+/* ---------- State ---------- */
+function reducer(s, a) {
+  switch (a.type) {
+    case 'role': return { ...s, role: a.role, sheet: null, pin: null };
+    case 'go': {
+      const next = { ...s, role: a.role || s.role, sheet: a.sheet || null, pin: null };
+      if (a.screen) {
+        if (a.screen === 'place' && s.screen !== 'place') next.from = BROWSE.includes(s.screen) ? s.screen : 'explore';
+        next.screen = a.screen;
+      }
+      if (a.placeId) {
+        next.placeId = a.placeId;
+        const pl = s.places.find((p) => p.id === a.placeId);
+        if (pl) next.city = pl.city;
+      }
+      if (a.ownerStep) next.owner = s.owner.status === 'draft' ? { ...s.owner, step: a.ownerStep } : { ...clone(OWNER_START), step: a.ownerStep };
+      if (next.screen !== 'onboard') next.onboarded = true;
+      return next;
+    }
+    case 'back': return { ...s, screen: s.from || 'explore', sheet: null };
+    case 'finishOnboarding': return { ...s, onboarded: true, screen: 'explore', prefs: a.prefs, strict: a.strict, city: a.city, cat: null };
+    case 'togglePref': {
+      const has = s.prefs.includes(a.id);
+      const prefs = has ? s.prefs.filter((p) => p !== a.id) : [...s.prefs, a.id];
+      return { ...s, prefs: prefs.length ? prefs : s.prefs, pin: null };
+    }
+    case 'strict': return { ...s, strict: { ...s.strict, [a.key]: !s.strict[a.key] } };
+    case 'filter': return { ...s, filters: { ...s.filters, [a.key]: !s.filters[a.key] } };
+    case 'sort': return { ...s, sort: SORTS[(SORTS.indexOf(s.sort) + 1) % SORTS.length] };
+    case 'setSort': return { ...s, sort: a.sort };
+    case 'resetFilters': return { ...s, filters: { certifiedOnly: false, openNow: false, topRated: false }, strict: { noAlcohol: false, noPork: false }, cat: null, query: '', sort: 'trust' };
+    case 'cat': return { ...s, cat: s.cat === a.id ? null : a.id };
+    case 'banner':
+      if (a.id === 'certified') return { ...s, prefs: ['halal'], filters: { ...s.filters, certifiedOnly: true }, cat: null, screen: 'explore' };
+      if (a.id === 'jain') return { ...s, prefs: ['jain'], filters: { ...s.filters, certifiedOnly: false }, cat: null, screen: 'explore' };
+      return s;
+    case 'city': return { ...s, city: a.city, pin: null };
+    case 'query': return { ...s, query: a.value };
+    case 'pin': return { ...s, pin: a.id };
+    case 'open': return { ...s, screen: 'place', placeId: a.id, sheet: null, pin: null, from: BROWSE.includes(s.screen) ? s.screen : 'explore' };
+    case 'sheet': return { ...s, sheet: a.sheet };
+    case 'checkIn': return { ...s, checkedIn: { ...s.checkedIn, [a.id]: true } };
+    case 'save': {
+      const has = s.saved.includes(a.id);
+      return { ...s, saved: has ? s.saved.filter((x) => x !== a.id) : [...s.saved, a.id] };
+    }
+    case 'review':
+      return { ...s, sheet: null, places: s.places.map((p) => (p.id === a.id
+        ? { ...p, rating: p.rating || a.review.stars, reviewsCount: p.reviewsCount + 1, reviewsList: [a.review, ...p.reviewsList] } : p)) };
+    case 'report':
+      return { ...s, sheet: null, nextId: s.nextId + 1,
+        queue: [...s.queue, { id: 'q' + s.nextId, type: 'report', placeId: a.id, reason: a.reason, by: 'You (demo)', submitted: 'Just now' }] };
+    case 'suggest': {
+      const c = CITIES[s.city];
+      const off = OFFSETS[s.nextId % OFFSETS.length];
+      const by = a.asModerator ? COMMUNITY[s.city] : 'You (suggestion)';
+      const levels = {};
+      a.data.prefs.forEach((pr) => { levels[pr] = { level: 'community', addedBy: by, confirmations: 0 }; });
+      const place = { id: 'u' + s.nextId, city: s.city, name: a.data.name.trim(), area: a.data.area.trim() || 'Area not added', cuisine: a.data.cuisine.trim() || 'Restaurant', dish: a.data.dish || 'roll', price: '₹₹', rating: null, reviewsCount: 0, open: true, openTill: 'late', hours: 'Hours not added yet', phone: 'Not added yet', x: c.you.x + off[0], y: c.you.y + off[1], dist: 0.8, levels, tags: { ...a.data.tags }, menu: [], reviewsList: [] };
+      if (a.asModerator) return { ...s, places: [...s.places, place], nextId: s.nextId + 1 };
+      return { ...s, nextId: s.nextId + 1, queue: [...s.queue, { id: 'q' + s.nextId, type: 'community', place, by: 'You (demo)', confirmations: 0 }] };
+    }
+    case 'decide': {
+      const item = s.queue.find((q) => q.id === a.itemId);
+      if (!item) return s;
+      let places = s.places;
+      let owner = s.owner;
+      const queue = s.queue.filter((q) => q.id !== a.itemId);
+      const setLevel = (id, pref, info) => places.map((p) => (p.id === id ? { ...p, levels: { ...p.levels, [pref]: info } } : p));
+      if (item.type === 'certificate' && a.ok) places = setLevel(item.placeId, item.pref, { level: 'certified', issuer: item.issuer, number: item.number, validUntil: item.validUntil, validISO: item.validISO });
+      if (item.type === 'visit' && a.ok) places = setLevel(item.placeId, item.pref, { level: 'checked', visited: 'Today', checks: item.checks });
+      if ((item.type === 'certificate' || item.type === 'visit') && item.fromOwner && a.ok) owner = { ...owner, status: 'verified', verifiedBy: item.type };
+      if (item.type === 'report' && a.ok === 'hide') places = places.map((p) => (p.id === item.placeId ? { ...p, hidden: true } : p));
+      if (item.type === 'community' && a.ok) {
+        const levels = {};
+        Object.keys(item.place.levels).forEach((pr) => { levels[pr] = { ...item.place.levels[pr], confirmations: 3 }; });
+        places = [...places, { ...item.place, levels }];
+      }
+      if (item.type === 'owner') {
+        if (a.ok) {
+          places = [...places, item.place];
+          if (owner.placeId === item.place.id) owner = { ...owner, status: 'listed' };
+        } else if (owner.placeId === item.place.id) {
+          return { ...s, places, owner: clone(OWNER_START), queue: queue.filter((q) => q.placeId !== item.place.id) };
+        }
+      }
+      return { ...s, places, owner, queue };
+    }
+    case 'owner': return { ...s, owner: { ...s.owner, ...a.patch } };
+    case 'ownerReset': return { ...s, owner: clone(OWNER_START) };
+    case 'ownerSubmit': {
+      const o = s.owner;
+      const id = 'own' + s.nextId;
+      const city = CITIES[o.city] ? o.city : 'Pune';
+      const you = CITIES[city].you;
+      const levels = {};
+      o.prefs.forEach((pr) => { levels[pr] = { level: 'owner' }; });
+      const dish = o.tags.vegOnly ? 'thali' : 'biryani';
+      const place = { id, city, name: o.name.trim(), area: o.area.trim(), cuisine: o.cuisine.trim(), dish, price: '₹₹', rating: null, reviewsCount: 0, open: true, openTill: '11 pm', hours: '12:00 pm – 11:00 pm', phone: o.phone, x: you.x + 46, y: you.y + 44, dist: 1.2, levels, tags: { ...o.tags }, menu: [], reviewsList: [] };
+      let n = s.nextId + 1;
+      const items = [{ id: 'q' + s.nextId, type: 'owner', place, submitted: 'Just now' }];
+      if (o.certFile) {
+        const pref = o.prefs.includes('halal') ? 'halal' : o.prefs[0];
+        items.push({ id: 'q' + n, type: 'certificate', placeId: id, pref, issuer: pref === 'halal' ? 'Demo Halal Board' : 'Demo Veg & Jain Council', number: 'DEMO-' + (pref === 'halal' ? 'HAL' : 'VJ') + '-2026-' + (400 + n), validUntil: '31 Mar 2027', validISO: '2027-03-31', submitted: 'Just now', fromOwner: true, file: o.certFile });
+        n += 1;
+      }
+      if (o.bookVisit) {
+        items.push({ id: 'q' + n, type: 'visit', placeId: id, pref: o.prefs[0], when: 'Visit within 7 days', checks: VISIT_CHECKS[o.prefs[0]], fromOwner: true });
+        n += 1;
+      }
+      return { ...s, owner: { ...o, status: 'submitted', placeId: id }, queue: [...items, ...s.queue], nextId: n };
+    }
+    case 'ownerTrack': {
+      // Show the status tracker; if nothing has been submitted yet, submit the sample listing first.
+      let next = { ...s, role: 'owner', sheet: null, pin: null };
+      if (next.owner.status === 'draft') {
+        next = { ...next, owner: { ...next.owner, certFile: next.owner.certFile || 'sample-halal-certificate.pdf' } };
+        next = reducer(next, { type: 'ownerSubmit' });
+      }
+      return next;
+    }
+    case 'toast': return { ...s, toasts: [...s.toasts.slice(-1), { id: s.nextId, text: a.text }], nextId: s.nextId + 1 };
+    case 'untoast': return { ...s, toasts: s.toasts.filter((t) => t.id !== a.id) };
+    case 'reset': return initialState(false);
+    default: return s;
+  }
+}
+
+/* ---------- Small parts ---------- */
+function TrustPill({ pref, level, solid, withPref = true }) {
+  const L = LEVELS[level];
+  return html`<span className=${'tpill lv-' + level + (solid ? ' solid' : '')}>${I(L.icon)}${withPref ? PREF_LABEL[pref] + ' · ' : ''}${L.label}</span>`;
+}
+function Rating({ p }) {
+  return p.rating
+    ? html`<span className="rate" aria-label=${'Rated ' + p.rating.toFixed(1) + ' out of 5'}>${p.rating.toFixed(1)}${I('star')}</span>`
+    : html`<span className="rate new">New</span>`;
+}
+function VegMark({ veg }) {
+  return html`<span className=${'vegmark ' + (veg ? 'veg' : 'nonveg')} role="img" aria-label=${veg ? 'Vegetarian kitchen' : 'Serves meat'}></span>`;
+}
+function openText(p) {
+  return p.open ? html`<span className="okt">Open till ${p.openTill}</span>` : html`<span className="badt">Closed · opens ${p.opens}</span>`;
+}
+function Empty({ title, text, action }) {
+  return html`<div className="empty"><b>${title}</b><span>${text}</span>${action || null}</div>`;
+}
+function Toggle({ id, checked, onChange, label }) {
+  return html`<span className="switch-ui"><input id=${id} type="checkbox" role="switch" aria-label=${label} checked=${checked} onChange=${onChange} /><span></span></span>`;
+}
+function PrefChips({ s, d }) {
+  return html`<div className="prefchips" role="group" aria-label="Food preference">
+    ${PREFS.map((p) => html`<button key=${p.id} className=${'pref p-' + p.id} aria-pressed=${s.prefs.includes(p.id)} onClick=${() => d({ type: 'togglePref', id: p.id })}><i></i>${p.label}</button>`)}
+  </div>`;
+}
+function FilterChips({ s, d }) {
+  return html`<div className="chips" role="group" aria-label="Sort and filters">
+    <button className="fchip" onClick=${() => d({ type: 'sort' })} aria-label=${'Sort: ' + SORT_LABEL[s.sort] + '. Tap to change'}>${I('sort')}${SORT_LABEL[s.sort]}</button>
+    <button className="fchip" aria-pressed=${s.filters.certifiedOnly} onClick=${() => d({ type: 'filter', key: 'certifiedOnly' })}>${I('shield')}Certified</button>
+    <button className="fchip" aria-pressed=${s.strict.noAlcohol} onClick=${() => d({ type: 'strict', key: 'noAlcohol' })}>${I('wine')}No alcohol</button>
+    <button className="fchip" aria-pressed=${s.strict.noPork} onClick=${() => d({ type: 'strict', key: 'noPork' })}>${I('ban')}No pork</button>
+    <button className="fchip" aria-pressed=${s.filters.openNow} onClick=${() => d({ type: 'filter', key: 'openNow' })}>${I('clock')}Open now</button>
+    <button className="fchip" aria-pressed=${s.filters.topRated} onClick=${() => d({ type: 'filter', key: 'topRated' })}>${I('star')}4.3+</button>
+  </div>`;
+}
+
+function PlaceCard({ p, s, d, prefs, preview }) {
+  const ps = prefs || s.prefs;
+  const top = topPref(p, ps);
+  const others = ps.filter((pr) => p.levels[pr] && pr !== top);
+  const saved = s.saved.includes(p.id);
+  return html`<article className="pcard">
+    <div className=${'pimg dishbg d-' + p.dish}>
+      <span className="pimg-art">${Dish(p.dish)}</span>
+      <${TrustPill} pref=${top} level=${p.levels[top].level} solid=${true} />
+      ${preview ? null : html`<button className=${'heart' + (saved ? ' on' : '')} aria-pressed=${saved} aria-label=${saved ? 'Remove ' + p.name + ' from saved' : 'Save ' + p.name}
+        onClick=${() => { d({ type: 'save', id: p.id }); d({ type: 'toast', text: saved ? 'Removed from saved' : 'Saved to your list' }); }}>${I(saved ? 'heartFill' : 'heart')}</button>`}
+      <span className="pimg-meta">${I('pin')}${p.dist.toFixed(1)} km</span>
+    </div>
+    <div className="pbody">
+      <div className="prow">
+        <h3><${VegMark} veg=${!!p.tags.vegOnly} />${preview ? p.name : html`<button className="cardlink" onClick=${() => d({ type: 'open', id: p.id })}>${p.name}</button>`}</h3>
+        <${Rating} p=${p} />
+      </div>
+      <div className="pline">${p.cuisine} · ${p.price} for two</div>
+      <div className="pline">${p.area} · ${openText(p)}</div>
+      <div className="ptags">
+        ${others.map((pr) => html`<${TrustPill} key=${pr} pref=${pr} level=${p.levels[pr].level} />`)}
+        ${tagList(p).slice(0, 2).map(([label, cls]) => html`<span key=${label} className=${'ptag ' + cls}>${label}</span>`)}
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ---------- Top of page ---------- */
+function DemoBar({ s, d, onTour, onReset }) {
+  return html`<div className="demobar">
+    <div className="container">
+      <div className="dm-l"><span className="demo-pill">Demo</span><span>Sample data · nothing here is a real restaurant</span></div>
+      <div className="dm-r">
+        <div className="dseg" role="group" aria-label="View as">
+          ${ROLES.map((r) => html`<button key=${r.id} aria-pressed=${s.role === r.id} aria-label=${r.label} onClick=${() => d({ type: 'role', role: r.id })}><span className="full">${r.label}</span><span className="short">${r.short}</span></button>`)}
+        </div>
+        <button className="dbtn tour-link" onClick=${onTour}>How it works</button>
+        <button className="dbtn" onClick=${onReset}>Reset</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function Logo({ d, sub, cls }) {
+  return html`<button className=${'logo ' + (cls || '')} onClick=${() => d({ type: 'go', role: 'diner', screen: 'explore' })} aria-label="TrustPlate home">
+    <span className="logo-mark">${I('shield')}</span><span>Trust<span className="tp">Plate</span></span>${sub ? html`<small>${sub}</small>` : null}
+  </button>`;
+}
+
+function TopNav({ s, d }) {
+  const [hint, setHint] = useState(0);
+  useEffect(() => {
+    let reduce = false;
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* ignore */ }
+    if (reduce) return undefined;
+    const t = setInterval(() => setHint((h) => (h + 1) % HINTS.length), 2600);
+    return () => clearInterval(t);
+  }, []);
+  if (s.role !== 'diner') {
+    const owner = s.role === 'owner';
+    return html`<header className="topnav"><div className="container nav-inner simple">
+      <${Logo} d=${d} sub=${owner ? 'for restaurants' : 'team'} />
+      <div className="nav-actions"><button className="btn outline sm" onClick=${() => d({ type: 'role', role: 'diner' })}>${I('compass')}Diner view</button></div>
+    </div></header>`;
+  }
+  const city = CITIES[s.city];
+  const other = s.city === 'Pune' ? 'Ahmedabad' : 'Pune';
+  const cur = s.screen === 'place' ? s.from : s.screen;
+  const link = (k, label, icon) => html`<button key=${k} className="nav-link" aria-current=${cur === k ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: k })}>${I(icon)}<span className="lbl">${label}</span></button>`;
+  return html`<header className="topnav"><div className="container nav-inner">
+    <${Logo} d=${d} cls="logo-d" />
+    <button className="loc" onClick=${() => d({ type: 'city', city: other })} aria-label=${'Location ' + city.home + ', ' + s.city + '. Switch to ' + other}>
+      <span className="loc-ic">${I('pin')}</span>
+      <span className="loc-txt"><b>${city.home}${I('chevron', 'tiny')}</b><small>${s.city}, ${city.state}</small></span>
+    </button>
+    <label className="searchbar" htmlFor="search">
+      ${I('search')}
+      <input id="search" type="search" placeholder=${HINTS[hint]} aria-label="Search places or dishes" value=${s.query}
+        onChange=${(e) => d({ type: 'query', value: e.target.value })}
+        onFocus=${() => { if (!BROWSE.includes(s.screen)) d({ type: 'go', screen: 'explore' }); }} />
+      <span className="mic">${I('mic')}</span>
+    </label>
+    <nav className="nav-actions" aria-label="Main">
+      ${link('explore', 'Explore', 'compass')}
+      ${link('map', 'Map', 'map')}
+      ${link('saved', 'Saved', 'bookmark')}
+      <button className="btn outline sm nav-cta" onClick=${() => d({ type: 'go', screen: 'add' })}>${I('plus')}Add a place</button>
+      <button className="nav-link nav-cta nav-for" onClick=${() => d({ type: 'role', role: 'owner' })}>${I('store')}<span className="lbl">For restaurants</span></button>
+      <button className="avatar" aria-current=${s.screen === 'profile' ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: 'profile' })} aria-label="Your profile and preferences">${I('user')}</button>
+    </nav>
+  </div></header>`;
+}
+
+/* ---------- Explore ---------- */
+function Banner({ tone, dish, title, sub, cta, onClick }) {
+  return html`<button className=${'banner ' + tone} onClick=${onClick}>
+    <span className="b-txt"><b>${title}</b><small>${sub}</small><span className="b-cta">${cta}${I('arrow')}</span></span>
+    <span className="b-art">${Dish(dish)}</span>
+  </button>`;
+}
+
+function Filters({ s, d }) {
+  const opt = (id, label, checked, onChange, extra) => html`<label className="fopt" htmlFor=${id}><input id=${id} type="checkbox" checked=${checked} onChange=${onChange} />${label}${extra || null}</label>`;
+  return html`<aside className="filters" aria-label="Filters">
+    <div className="filters-h"><b>${I('sliders')}Filters</b>${filtersActive(s) ? html`<button className="linkbtn" onClick=${() => d({ type: 'resetFilters' })}>Clear all</button>` : null}</div>
+    <div className="fgroup" role="radiogroup" aria-label="Sort by">
+      <h3>Sort by</h3>
+      ${SORTS.map((k) => html`<label key=${k} className="fopt" htmlFor=${'sort-' + k}><input type="radio" name="sort" id=${'sort-' + k} checked=${s.sort === k} onChange=${() => d({ type: 'setSort', sort: k })} />${SORT_LABEL[k]}</label>`)}
+    </div>
+    <div className="fgroup">
+      <h3>What you eat</h3>
+      ${PREFS.map((p) => html`<label key=${p.id} className=${'fopt p-' + p.id} htmlFor=${'fp-' + p.id}><input id=${'fp-' + p.id} type="checkbox" checked=${s.prefs.includes(p.id)} onChange=${() => d({ type: 'togglePref', id: p.id })} />${p.label}<i></i></label>`)}
+    </div>
+    <div className="fgroup">
+      <h3>Hide places with</h3>
+      ${opt('f-alc', 'Alcohol served', s.strict.noAlcohol, () => d({ type: 'strict', key: 'noAlcohol' }))}
+      ${opt('f-pork', 'Pork on the menu', s.strict.noPork, () => d({ type: 'strict', key: 'noPork' }))}
+    </div>
+    <div className="fgroup">
+      <h3>Trust and more</h3>
+      ${opt('f-cert', 'Certified only', s.filters.certifiedOnly, () => d({ type: 'filter', key: 'certifiedOnly' }))}
+      ${opt('f-open', 'Open now', s.filters.openNow, () => d({ type: 'filter', key: 'openNow' }))}
+      ${opt('f-top', 'Rated 4.3 and above', s.filters.topRated, () => d({ type: 'filter', key: 'topRated' }))}
+    </div>
+  </aside>`;
+}
+
+function Explore({ s, d }) {
+  const list = visiblePlaces(s);
+  const city = CITIES[s.city];
+  const cityPlaces = s.places.filter((p) => p.city === s.city && !p.hidden);
+  const certHalal = cityPlaces.filter((p) => p.levels.halal && p.levels.halal.level === 'certified').length;
+  const jainChecked = cityPlaces.filter((p) => p.levels.jain && LEVELS[p.levels.jain.level].rank >= 3).length;
+  const catLabel = s.cat ? CATS.find((c) => c.id === s.cat).label : null;
+  return html`<div>
+    <section className="hero">
+      <div className="container hero-inner">
+        <div>
+          <p className="eyebrow">${city.home}, ${s.city}</p>
+          <h1>Eat out without having to ask.</h1>
+          <p>Restaurants that match how you eat, each with a trust level and proof you can check: certificates, our visits and real check-in reviews.</p>
+          <div className="hero-prefs" role="group" aria-label="Food preference">
+            ${PREFS.map((p) => html`<button key=${p.id} className="hero-pref" aria-pressed=${s.prefs.includes(p.id)} onClick=${() => d({ type: 'togglePref', id: p.id })}>${p.label}</button>`)}
+          </div>
+        </div>
+        <div className="hero-art" aria-hidden="true">
+          <span className="float f1 dishbg d-biryani">${Dish('biryani')}</span>
+          <span className="float f2 dishbg d-thali">${Dish('thali')}</span>
+          <span className="float f3 dishbg d-bowl">${Dish('bowl')}</span>
+        </div>
+      </div>
+    </section>
+    <div className="container">
+      <div className="mobile-prefs"><${PrefChips} s=${s} d=${d} /></div>
+      <div className="banners">
+        <${Banner} tone="b-brand" dish="biryani" title="Certified halal near you" sub=${certHalal + (certHalal === 1 ? ' place' : ' places') + ' with checked certificates'} cta="Show me" onClick=${() => d({ type: 'banner', id: 'certified' })} />
+        <${Banner} tone="b-sun" dish="thali" title="Jain thalis you can trust" sub=${jainChecked + (jainChecked === 1 ? ' kitchen' : ' kitchens') + ' certified or checked by our team'} cta="Explore" onClick=${() => d({ type: 'banner', id: 'jain' })} />
+        <${Banner} tone="b-coral" dish="roll" title="Know a great place?" sub="Add it for your community" cta="Add a place" onClick=${() => d({ type: 'go', screen: 'add' })} />
+      </div>
+      <section className="cats-sec" aria-labelledby="h-cats">
+        <h2 className="sec-title" id="h-cats">What's on your mind?</h2>
+        <div className="cats" role="group" aria-label="Dishes">
+          ${CATS.map((c) => html`<button key=${c.id} className="cat" aria-pressed=${s.cat === c.id} onClick=${() => d({ type: 'cat', id: c.id })}>
+            <span className=${'cat-img dishbg d-' + c.id}>${Dish(c.id)}</span><span>${c.label}</span></button>`)}
+        </div>
+      </section>
+      <div className="browse">
+        <${Filters} s=${s} d=${d} />
+        <section className="results" aria-labelledby="h-results">
+          <div className="results-h">
+            <div>
+              <h2 className="sec-title" id="h-results">${list.length} ${list.length === 1 ? 'place' : 'places'} for you</h2>
+              <p className="note">${SORT_LABEL[s.sort]} first${catLabel ? ' · ' + catLabel : ''}${s.query ? ' · "' + s.query + '"' : ''}</p>
+            </div>
+            <div className="seg" role="group" aria-label="View">
+              <button aria-pressed="true">${I('grid')}Grid</button>
+              <button aria-pressed="false" onClick=${() => d({ type: 'go', screen: 'map' })}>${I('map')}Map</button>
+            </div>
+          </div>
+          <${FilterChips} s=${s} d=${d} />
+          <div className="grid">
+            ${list.length
+              ? list.map((p) => html`<${PlaceCard} key=${p.id} p=${p} s=${s} d=${d} />`)
+              : html`<${Empty} title="No places match" text="Try removing a filter or a dish, or add a place for everyone."
+                  action=${html`<button className="btn outline sm" onClick=${() => d({ type: 'resetFilters' })}>Clear filters</button>`} />`}
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Map ---------- */
+function MapSvg({ s, d, list, selId }) {
+  const c = CITIES[s.city];
+  return html`<svg className="mapsvg" viewBox="0 0 360 420" preserveAspectRatio="xMidYMid meet" role="img" aria-label=${'Sketch map of ' + s.city + ' with ' + list.length + ' places'}>
+    <rect x="-400" y="-400" width="1160" height="1220" fill="var(--map-land)" />
+    ${c.parks.map((pk, i) => html`<ellipse key=${'park' + i} cx=${pk.cx} cy=${pk.cy} rx=${pk.rx} ry=${pk.ry} fill="var(--map-park)" />`)}
+    ${c.roads.map((r, i) => html`<path key=${'case' + i} d=${r} stroke="var(--map-casing)" strokeWidth="10" fill="none" strokeLinecap="round" />`)}
+    ${c.roads.map((r, i) => html`<path key=${'road' + i} d=${r} stroke="var(--map-road)" strokeWidth="7" fill="none" strokeLinecap="round" />`)}
+    <path d=${c.river} stroke="var(--map-water)" strokeWidth="15" fill="none" strokeLinecap="round" />
+    <text x=${c.riverLabel.x} y=${c.riverLabel.y} fontSize="9.5" fontStyle="italic" fill="var(--map-label)">${c.riverName}</text>
+    ${c.areas.map((a) => html`<text key=${a.name} x=${a.x} y=${a.y} fontSize="8.5" fontWeight="700" letterSpacing="1" fill="var(--map-label)">${a.name}</text>`)}
+    <circle cx=${c.you.x} cy=${c.you.y} r="16" fill="var(--brand)" opacity="0.18" />
+    <circle cx=${c.you.x} cy=${c.you.y} r="6" fill="var(--brand-fill)" stroke="#ffffff" strokeWidth="2.5" />
+    ${list.map((p) => {
+      const lv = p.levels[topPref(p, s.prefs)].level;
+      const on = selId === p.id;
+      const choose = () => d({ type: 'pin', id: p.id });
+      return html`<g key=${p.id} className="pin" tabIndex="0" role="button" aria-label=${p.name + ', ' + LEVELS[lv].label}
+        transform=${'translate(' + p.x + ' ' + p.y + ') scale(' + (on ? 1.3 : 1) + ')'}
+        onClick=${choose} onKeyDown=${(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(); } }}>
+        <circle cx="0" cy="-8" r="18" fill="transparent" />
+        <path className="pin-body" d="M0 6 C0 6 -12 -4 -12 -12 A12 12 0 0 1 12 -12 C12 -4 0 6 0 6 Z" fill=${LEVEL_COLOR[lv]} stroke="#ffffff" strokeWidth="2" />
+        <circle cx="0" cy="-12" r="4.5" fill="#ffffff" />
+      </g>`;
+    })}
+  </svg>`;
+}
+
+function MapView({ s, d }) {
+  const list = visiblePlaces(s);
+  const selId = list.some((p) => p.id === s.pin) ? s.pin : (list[0] ? list[0].id : null);
+  const railRef = useRef(null);
+  const listRef = useRef(null);
+  useEffect(() => {
+    let reduce = false;
+    try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* ignore */ }
+    const behavior = reduce ? 'auto' : 'smooth';
+    const rail = railRef.current;
+    if (rail && selId) {
+      const el = rail.querySelector('[data-id="' + selId + '"]');
+      if (el) rail.scrollTo({ left: el.offsetLeft - (rail.clientWidth - el.clientWidth) / 2, behavior });
+    }
+    const lst = listRef.current;
+    if (lst && selId) {
+      const row = lst.querySelector('[data-id="' + selId + '"]');
+      if (row && (row.offsetTop < lst.scrollTop || row.offsetTop + row.offsetHeight > lst.scrollTop + lst.clientHeight)) {
+        lst.scrollTo({ top: row.offsetTop - 12, behavior });
+      }
+    }
+  }, [selId, s.city]);
+  return html`<div className="mapview">
+    <aside className="maplist" aria-label="Places on the map">
+      <div className="maplist-h">
+        <div className="results-h" style=${{ marginBottom: 0 }}>
+          <h2 className="sec-title">${list.length} ${list.length === 1 ? 'place' : 'places'} on the map</h2>
+          <div className="seg" role="group" aria-label="View">
+            <button aria-pressed="false" onClick=${() => d({ type: 'go', screen: 'explore' })}>${I('grid')}Grid</button>
+            <button aria-pressed="true">${I('map')}Map</button>
+          </div>
+        </div>
+        <${PrefChips} s=${s} d=${d} />
+        <${FilterChips} s=${s} d=${d} />
+      </div>
+      <div className="maplist-items" ref=${listRef}>
+        ${list.length ? list.map((p) => {
+          const top = topPref(p, s.prefs);
+          return html`<div key=${p.id} data-id=${p.id} className=${'mrow' + (p.id === selId ? ' active' : '')} onMouseEnter=${() => d({ type: 'pin', id: p.id })}>
+            <div className=${'mthumb dishbg d-' + p.dish}>${Dish(p.dish)}</div>
+            <div className="mbody">
+              <h3><button className="cardlink" onClick=${() => d({ type: 'open', id: p.id })}>${p.name}</button></h3>
+              <div className="pline"><${Rating} p=${p} /> ${p.dist.toFixed(1)} km · ${p.price} · ${p.area}</div>
+              <div><${TrustPill} pref=${top} level=${p.levels[top].level} /></div>
+            </div>
+          </div>`;
+        }) : html`<${Empty} title="No places match" text="Change a filter to see more places." />`}
+      </div>
+    </aside>
+    <div className="mapcanvas">
+      <${MapSvg} s=${s} d=${d} list=${list} selId=${selId} />
+      <div className="map-prefs"><${PrefChips} s=${s} d=${d} /></div>
+      <div className="map-top"><span className="map-hint">Sketch map · the real app uses OpenStreetMap</span></div>
+      <div className="rail" ref=${railRef}>
+        ${list.length ? list.map((p) => {
+          const top = topPref(p, s.prefs);
+          return html`<div key=${p.id} data-id=${p.id} className=${'mini' + (p.id === selId ? ' active' : '')}>
+            <div className=${'mthumb dishbg d-' + p.dish}>${Dish(p.dish)}</div>
+            <div className="mbody">
+              <h3><button className="cardlink" onClick=${() => d({ type: 'open', id: p.id })}>${p.name}</button></h3>
+              <div className="pline"><${Rating} p=${p} /> ${p.dist.toFixed(1)} km · ${p.price}</div>
+              <div><${TrustPill} pref=${top} level=${p.levels[top].level} /></div>
+            </div>
+          </div>`;
+        }) : html`<div className="mini"><div className="mbody"><h3>No places match</h3><span className="note">Change a filter from Explore.</span></div></div>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Restaurant page ---------- */
+function TrustCard({ pref, info, active }) {
+  const L = LEVELS[info.level];
+  let body = null;
+  if (info.level === 'certified') {
+    const v = validity(info.validISO);
+    body = html`<div className="ticket">
+      <div className="trow"><span>Issued by</span><b>${info.issuer}</b></div>
+      <div className="trow"><span>Certificate no.</span><b className="mono">${info.number}</b></div>
+      <div className="trow"><span>Valid until</span><b>${info.validUntil}</b></div>
+      <div className="validity" role="img" aria-label=${v.text}><i style=${{ width: v.pct + '%' }}></i></div>
+      <div className="trow"><span>${v.text}</span><b>Expiry tracked</b></div>
+    </div>`;
+  } else if (info.level === 'checked') {
+    body = html`<ul className="checklist">${info.checks.map((c) => html`<li key=${c}>${I('checkCircle')}${c}</li>`)}</ul>`;
+  } else if (info.level === 'owner') {
+    body = html`<p className="note">${info.note || 'The owner says the food is ' + PREF_LABEL[pref].toLowerCase() + '.'} Nobody has checked it yet; ask for proof if it matters to you.</p>`;
+  } else {
+    body = html`<p className="note">Added by ${info.addedBy}${info.confirmations ? ', and confirmed by ' + info.confirmations + ' people who checked in' : ''}.</p>`;
+  }
+  const sub = info.level === 'checked' ? 'Our team visited on ' + info.visited : L.about;
+  return html`<div className=${'tcard' + (active ? '' : ' dim')}>
+    <div className="tcard-h">
+      <span className=${'tcard-ic lv-' + info.level}>${I(L.icon)}</span>
+      <span className="tcard-t"><b>${PREF_LABEL[pref]} · ${L.label}</b><small>${active ? sub : 'Not in your filter · ' + sub}</small></span>
+    </div>
+    ${body}
+  </div>`;
+}
+
+function FactTiles({ p }) {
+  const tiles = [
+    { label: 'Alcohol', value: p.tags.alcohol ? 'Served' : 'Not served', tone: p.tags.alcohol ? 'warn' : 'good', icon: 'wine' },
+    { label: 'Pork', value: p.tags.pork ? 'On the menu' : 'Not on menu', tone: p.tags.pork ? 'bad' : 'good', icon: 'ban' },
+  ];
+  if (p.tags.vegOnly) {
+    tiles.push({ label: 'Kitchen', value: 'Veg only', tone: 'good', icon: 'leaf' });
+    tiles.push({ label: 'Jain dishes', value: p.tags.noOnionGarlic ? 'No onion, garlic' : 'Not offered', tone: p.tags.noOnionGarlic ? 'good' : 'plain', icon: 'leaf' });
+  } else {
+    tiles.push({ label: 'Halal kitchen', value: p.tags.sepHalal ? 'Separate' : 'Shared', tone: p.tags.sepHalal ? 'good' : 'plain', icon: 'store' });
+    tiles.push({ label: 'Kitchen', value: 'Serves meat', tone: 'plain', icon: 'store' });
+  }
+  return html`<div className="facts">${tiles.map((t) => html`<div key=${t.label} className=${'fact ' + t.tone}><span className="fact-ic">${I(t.icon)}</span><small>${t.label}</small><b>${t.value}</b></div>`)}</div>`;
+}
+
+function Place({ s, d }) {
+  const p = s.places.find((x) => x.id === s.placeId);
+  if (!p || p.hidden) {
+    return html`<div className="container page"><${Empty} title="This place is hidden" text="Our team is checking a report about it."
+      action=${html`<button className="btn outline sm" onClick=${() => d({ type: 'back' })}>${I('back')}Back to places</button>`} /></div>`;
+  }
+  const saved = s.saved.includes(p.id);
+  const checked = !!s.checkedIn[p.id];
+  const order = Object.keys(p.levels).sort((a, b) => (Number(s.prefs.includes(b)) - Number(s.prefs.includes(a))) || (rankOf(p, b) - rankOf(p, a)));
+  const say = (text) => d({ type: 'toast', text });
+  const toggleSave = () => { d({ type: 'save', id: p.id }); say(saved ? 'Removed from saved' : 'Saved to your list'); };
+  const fromLabel = { explore: 'Explore', map: 'Map', saved: 'Saved' }[s.from] || 'Explore';
+  return html`<div className="container place">
+    <nav className="crumbs" aria-label="Breadcrumb">
+      <button onClick=${() => d({ type: 'back' })}>${fromLabel}</button>${I('chevronRight')}<span>${p.city}</span>${I('chevronRight')}<span>${p.area}</span>${I('chevronRight')}<span>${p.name}</span>
+    </nav>
+    <div className=${'place-hero dishbg d-' + p.dish}>
+      <div className="hero-dish">${Dish(p.dish)}</div>
+      <button className="fab-btn fab-left" onClick=${() => d({ type: 'back' })} aria-label="Back">${I('back')}</button>
+      <div className="fab-right">
+        <button className="fab-btn" onClick=${() => say('The live app opens your share menu here.')} aria-label="Share">${I('share')}</button>
+        <button className=${'fab-btn' + (saved ? ' on' : '')} aria-pressed=${saved} aria-label=${saved ? 'Remove from saved' : 'Save'} onClick=${toggleSave}>${I(saved ? 'heartFill' : 'heart')}</button>
+      </div>
+    </div>
+    <div className="place-grid">
+      <div>
+        <header className="place-title">
+          <div className="prow"><h1><${VegMark} veg=${!!p.tags.vegOnly} />${p.name}</h1><${Rating} p=${p} /></div>
+          <div className="pline">${p.cuisine} · ${p.price} for two${p.rating ? ' · ' + p.reviewsCount + ' reviews' : ''}</div>
+          <div className="pline">${I('pin')}${p.area}, ${p.city} · ${p.dist.toFixed(1)} km away</div>
+          <div className="pline">${I('clock')}${openText(p)} · ${p.hours}</div>
+        </header>
+        <section className="pblock" aria-labelledby="h-trust">
+          <h2 className="pblock-h" id="h-trust">${I('shield')}Why you can trust this</h2>
+          <div className="trust-grid">${order.map((pr) => html`<${TrustCard} key=${pr} pref=${pr} info=${p.levels[pr]} active=${s.prefs.includes(pr)} />`)}</div>
+        </section>
+        <section className="pblock" aria-labelledby="h-facts">
+          <h2 className="pblock-h" id="h-facts">Food facts</h2>
+          <${FactTiles} p=${p} />
+        </section>
+        ${p.menu.length ? html`<section className="pblock" aria-labelledby="h-menu"><h2 className="pblock-h" id="h-menu">Popular here</h2>
+          <div className="menu">${p.menu.map((m) => html`<span key=${m} className="menu-item">${m}</span>`)}</div></section>` : null}
+        <section className="pblock" aria-labelledby="h-reviews">
+          <h2 className="pblock-h" id="h-reviews">Reviews</h2>
+          <div className="been">
+            <div><b>${checked ? "You're checked in" : 'Been here?'}</b><small>${checked ? 'Review it within 24 hours.' : 'Check in to review and confirm what you ate.'}</small></div>
+            <button className="btn primary sm" onClick=${() => d({ type: 'sheet', sheet: { type: checked ? 'review' : 'checkin', id: p.id } })}>${checked ? 'Write review' : "I'm here"}</button>
+          </div>
+          ${p.reviewsList.length ? p.reviewsList.map((r, i) => html`<div key=${i} className="review">
+            <span className="rv-av">${initials(r.name)}</span>
+            <div>
+              <div className="rv-top"><b>${r.name}</b><span className="stars" aria-label=${r.stars + ' stars'}>${'★'.repeat(r.stars)}</span><span className="note">${r.when}</span></div>
+              <div className="rv-text">${r.text}</div>
+              ${r.confirm ? html`<span className="rv-ok">${I('checkCircle')}${r.confirm}</span>` : null}
+            </div>
+          </div>`) : html`<p className="note">No reviews yet. Check in to write the first one.</p>`}
+        </section>
+        <section className="pblock">
+          <button className="report" onClick=${() => d({ type: 'sheet', sheet: { type: 'report', id: p.id } })}>${I('flag')}Report a problem with this listing</button>
+          <p className="note">Our team checks every report. Listings are never removed automatically.</p>
+        </section>
+      </div>
+      <aside className="place-side" aria-label="Order and contact">
+        <div className="side-card">
+          <h2>Order online</h2>
+          <p className="note">We don't deliver. We open the restaurant's own page on the app you choose.</p>
+          <button className="orow" onClick=${() => say('The live app opens ' + p.name + ' on Zomato.')}><span className="o-logo">Z</span><span><b>Zomato</b><small>Delivery and table booking</small></span><span className="arr">${I('arrow')}</span></button>
+          <button className="orow" onClick=${() => say('The live app opens ' + p.name + ' on Swiggy.')}><span className="o-logo">S</span><span><b>Swiggy</b><small>Delivery and Dineout</small></span><span className="arr">${I('arrow')}</span></button>
+        </div>
+        <div className="side-card">
+          <div className="side-actions">
+            <button className="sact" onClick=${() => say('Sample number ' + p.phone + '. The live app starts a call.')}>${I('phone')}Call</button>
+            <button className="sact" onClick=${() => say('The live app opens directions in your maps app.')}>${I('nav')}Directions</button>
+            <button className=${'sact' + (saved ? ' on' : '')} aria-pressed=${saved} onClick=${toggleSave}>${I(saved ? 'heartFill' : 'heart')}${saved ? 'Saved' : 'Save'}</button>
+          </div>
+          <p className="note">Phone: ${p.phone} (sample number)</p>
+        </div>
+      </aside>
+    </div>
+  </div>`;
+}
+
+function PlaceBar({ s, d }) {
+  const p = s.places.find((x) => x.id === s.placeId);
+  if (!p || p.hidden) return null;
+  return html`<div className="placebar">
+    <button className="ibtn" aria-label="Call" onClick=${() => d({ type: 'toast', text: 'Sample number ' + p.phone + '. The live app starts a call.' })}>${I('phone')}</button>
+    <button className="ibtn" aria-label="Directions" onClick=${() => d({ type: 'toast', text: 'The live app opens directions in your maps app.' })}>${I('nav')}</button>
+    <button className="btn primary grow" onClick=${() => d({ type: 'sheet', sheet: { type: 'order', id: p.id } })}>Order online</button>
+  </div>`;
+}
+
+/* ---------- Saved, add, profile, onboarding ---------- */
+function Saved({ s, d }) {
+  const list = s.places.filter((p) => s.saved.includes(p.id) && !p.hidden);
+  return html`<div className="container page">
+    <div className="page-h"><p className="eyebrow">Your list</p><h1>Saved places</h1><p>Tap the heart on any place to keep it here.</p></div>
+    <div className="grid">
+      ${list.length
+        ? list.map((p) => html`<${PlaceCard} key=${p.id} p=${p} s=${s} d=${d} prefs=${Object.keys(p.levels)} />`)
+        : html`<${Empty} title="Nothing saved yet" text="Places you save show up here, ready for next time."
+            action=${html`<button className="btn outline sm" onClick=${() => d({ type: 'go', screen: 'explore' })}>Browse places</button>`} />`}
+    </div>
+  </div>`;
+}
+
+function AddPlace({ s, d }) {
+  const [f, setF] = useState({ ...ADD_DEFAULT[s.city], prefs: ['halal'], tags: { alcohol: false, pork: false }, mod: true });
+  const set = (patch) => setF({ ...f, ...patch });
+  const community = COMMUNITY[s.city];
+  const submit = (e) => {
+    e.preventDefault();
+    if (!f.name.trim()) { d({ type: 'toast', text: "Add the restaurant's name first." }); return; }
+    if (!f.prefs.length) { d({ type: 'toast', text: 'Pick at least one: halal, Jain, pure veg or vegan.' }); return; }
+    d({ type: 'suggest', data: f, asModerator: f.mod });
+    d({ type: 'toast', text: f.mod ? f.name.trim() + ' is live, credited to ' + community + '.' : 'Sent. It goes live after 3 check-in confirmations or a moderator approves it.' });
+    if (f.mod) d({ type: 'go', screen: 'explore' });
+  };
+  return html`<div className="container page page-narrow">
+    <div className="page-h"><p className="eyebrow">Community</p><h1>Add a place</h1><p>Know a place that fits? Add it for everyone in ${s.city}.</p></div>
+    <form className="card" onSubmit=${submit}>
+      <div className="form-grid">
+        <label className="field full" htmlFor="a-name">Restaurant name<input id="a-name" value=${f.name} onChange=${(e) => set({ name: e.target.value })} /></label>
+        <label className="field" htmlFor="a-area">Area<input id="a-area" value=${f.area} onChange=${(e) => set({ area: e.target.value })} /></label>
+        <label className="field" htmlFor="a-cuisine">Cuisine<input id="a-cuisine" value=${f.cuisine} onChange=${(e) => set({ cuisine: e.target.value })} /></label>
+        <div className="field full">Food here is
+          <div className="choice" role="group" aria-label="Food here is">
+            ${PREFS.map((p) => html`<button type="button" key=${p.id} aria-pressed=${f.prefs.includes(p.id)} onClick=${() => set({ prefs: f.prefs.includes(p.id) ? f.prefs.filter((x) => x !== p.id) : [...f.prefs, p.id] })}>${p.label}</button>`)}
+          </div>
+        </div>
+        <div className="field full">Food facts
+          <div className="choice" role="group" aria-label="Food facts">
+            <button type="button" aria-pressed=${f.tags.alcohol} onClick=${() => set({ tags: { ...f.tags, alcohol: !f.tags.alcohol } })}>Serves alcohol</button>
+            <button type="button" aria-pressed=${f.tags.pork} onClick=${() => set({ tags: { ...f.tags, pork: !f.tags.pork } })}>Pork on menu</button>
+          </div>
+        </div>
+      </div>
+      <label className="togglecard" htmlFor="a-mod"><span>Post as moderator of ${community}<small>Demo community. Moderators' places go live at once.</small></span>
+        <${Toggle} id="a-mod" label=${'Post as moderator of ' + community} checked=${f.mod} onChange=${() => set({ mod: !f.mod })} /></label>
+      <p className="note">${f.mod ? 'Shown as "Added by ' + community + '". Community places never rise above Community-reported.' : 'Your suggestion goes live after 3 people confirm it with check-ins, or a moderator approves it.'}</p>
+      <div className="btn-row"><button className="btn primary" type="submit">${f.mod ? 'Add place' : 'Send suggestion'}</button></div>
+    </form>
+  </div>`;
+}
+
+function Profile({ s, d }) {
+  return html`<div className="container page page-narrow">
+    <div className="page-h"><p className="eyebrow">Demo user · ${s.city}</p><h1>Your profile</h1><p>We never ask your religion. Only these food choices are stored.</p></div>
+    <div className="profile-grid">
+      <div className="card">
+        <h2 className="card-h">What you eat</h2>
+        <div className="choice" role="group" aria-label="Food preference">
+          ${PREFS.map((p) => html`<button key=${p.id} aria-pressed=${s.prefs.includes(p.id)} onClick=${() => d({ type: 'togglePref', id: p.id })}>${p.label}</button>`)}
+        </div>
+        <label className="togglecard" htmlFor="pf-alcohol"><span>Hide places that serve alcohol</span><${Toggle} id="pf-alcohol" label="Hide places that serve alcohol" checked=${s.strict.noAlcohol} onChange=${() => d({ type: 'strict', key: 'noAlcohol' })} /></label>
+        <label className="togglecard" htmlFor="pf-pork"><span>Hide places with pork on the menu</span><${Toggle} id="pf-pork" label="Hide places with pork on the menu" checked=${s.strict.noPork} onChange=${() => d({ type: 'strict', key: 'noPork' })} /></label>
+        <div className="choice" role="group" aria-label="City">${Object.keys(CITIES).map((c) => html`<button key=${c} aria-pressed=${s.city === c} onClick=${() => d({ type: 'city', city: c })}>${I('pin', 'tiny')}${c}</button>`)}</div>
+      </div>
+      <div className="card">
+        <h2 className="card-h">More in this demo</h2>
+        <button className="linkrow" onClick=${() => d({ type: 'role', role: 'owner' })}><span className="lr-ic">${I('store')}</span><span>List your restaurant<small>The restaurant owner's portal</small></span><span className="arr">${I('arrow')}</span></button>
+        <button className="linkrow" onClick=${() => d({ type: 'role', role: 'admin' })}><span className="lr-ic">${I('shield')}</span><span>Our team's review queue<small>Where certificates and reports are checked</small></span><span className="arr">${I('arrow')}</span></button>
+        <button className="linkrow" onClick=${() => d({ type: 'go', screen: 'onboard' })}><span className="lr-ic">${I('sparkle')}</span><span>See the welcome screen again<small>The first-time setup</small></span><span className="arr">${I('arrow')}</span></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function Onboard({ s, d }) {
+  const [prefs, setPrefs] = useState(s.prefs);
+  const [strict, setStrict] = useState(s.strict);
+  const [city, setCity] = useState(s.city);
+  const toggle = (id) => setPrefs(prefs.includes(id) ? prefs.filter((x) => x !== id) : [...prefs, id]);
+  return html`<div className="onbw">
+    <div className="onbw-hero">
+      <p className="eyebrow">Welcome to TrustPlate</p>
+      <h1>Eat out without having to ask.</h1>
+      <p>Places near you that match how you eat, with proof you can check.</p>
+      <span className="float f1 dishbg d-biryani" aria-hidden="true">${Dish('biryani')}</span>
+      <span className="float f2 dishbg d-thali" aria-hidden="true">${Dish('thali')}</span>
+      <span className="float f3 dishbg d-bowl" aria-hidden="true">${Dish('bowl')}</span>
+    </div>
+    <div className="onbw-panel">
+      <h2>How do you eat?</h2>
+      <div className="prefcards" role="group" aria-label="How do you eat?">
+        ${PREFS.map((p) => html`<button key=${p.id} className="pc" aria-pressed=${prefs.includes(p.id)} onClick=${() => toggle(p.id)}>
+          <span className="tick">${I('check')}</span>
+          <span className=${'pc-img dishbg d-' + p.dish}>${Dish(p.dish)}</span>
+          <b>${p.label}</b><small>${PREF_HINT[p.id]}</small>
+        </button>`)}
+      </div>
+      <label className="togglecard" htmlFor="ob-alcohol"><span>Hide places that serve alcohol</span><${Toggle} id="ob-alcohol" label="Hide places that serve alcohol" checked=${strict.noAlcohol} onChange=${() => setStrict({ ...strict, noAlcohol: !strict.noAlcohol })} /></label>
+      <label className="togglecard" htmlFor="ob-pork"><span>Hide places with pork on the menu</span><${Toggle} id="ob-pork" label="Hide places with pork on the menu" checked=${strict.noPork} onChange=${() => setStrict({ ...strict, noPork: !strict.noPork })} /></label>
+      <div className="choice" role="group" aria-label="City">${Object.keys(CITIES).map((c) => html`<button key=${c} aria-pressed=${city === c} onClick=${() => setCity(c)}>${I('pin', 'tiny')}${c}</button>`)}</div>
+      <button className="btn primary block" disabled=${!prefs.length} onClick=${() => d({ type: 'finishOnboarding', prefs, strict, city })}>Show places near me${I('arrow')}</button>
+      <p className="note">We never ask your religion. Change this anytime from the top of the page.</p>
+    </div>
+  </div>`;
+}
+
+function MobileTabs({ s, d }) {
+  const cur = s.screen === 'place' ? s.from : s.screen;
+  const tab = (k, label, icon) => html`<button key=${k} className="tab" aria-current=${cur === k ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: k })}>${I(icon)}${label}</button>`;
+  return html`<nav className="mtabs" aria-label="App sections">
+    ${tab('explore', 'Explore', 'compass')}
+    ${tab('map', 'Map', 'map')}
+    <button className="tab fab" aria-current=${cur === 'add' ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: 'add' })} aria-label="Add a place"><span className="fab-c">${I('plus')}</span>Add</button>
+    ${tab('saved', 'Saved', 'bookmark')}
+    ${tab('profile', 'Profile', 'user')}
+  </nav>`;
+}
+
+function Footer({ d }) {
+  return html`<footer className="footer"><div className="container footer-inner">
+    <span>TrustPlate demo · every restaurant, certificate and review here is sample data.</span>
+    <div className="footer-links">
+      <button onClick=${() => d({ type: 'go', screen: 'add' })}>Add a place</button>
+      <button onClick=${() => d({ type: 'role', role: 'owner' })}>For restaurants</button>
+      <button onClick=${() => d({ type: 'role', role: 'admin' })}>Review queue</button>
+    </div>
+  </div></footer>`;
+}
+
+/* ---------- Sheets ---------- */
+function CheckInSheet({ p, d, close }) {
+  const [phase, setPhase] = useState('locating');
+  useEffect(() => {
+    const t = setTimeout(() => { setPhase('done'); d({ type: 'checkIn', id: p.id }); }, 1000);
+    return () => clearTimeout(t);
+  }, []);
+  if (phase === 'locating') {
+    return html`<div className="sbody"><div className="locating"><span className="pulse">${I('pin')}</span><h3>Checking you're at ${p.name}…</h3>
+      <p className="note">The live app compares your phone's location with the restaurant's. It never stores where you go.</p></div></div>`;
+  }
+  return html`<div className="sbody">
+    <div className="locating"><span className="done-ic">${I('check')}</span><h3>You're checked in</h3>
+      <p className="note">About 40 m from ${p.name} (demo location). Check-ins within 100 m count.</p></div>
+    <button className="btn primary block" onClick=${() => d({ type: 'sheet', sheet: { type: 'review', id: p.id } })}>Write a review</button>
+    <button className="btn block" onClick=${close}>Done</button>
+  </div>`;
+}
+
+function ReviewSheet({ p, s, d, close }) {
+  const asked = Object.keys(p.levels).filter((pr) => s.prefs.includes(pr));
+  const [stars, setStars] = useState(5);
+  const [confirm, setConfirm] = useState({});
+  const [text, setText] = useState('');
+  const submit = (e) => {
+    e.preventDefault();
+    const confirmText = asked.filter((pr) => confirm[pr] !== undefined)
+      .map((pr) => (confirm[pr] ? 'Confirmed ' : 'Did not match: ') + PREF_LABEL[pr].toLowerCase()).join(' · ');
+    d({ type: 'review', id: p.id, review: { name: 'You (demo)', stars, text: text.trim() || 'Good food, and it matched the listing.', confirm: confirmText, when: 'Just now' } });
+    d({ type: 'toast', text: 'Review posted. Thank you!' });
+  };
+  return html`<form onSubmit=${submit}>
+    <h3>How was ${p.name}?</h3>
+    <div className="starpick" role="radiogroup" aria-label="Rating">
+      ${[1, 2, 3, 4, 5].map((n) => html`<button type="button" key=${n} role="radio" aria-checked=${n === stars} aria-label=${n + (n === 1 ? ' star' : ' stars')} className=${n <= stars ? 'on' : ''} onClick=${() => setStars(n)}>★</button>`)}
+    </div>
+    ${asked.map((pr) => html`<div key=${pr} className="qrow"><span>Was it ${PREF_LABEL[pr].toLowerCase()} as listed?</span>
+      <span className="yn" role="group" aria-label=${'Was it ' + PREF_LABEL[pr].toLowerCase()}>
+        <button type="button" aria-pressed=${confirm[pr] === true} onClick=${() => setConfirm({ ...confirm, [pr]: true })}>Yes</button>
+        <button type="button" aria-pressed=${confirm[pr] === false} onClick=${() => setConfirm({ ...confirm, [pr]: false })}>No</button>
+      </span></div>`)}
+    <label className="field" htmlFor="review-text">Your review<textarea id="review-text" rows="3" placeholder="What did you eat? Did it match the listing?" value=${text} onChange=${(e) => setText(e.target.value)}></textarea></label>
+    <button className="btn primary block" type="submit">Post review</button>
+    <button className="btn block" type="button" onClick=${close}>Cancel</button>
+  </form>`;
+}
+
+function ReportSheet({ p, d, close }) {
+  const [reason, setReason] = useState(REASONS[0]);
+  const submit = (e) => {
+    e.preventDefault();
+    d({ type: 'report', id: p.id, reason });
+    d({ type: 'toast', text: 'Sent to our team. Nothing is removed automatically.' });
+  };
+  return html`<form onSubmit=${submit}>
+    <h3>What's wrong with this listing?</h3>
+    <div className="radios" role="radiogroup" aria-label="Reason">
+      ${REASONS.map((r, i) => html`<label key=${r} className="radio" htmlFor=${'reason-' + i}><input type="radio" name="reason" id=${'reason-' + i} checked=${reason === r} onChange=${() => setReason(r)} />${r}</label>`)}
+    </div>
+    <button className="btn primary block" type="submit">Send report</button>
+    <button className="btn block" type="button" onClick=${close}>Cancel</button>
+  </form>`;
+}
+
+function OrderSheet({ p, d, close }) {
+  const go = (app) => { close(); d({ type: 'toast', text: 'The live app opens ' + p.name + ' on ' + app + '.' }); };
+  return html`<div className="sbody">
+    <h3>Order from ${p.name}</h3>
+    <p className="note">We don't deliver. We open the restaurant's own page on the app you choose.</p>
+    <button className="orow" onClick=${() => go('Zomato')}><span className="o-logo">Z</span><span><b>Zomato</b><small>Delivery and table booking</small></span><span className="arr">${I('arrow')}</span></button>
+    <button className="orow" onClick=${() => go('Swiggy')}><span className="o-logo">S</span><span><b>Swiggy</b><small>Delivery and Dineout</small></span><span className="arr">${I('arrow')}</span></button>
+    <button className="btn block" onClick=${close}>Cancel</button>
+  </div>`;
+}
+
+function Sheets({ s, d }) {
+  const sheetRef = useRef(null);
+  useEffect(() => {
+    if (!s.sheet) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') d({ type: 'sheet', sheet: null }); };
+    window.addEventListener('keydown', onKey);
+    if (sheetRef.current) sheetRef.current.focus();
+    return () => window.removeEventListener('keydown', onKey);
+  }, [s.sheet]);
+  if (!s.sheet) return null;
+  const p = s.places.find((x) => x.id === s.sheet.id);
+  if (!p) return null;
+  const close = () => d({ type: 'sheet', sheet: null });
+  const map = { checkin: [CheckInSheet, 'Check in'], review: [ReviewSheet, 'Write a review'], report: [ReportSheet, 'Report a problem'], order: [OrderSheet, 'Order online'] };
+  const entry = map[s.sheet.type];
+  if (!entry) return null;
+  const [Comp, label] = entry;
+  return html`<div className="overlay" onClick=${(e) => { if (e.target === e.currentTarget) close(); }}>
+    <div className="sheet" role="dialog" aria-modal="true" aria-label=${label} tabIndex="-1" ref=${sheetRef}><div className="grab"></div><${Comp} p=${p} s=${s} d=${d} close=${close} /></div>
+  </div>`;
+}
+
+/* ---------- Restaurant owner portal ---------- */
+function OwnerForm({ s, d }) {
+  const o = s.owner;
+  const set = (patch) => d({ type: 'owner', patch });
+  const titles = ['Your restaurant', 'What you serve', 'Proof'];
+  return html`<div className="ocard card">
+    <div className="mprogress" role="img" aria-label=${'Step ' + o.step + ' of 3'}>${[1, 2, 3].map((n) => html`<span key=${n} className=${n <= o.step ? 'on' : ''}></span>`)}</div>
+    <div><p className="eyebrow">Step ${o.step} of 3</p><h2 className="sec-title">${titles[o.step - 1]}</h2></div>
+    ${o.step === 1 ? html`<div className="form-grid">
+      <label className="field full" htmlFor="o-name">Restaurant name<input id="o-name" value=${o.name} onChange=${(e) => set({ name: e.target.value })} /></label>
+      <label className="field" htmlFor="o-city">City<select id="o-city" value=${o.city} onChange=${(e) => set({ city: e.target.value })}>${Object.keys(CITIES).map((c) => html`<option key=${c} value=${c}>${c}</option>`)}</select></label>
+      <label className="field" htmlFor="o-area">Area<input id="o-area" value=${o.area} onChange=${(e) => set({ area: e.target.value })} /></label>
+      <label className="field" htmlFor="o-cuisine">Cuisine<input id="o-cuisine" value=${o.cuisine} onChange=${(e) => set({ cuisine: e.target.value })} /></label>
+      <label className="field" htmlFor="o-phone">Phone<input id="o-phone" value=${o.phone} onChange=${(e) => set({ phone: e.target.value })} /></label>
+    </div>
+    <div className="btn-row"><button className="btn primary" disabled=${!o.name.trim()} onClick=${() => set({ step: 2 })}>Next: what you serve${I('arrow')}</button></div>` : null}
+    ${o.step === 2 ? html`<div className="field">Your food is
+        <div className="choice" role="group" aria-label="Your food is">${PREFS.map((p) => html`<button type="button" key=${p.id} aria-pressed=${o.prefs.includes(p.id)} onClick=${() => set({ prefs: o.prefs.includes(p.id) ? o.prefs.filter((x) => x !== p.id) : [...o.prefs, p.id] })}>${p.label}</button>`)}</div>
+      </div>
+      <div className="field">Food facts
+        <div className="choice" role="group" aria-label="Food facts">${OWNER_TAGS.map(([k, label]) => html`<button type="button" key=${k} aria-pressed=${!!o.tags[k]} onClick=${() => set({ tags: { ...o.tags, [k]: !o.tags[k] } })}>${label}</button>`)}</div>
+      </div>
+      <p className="note">These show on your listing, and diners can report anything that doesn't match.</p>
+      <div className="btn-row"><button className="btn" onClick=${() => set({ step: 1 })}>Back</button><button className="btn primary" disabled=${!o.prefs.length} onClick=${() => set({ step: 3 })}>Next: proof${I('arrow')}</button></div>` : null}
+    ${o.step === 3 ? html`<label className="upload" htmlFor="o-cert">
+        ${I('upload')}<b>${o.certFile ? o.certFile : 'Upload your certificate'}</b><span>${o.certFile ? 'Click to replace it' : 'Photo or PDF · optional'}</span>
+        <input id="o-cert" type="file" accept="image/*,.pdf" onChange=${(e) => set({ certFile: e.target.files && e.target.files[0] ? e.target.files[0].name : '' })} />
+      </label>
+      ${o.certFile ? null : html`<button className="btn outline" onClick=${() => set({ certFile: 'sample-halal-certificate.pdf' })}>${I('doc')}Use a sample certificate</button>`}
+      <label className="togglecard" htmlFor="o-visit"><span>Book a "Checked by us" visit<small>About ₹999 · free for founding restaurants</small></span><${Toggle} id="o-visit" label="Book a Checked by us visit" checked=${o.bookVisit} onChange=${() => set({ bookVisit: !o.bookVisit })} /></label>
+      <p className="note">You go live as Owner-declared once our team approves the listing. A checked certificate makes you Certified; a passed visit makes you Checked by us.</p>
+      <div className="btn-row"><button className="btn" onClick=${() => set({ step: 2 })}>Back</button><button className="btn primary" onClick=${() => { d({ type: 'ownerSubmit' }); d({ type: 'toast', text: 'Submitted. Our team will review it.' }); }}>Submit listing</button></div>` : null}
+  </div>`;
+}
+
+function OwnerStatus({ s, d }) {
+  const o = s.owner;
+  const reached = o.status === 'submitted' ? 0 : o.status === 'listed' ? 1 : 2;
+  const proof = o.status === 'verified'
+    ? (o.verifiedBy === 'visit' ? ['Visit passed: Checked by us', 'Our field team checked your kitchen and suppliers.'] : ['Certificate checked: Certified', 'Your badge is live and we track its expiry.'])
+    : o.certFile ? ['Certificate check', 'Our team checks the issuer, number and expiry date.']
+      : o.bookVisit ? ['Checked-by-us visit', 'Our field team visits within 7 days.'] : ['Add proof for a badge', 'Upload a certificate or book a visit.'];
+  const steps = [
+    ['doc', 'Submitted', 'We received your listing.'],
+    ['store', 'Live as Owner-declared', 'Diners can find you. Your food shows as declared by you.'],
+    ['shield', proof[0], proof[1]],
+  ];
+  const queued = s.queue.find((q) => q.type === 'owner' && q.place.id === o.placeId);
+  const preview = s.places.find((p) => p.id === o.placeId) || (queued ? queued.place : null);
+  return html`<div className="status-grid">
+    <div className="ocard card">
+      <div><p className="eyebrow">Your listing</p><h2 className="sec-title">${o.name}</h2><p className="note">${o.area}, ${o.city}</p></div>
+      <ol className="timeline">${steps.map(([icon, t, x], i) => html`<li key=${i} className=${i <= reached ? 'done' : i === reached + 1 ? 'now' : ''}><span className="tl-ic">${I(i <= reached ? 'check' : icon)}</span><div><b>${t}</b><small>${x}</small></div></li>`)}</ol>
+      ${reached < 2
+        ? html`<div className="flag">Demo: open the review queue as our team, approve this listing, then come back.</div>
+               <div className="btn-row"><button className="btn" onClick=${() => d({ type: 'ownerReset' })}>Start a new listing</button><button className="btn primary" onClick=${() => d({ type: 'role', role: 'admin' })}>Open the review queue</button></div>`
+        : html`<div className="btn-row"><button className="btn" onClick=${() => d({ type: 'ownerReset' })}>Start a new listing</button><button className="btn primary" onClick=${() => d({ type: 'go', role: 'diner', screen: 'place', placeId: o.placeId })}>See my listing as a diner</button></div>`}
+    </div>
+    ${preview ? html`<div className="card"><h2 className="card-h">How diners see you</h2><${PlaceCard} p=${preview} s=${s} d=${d} prefs=${Object.keys(preview.levels)} preview=${true} />
+      <p className="note">${reached === 0 ? 'Not visible yet: waiting for our team to approve the listing.' : 'Live in the app now.'}</p></div>` : null}
+  </div>`;
+}
+
+function OwnerPortal({ s, d }) {
+  const o = s.owner;
+  const stepState = (n) => {
+    if (o.status !== 'draft') return n < 4 ? 'done' : 'now';
+    return n < o.step ? 'done' : n === o.step ? 'now' : '';
+  };
+  const vsteps = [['Your restaurant', 'Name, area, phone'], ['What you serve', 'Food and food facts'], ['Proof', 'Certificate or our visit'], ['Status', 'Follow your badge']];
+  return html`<div>
+    <section className="owner-band"><div className="container">
+      <p className="eyebrow">TrustPlate for restaurants</p>
+      <h1>Get found by diners who look for you.</h1>
+      <div className="vprops">
+        <span className="vprop">${I('check')}Free listing</span>
+        <span className="vprop">${I('shield')}Free certificate check</span>
+        <span className="vprop">${I('users')}Diners can verify you</span>
+      </div>
+    </div></section>
+    <div className="container owner-grid">
+      <ol className="vstepper" aria-label="Listing steps">
+        ${vsteps.map(([t, sub], i) => {
+          const st = stepState(i + 1);
+          return html`<li key=${t} className=${'vstep ' + st}><span className="num">${st === 'done' ? I('check') : i + 1}</span><span>${t}<small>${sub}</small></span></li>`;
+        })}
+      </ol>
+      ${o.status === 'draft' ? html`<${OwnerForm} s=${s} d=${d} />` : html`<${OwnerStatus} s=${s} d=${d} />`}
+    </div>
+  </div>`;
+}
+
+/* ---------- Our team ---------- */
+function QueueItem({ q, s, d }) {
+  const live = q.placeId ? s.places.find((x) => x.id === q.placeId) : null;
+  const p = live || q.place || null;
+  const name = p ? p.name : 'New listing awaiting approval';
+  const decide = (ok, msg) => { d({ type: 'decide', itemId: q.id, ok }); d({ type: 'toast', text: msg }); };
+  let label = '';
+  let detail = null;
+  let actions = null;
+  if (q.type === 'certificate') {
+    label = 'Certificate';
+    detail = html`<div className="qt">${name}</div><div className="qs">${PREF_LABEL[q.pref]} certificate · ${q.submitted}</div>
+      <div className="ticket"><div className="trow"><span>Issued by</span><b>${q.issuer}</b></div><div className="trow"><span>Certificate no.</span><b className="mono">${q.number}</b></div><div className="trow"><span>Valid until</span><b>${q.validUntil}</b></div>${q.file ? html`<div className="trow"><span>File</span><b>${q.file}</b></div>` : null}</div>`;
+    actions = live
+      ? html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is now Certified for ' + PREF_LABEL[q.pref].toLowerCase() + '.')}>Approve</button><button className="btn sm" onClick=${() => decide(false, 'Certificate rejected. The owner is told why.')}>Reject</button>`
+      : html`<p className="note">Approve the new listing first.</p>`;
+  } else if (q.type === 'visit') {
+    label = 'Field visit';
+    detail = html`<div className="qt">${name}</div><div className="qs">${PREF_LABEL[q.pref]} · ${q.when}</div><ul className="checklist">${q.checks.map((c) => html`<li key=${c}>${I('checkCircle')}${c}</li>`)}</ul>`;
+    actions = live
+      ? html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is now Checked by us for ' + PREF_LABEL[q.pref].toLowerCase() + '.')}>Visit passed</button><button className="btn sm" onClick=${() => decide(false, 'Visit failed. The level stays as it is.')}>Failed</button>`
+      : html`<p className="note">Approve the new listing first.</p>`;
+  } else if (q.type === 'report') {
+    label = 'Report';
+    detail = html`<div className="qt">${name}</div><div className="qs">"${q.reason}" · from ${q.by}, ${q.submitted}</div>`;
+    actions = html`<button className="btn sm" onClick=${() => decide('keep', 'Listing kept. Its food facts already show this.')}>Keep listing</button><button className="btn sm" onClick=${() => decide('hide', name + ' is hidden while we check.')}>Hide for now</button>`;
+  } else if (q.type === 'community') {
+    label = 'Suggested place';
+    detail = html`<div className="qt">${name}</div><div className="qs">${q.place.area}, ${q.place.city} · ${Object.keys(q.place.levels).map((pr) => PREF_LABEL[pr]).join(', ')} · by ${q.by} · ${q.confirmations} of 3 confirmations</div>`;
+    actions = html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is live as Community-reported.')}>Approve</button><button className="btn sm" onClick=${() => decide(false, 'Suggestion declined.')}>Decline</button>`;
+  } else if (q.type === 'owner') {
+    label = 'New listing';
+    detail = html`<div className="qt">${name}</div><div className="qs">${q.place.area}, ${q.place.city} · declares ${Object.keys(q.place.levels).map((pr) => PREF_LABEL[pr]).join(', ')}</div>`;
+    actions = html`<button className="btn primary sm" onClick=${() => decide(true, name + ' is live as Owner-declared.')}>Approve listing</button><button className="btn sm" onClick=${() => decide(false, 'Listing declined. The owner is told why.')}>Decline</button>`;
+  }
+  return html`<article className="qcard"><span className=${'qtype t-' + q.type}>${label}</span>${detail}<div className="qactions">${actions}</div></article>`;
+}
+
+const QTABS = [['all', 'All'], ['certificate', 'Certificates'], ['visit', 'Visits'], ['report', 'Reports'], ['new', 'New places']];
+function AdminPage({ s, d }) {
+  const [tab, setTab] = useState('all');
+  const count = (t) => s.queue.filter((q) => (t === 'new' ? q.type === 'owner' || q.type === 'community' : q.type === t)).length;
+  const shown = s.queue.filter((q) => tab === 'all' || (tab === 'new' ? q.type === 'owner' || q.type === 'community' : q.type === tab));
+  return html`<div className="container admin">
+    <div className="page-h"><p className="eyebrow">Our team</p><h1>Review queue</h1><p>Every decision shows in the app at once and goes to the audit log.</p></div>
+    <div className="stat-cards">
+      <div className="stat-card"><b>${count('certificate')}</b><span>Certificates to check</span></div>
+      <div className="stat-card"><b>${count('visit')}</b><span>Visits to record</span></div>
+      <div className="stat-card"><b>${count('report')}</b><span>Reports</span></div>
+      <div className="stat-card"><b>${count('new')}</b><span>New places</span></div>
+    </div>
+    <div className="qtabs" role="group" aria-label="Filter the queue">
+      ${QTABS.map(([k, label]) => html`<button key=${k} className="fchip" aria-pressed=${tab === k} onClick=${() => setTab(k)}>${label} · ${k === 'all' ? s.queue.length : count(k)}</button>`)}
+    </div>
+    <div className="qgrid">
+      ${shown.length
+        ? shown.map((q) => html`<${QueueItem} key=${q.id} q=${q} s=${s} d=${d} />`)
+        : html`<${Empty} title="All clear" text="Nothing waiting here. Switch to the diner view to see your changes."
+            action=${html`<button className="btn outline sm" onClick=${() => d({ type: 'role', role: 'diner' })}>Diner view</button>`} />`}
+    </div>
+  </div>`;
+}
+
+/* ---------- How it works ---------- */
+const FLOWS = [
+  { id: 'diner', title: 'Diner', icon: 'compass', steps: [
+    { t: 'Pick what you eat', d: 'Halal, Jain, pure veg or vegan, plus alcohol and pork filters. No religion asked.', go: { role: 'diner', screen: 'onboard' }, match: (s) => s.role === 'diner' && s.screen === 'onboard' },
+    { t: 'Browse places, most trusted first', d: 'Filters, dish categories and a trust badge on every card.', go: { role: 'diner', screen: 'explore' }, match: (s) => s.role === 'diner' && s.screen === 'explore' },
+    { t: 'See them on the map', d: 'List and map side by side; pins coloured by trust level.', go: { role: 'diner', screen: 'map' }, match: (s) => s.role === 'diner' && s.screen === 'map' },
+    { t: 'Open a place and check the proof', d: 'Certificate details, expiry, visit checklist and food facts.', go: { role: 'diner', screen: 'place', placeId: 'noor' }, match: (s) => s.role === 'diner' && s.screen === 'place' && !s.sheet },
+    { t: 'Order through Zomato or Swiggy', d: 'We never run delivery; we open the restaurant on their app.', go: { role: 'diner', screen: 'place', placeId: 'noor', sheet: { type: 'order', id: 'noor' } }, match: (s) => s.role === 'diner' && !!s.sheet && s.sheet.type === 'order' },
+    { t: 'Check in, then review', d: 'Only people who were there can review and confirm.', go: { role: 'diner', screen: 'place', placeId: 'noor', sheet: { type: 'checkin', id: 'noor' } }, match: (s) => s.role === 'diner' && !!s.sheet && (s.sheet.type === 'checkin' || s.sheet.type === 'review') },
+    { t: 'Report a problem', d: 'Reports go to our team. Nothing is removed automatically.', go: { role: 'diner', screen: 'place', placeId: 'copper', sheet: { type: 'report', id: 'copper' } }, match: (s) => s.role === 'diner' && !!s.sheet && s.sheet.type === 'report' },
+  ] },
+  { id: 'community', title: 'Community', icon: 'users', steps: [
+    { t: 'Add or suggest a place', d: "Moderators' places go live at once as Community-reported.", go: { role: 'diner', screen: 'add' }, match: (s) => s.role === 'diner' && s.screen === 'add' },
+    { t: 'Suggestions wait for confirmation', d: '3 check-in confirmations, or a moderator approves.', go: { role: 'admin' }, match: () => false },
+  ] },
+  { id: 'owner', title: 'Restaurant owner', icon: 'store', steps: [
+    { t: 'List the restaurant for free', d: 'Name, area, what you serve and your food facts.', go: { role: 'owner', ownerStep: 1 }, match: (s) => s.role === 'owner' && s.owner.status === 'draft' && s.owner.step < 3 },
+    { t: 'Add proof', d: 'Upload a certificate, or book our visit (about ₹999).', go: { role: 'owner', ownerStep: 3 }, match: (s) => s.role === 'owner' && s.owner.status === 'draft' && s.owner.step === 3 },
+    { t: 'Track the status', d: 'Owner-declared first, then Certified or Checked by us.', act: { type: 'ownerTrack' }, match: (s) => s.role === 'owner' && s.owner.status !== 'draft' },
+  ] },
+  { id: 'team', title: 'Our team', icon: 'shield', steps: [
+    { t: 'Work the review queue', d: 'Certificates, visits, reports, new listings and suggestions.', go: { role: 'admin' }, match: (s) => s.role === 'admin' },
+    { t: 'Approve, and the app updates', d: 'Approve the Kondhwa Grill House certificate, then open it as a diner.', go: { role: 'diner', screen: 'place', placeId: 'kondhwa' }, match: () => false },
+  ] },
+];
+
+function Tour({ s, d, onClose }) {
+  const panelRef = useRef(null);
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    if (panelRef.current) panelRef.current.focus();
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  return html`<div>
+    <div className="tour-scrim" onClick=${onClose}></div>
+    <aside className="tour" role="dialog" aria-modal="true" aria-label="How TrustPlate works" tabIndex="-1" ref=${panelRef}>
+      <div className="tour-h">
+        <div><h2>How TrustPlate works</h2><p>Tap a step to jump there. Use "View as" in the top bar to switch between a diner, a restaurant owner and our team.</p></div>
+        <button className="iconbtn" onClick=${onClose} aria-label="Close">${I('x')}</button>
+      </div>
+      ${FLOWS.map((f) => html`<section key=${f.id} className="flow" aria-labelledby=${'flow-' + f.id}>
+        <h3 className="flow-h" id=${'flow-' + f.id}><span className="flow-ic">${I(f.icon)}</span>${f.title}</h3>
+        <ol>${f.steps.map((st, i) => html`<li key=${i}>
+          <button className="step" aria-current=${st.match(s) ? 'step' : undefined} onClick=${() => {
+            const autoSubmit = st.act && st.act.type === 'ownerTrack' && s.owner.status === 'draft';
+            d(st.act || { type: 'go', ...st.go });
+            if (autoSubmit) d({ type: 'toast', text: 'Sample listing submitted so you can follow its status.' });
+            onClose();
+          }}><span className="n">${i + 1}</span><span>${st.t}<small>${st.d}</small></span></button>
+        </li>`)}</ol>
+      </section>`)}
+      <section className="flow" aria-labelledby="h-levels">
+        <h3 className="flow-h" id="h-levels"><span className="flow-ic">${I('shield')}</span>Trust levels, strongest first</h3>
+        ${Object.keys(LEVELS).map((k) => html`<div key=${k} className="lrow"><span><${TrustPill} level=${k} solid=${true} withPref=${false} /></span><span>${LEVELS[k].about}</span></div>`)}
+      </section>
+    </aside>
+  </div>`;
+}
+
+/* ---------- App ---------- */
+function App() {
+  const [s, d] = useReducer(reducer, null, () => initialState(true));
+  const [tour, setTour] = useState(false);
+  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved]);
+  useEffect(() => {
+    if (!s.toasts.length) return undefined;
+    const t = setTimeout(() => d({ type: 'untoast', id: s.toasts[0].id }), 3400);
+    return () => clearTimeout(t);
+  }, [s.toasts]);
+  useEffect(() => { try { window.scrollTo(0, 0); } catch (e) { /* ignore */ } }, [s.screen, s.placeId, s.role]);
+  const resetDemo = () => {
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
+    d({ type: 'reset' });
+    d({ type: 'toast', text: 'Demo reset to its sample data.' });
+  };
+
+  const diner = s.role === 'diner';
+  let body = null;
+  if (s.role === 'owner') body = html`<${OwnerPortal} s=${s} d=${d} />`;
+  else if (s.role === 'admin') body = html`<${AdminPage} s=${s} d=${d} />`;
+  else if (s.screen === 'onboard') body = html`<${Onboard} s=${s} d=${d} />`;
+  else if (s.screen === 'place') body = html`<${Place} s=${s} d=${d} />`;
+  else if (s.screen === 'map') body = html`<${MapView} s=${s} d=${d} />`;
+  else if (s.screen === 'saved') body = html`<${Saved} s=${s} d=${d} />`;
+  else if (s.screen === 'add') body = html`<${AddPlace} key=${'add-' + s.city} s=${s} d=${d} />`;
+  else if (s.screen === 'profile') body = html`<${Profile} s=${s} d=${d} />`;
+  else body = html`<${Explore} s=${s} d=${d} />`;
+
+  const showTabs = diner && s.screen !== 'onboard' && s.screen !== 'place';
+  const showBar = diner && s.screen === 'place';
+  const showFooter = !(diner && (s.screen === 'map' || s.screen === 'onboard'));
+  return html`<div className=${'app' + (showTabs ? ' with-tabs' : '') + (showBar ? ' with-bar' : '')}>
+    <${DemoBar} s=${s} d=${d} onTour=${() => setTour(true)} onReset=${resetDemo} />
+    <${TopNav} s=${s} d=${d} />
+    <main className="main">${body}</main>
+    ${showFooter ? html`<${Footer} d=${d} />` : null}
+    ${showTabs ? html`<${MobileTabs} s=${s} d=${d} />` : null}
+    ${showBar ? html`<${PlaceBar} s=${s} d=${d} />` : null}
+    <button className="tour-btn" onClick=${() => setTour(true)}>${I('sparkle')}How it works</button>
+    <${Sheets} s=${s} d=${d} />
+    ${tour ? html`<${Tour} s=${s} d=${d} onClose=${() => setTour(false)} />` : null}
+    <div className="toasts" aria-live="polite">${s.toasts.map((t) => html`<div key=${t.id} className="toast">${I('sparkle')}${t.text}</div>`)}</div>
+  </div>`;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App} />`);
+</script>
+</body>
+</html>
