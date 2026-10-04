@@ -790,6 +790,62 @@ html.embed::-webkit-scrollbar { display: none; }
   .comm-chip b { font-weight: 800; white-space: nowrap; }
 }
 
+/* ---------- Contributors: points, badges, leaderboards ---------- */
+.comm-tabs { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.comm-tabs::-webkit-scrollbar { display: none; }
+.comm-tabs button { white-space: nowrap; }
+.lvl-chip { display: inline-block; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); margin-left: 6px; vertical-align: 1px; white-space: nowrap; }
+.leaders { display: grid; gap: 22px; }
+.lead-sec { display: grid; gap: 12px; }
+.lead-sec .results-h { margin-bottom: 0; }
+.challenges { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.chal { background: linear-gradient(135deg, #3d5cf0, #1a2fa8); color: #ffffff; border-radius: 20px; padding: 16px; display: grid; gap: 8px; align-content: start; box-shadow: var(--shadow-1); }
+.chal b { font-size: 16px; font-weight: 800; line-height: 1.25; }
+.chal small { opacity: 0.9; font-size: 12.5px; line-height: 1.35; }
+.chal-reward { display: flex; gap: 6px; align-items: flex-start; }
+.chal-reward .ic { width: 14px; height: 14px; color: var(--sun); flex: none; margin-top: 1px; }
+.chal-bar { height: 8px; border-radius: 8px; background: rgba(255, 255, 255, 0.25); overflow: hidden; }
+.chal-bar i { display: block; height: 100%; background: var(--sun); border-radius: 8px; }
+.chal .btn { justify-self: start; background: #ffffff; color: #1a2fa8; }
+.chal .btn[aria-pressed="true"] { background: var(--sun); color: var(--on-sun); }
+.chal .btn .ic { width: 16px; height: 16px; }
+.board { background: var(--app); border: 1px solid var(--line); border-radius: 22px; padding: 6px 16px; box-shadow: var(--shadow-1); }
+.board-row { display: grid; grid-template-columns: 30px 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.board-row:first-child { border-top: 0; }
+.board-row.me { background: var(--brand-soft); margin-inline: -16px; padding-inline: 16px; }
+.rank-n { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rank-n.r1 { background: #f5c542; color: #3a2a00; }
+.rank-n.r2 { background: #cfd6e0; color: #2a3140; }
+.rank-n.r3 { background: #e3a676; color: #3a1d00; }
+.board-who { min-width: 0; }
+.board-who b { display: block; font-size: 14.5px; font-weight: 800; }
+.board-who small { display: block; color: var(--muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.board-pts { text-align: right; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; }
+.board-pts small { display: block; color: var(--muted); font-weight: 600; font-size: 11px; }
+.rules li b { color: var(--ink); }
+.rules .ic { flex: none; }
+.contrib { grid-column: 1 / -1; }
+.contrib-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.contrib-top .btn { margin-left: auto; }
+.contrib-name { flex: 1; min-width: 0; }
+.contrib-av { width: 56px; height: 56px; border-radius: 50%; background: var(--sun); color: var(--on-sun); display: grid; place-items: center; flex: none; }
+.contrib-av .ic { width: 26px; height: 26px; }
+.contrib-bar { height: 8px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; }
+.stat { background: var(--app-2); border-radius: 14px; padding: 10px 12px; display: grid; }
+.stat b { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 12.5px; font-weight: 600; }
+.mini-h { margin: 4px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 800; }
+.badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.bdg { border: 1.5px dashed var(--line); border-radius: 16px; padding: 12px; display: grid; gap: 4px; justify-items: start; opacity: 0.75; }
+.bdg.got { border-style: solid; border-color: var(--sun); background: color-mix(in srgb, var(--sun) 12%, var(--app)); opacity: 1; }
+.bdg-ic { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--app-2); color: var(--muted); }
+.bdg.got .bdg-ic { background: var(--sun); color: var(--on-sun); }
+.bdg b { font-size: 13.5px; font-weight: 800; }
+.bdg small { font-size: 12px; color: var(--muted); line-height: 1.3; }
+.earn summary { cursor: pointer; font-weight: 800; font-size: 14px; }
+.earn ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13.5px; color: var(--muted); }
+
 /* ---------- Guided tour ---------- */
 .dbtn-hi { background: var(--sun); color: var(--on-sun); border-color: var(--sun); }
 @media (max-width: 640px) { .dbtn-hi { display: none; } }
@@ -1062,14 +1118,14 @@ const COMMUNITIES = [
   { id: 'amdvegan', city: 'Ahmedabad', name: 'Amdavad Vegan Meetup', prefs: ['vegan'], members: 410, about: 'Plant-based cafés' },
 ];
 const POSTS = [
-  { id: 'p1', city: 'Pune', communityId: 'camp', prefs: ['halal'], kind: 'tip', author: 'Faiz R.', badge: 'mod', text: 'Noor Mahal does a half-plate mutton biryani at lunch. It is not on the menu, just ask.', placeId: 'noor', when: '1 h', helpful: 24, replies: 5 },
+  { id: 'p1', city: 'Pune', communityId: 'camp', prefs: ['halal'], kind: 'tip', author: 'Faiz R.', badge: 'mod', lvl: 'City Champion', text: 'Noor Mahal does a half-plate mutton biryani at lunch. It is not on the menu, just ask.', placeId: 'noor', when: '1 h', helpful: 24, replies: 5 },
   { id: 'p2', city: 'Pune', communityId: 'camp', prefs: ['halal'], kind: 'event', author: 'Camp Food Circle', badge: 'mod', text: 'Saturday food walk: Camp to Kondhwa, 6 stops, all Certified or Checked by us. Meet at 7 pm, details in the group.', when: '3 h', helpful: 41, replies: 12 },
-  { id: 'p3', city: 'Pune', communityId: 'punejain', prefs: ['jain'], kind: 'question', author: 'Hetal P.', badge: 'visited', text: 'Any place near Shivajinagar that makes Jain pav bhaji with raw banana instead of potato?', when: '5 h', helpful: 9, replies: 7 },
-  { id: 'p4', city: 'Pune', communityId: 'punejain', prefs: ['jain', 'veg'], kind: 'tip', author: 'Mitali S.', badge: 'visited', text: 'Tulsi Courtyard makes Jain dosa on request. Tell them before you order so they use the separate tawa.', placeId: 'tulsi', when: 'Yesterday', helpful: 18, replies: 3 },
-  { id: 'p5', city: 'Pune', communityId: 'greenpune', prefs: ['vegan', 'veg'], kind: 'tip', author: 'Rhea D.', badge: 'visited', text: 'Green Bowl now has oat milk for coffee, and the millet salad is fully vegan.', placeId: 'greenbowl', when: '2 days', helpful: 11, replies: 2 },
+  { id: 'p3', city: 'Pune', communityId: 'punejain', prefs: ['jain'], kind: 'question', author: 'Hetal P.', badge: 'visited', lvl: 'Trusted Contributor', text: 'Any place near Shivajinagar that makes Jain pav bhaji with raw banana instead of potato?', when: '5 h', helpful: 9, replies: 7 },
+  { id: 'p4', city: 'Pune', communityId: 'punejain', prefs: ['jain', 'veg'], kind: 'tip', author: 'Mitali S.', badge: 'visited', lvl: 'Local Guide', text: 'Tulsi Courtyard makes Jain dosa on request. Tell them before you order so they use the separate tawa.', placeId: 'tulsi', when: 'Yesterday', helpful: 18, replies: 3 },
+  { id: 'p5', city: 'Pune', communityId: 'greenpune', prefs: ['vegan', 'veg'], kind: 'tip', author: 'Rhea D.', badge: 'visited', lvl: 'Local Guide', text: 'Green Bowl now has oat milk for coffee, and the millet salad is fully vegan.', placeId: 'greenbowl', when: '2 days', helpful: 11, replies: 2 },
   { id: 'p6', city: 'Pune', communityId: 'vimanit', prefs: ['halal'], kind: 'question', author: 'Arif K.', text: 'Late-night halal food near Viman Nagar after midnight?', when: '2 days', helpful: 6, replies: 9 },
   { id: 'p7', city: 'Ahmedabad', communityId: 'oldcity', prefs: ['halal'], kind: 'event', author: 'Old City Food Walkers', badge: 'mod', text: 'Friday evening food walk from Relief Road. Every stop is listed in the app with its trust level.', when: '4 h', helpful: 37, replies: 15 },
-  { id: 'p8', city: 'Ahmedabad', communityId: 'amdjain', prefs: ['jain', 'veg'], kind: 'tip', author: 'Parth D.', badge: 'visited', text: 'Navrangpura Jain Rasoi now serves an early chovihar dinner from 5:30 pm.', placeId: 'navjain', when: '6 h', helpful: 52, replies: 8 },
+  { id: 'p8', city: 'Ahmedabad', communityId: 'amdjain', prefs: ['jain', 'veg'], kind: 'tip', author: 'Parth D.', badge: 'visited', lvl: 'City Champion', text: 'Navrangpura Jain Rasoi now serves an early chovihar dinner from 5:30 pm.', placeId: 'navjain', when: '6 h', helpful: 52, replies: 8 },
   { id: 'p9', city: 'Ahmedabad', communityId: 'amdvegan', prefs: ['vegan'], kind: 'question', author: 'Nisha T.', text: 'Is the thepla wrap at Bodakdev Vegan Co. made without ghee?', placeId: 'bodakdev', when: '1 day', helpful: 4, replies: 2 },
   { id: 'p10', city: 'Pune', communityId: 'vimanit', prefs: ['halal', 'veg'], kind: 'tip', author: 'Quick Deals 24', text: 'Selling a second-hand bike, message me for the price.', when: '1 h', helpful: 0, replies: 0, held: true },
 ];
@@ -1114,6 +1170,71 @@ const autoCheck = (text) => AUTO_CHECKS.find((c) => c.re.test(text)) || null;
 const visiblePosts = (s) => s.posts.filter((p) => p.city === s.city && !p.held && !p.removed && !s.blocked.includes(p.author) && p.prefs.some((pr) => s.prefs.includes(pr)));
 const cityCommunities = (s) => COMMUNITIES.filter((c) => c.city === s.city && c.prefs.some((pr) => s.prefs.includes(pr)));
 const commName = (id) => (COMMUNITIES.find((c) => c.id === id) || {}).name || '';
+
+/* Contributor rewards: points only for confirmed work, so mapping right beats mapping fast */
+const RANKS = [
+  { name: 'Newcomer', min: 0 },
+  { name: 'Food Scout', min: 50, perk: 'Your name on the city leaderboard' },
+  { name: 'Local Guide', min: 200, perk: 'Partner offers at participating restaurants' },
+  { name: 'Trusted Contributor', min: 500, perk: 'Your places go live at once' },
+  { name: 'City Champion', min: 1000, perk: 'Invites to food walks and tastings' },
+];
+function rankFor(points) {
+  let r = RANKS[0];
+  RANKS.forEach((x) => { if (points >= x.min) r = x; });
+  return r;
+}
+const BADGES = [
+  { id: 'founding', icon: 'sparkle', name: 'Founding Scout', how: 'Joined before launch', test: (m) => !!m.founding },
+  { id: 'first', icon: 'pin', name: 'First Find', how: 'First place confirmed', test: (m) => m.placesConfirmed >= 1 },
+  { id: 'proof', icon: 'shield', name: 'Proof Seeker', how: '5 reviews after check-ins', test: (m) => m.reviews >= 5 },
+  { id: 'regular', icon: 'check', name: 'Regular', how: 'Checked in at 10 places', test: (m) => m.checkins >= 10 },
+  { id: 'keeper', icon: 'flag', name: 'Trust Keeper', how: '3 reports upheld by our team', test: (m) => m.reportsUpheld >= 3 },
+  { id: 'helper', icon: 'thumb', name: 'Helpful Hand', how: '25 helpful votes on your answers', test: (m) => m.helpfulReceived >= 25 },
+  { id: 'mapper', icon: 'map', name: 'Neighbourhood Mapper', how: '10 places confirmed', test: (m) => m.placesConfirmed >= 10 },
+];
+const STAT_DEFS = [['placesConfirmed', 'Places confirmed'], ['placesPending', 'Waiting to confirm'], ['checkins', 'Check-ins'], ['reviews', 'Reviews'], ['helpfulReceived', 'Helpful votes'], ['reportsUpheld', 'Reports upheld']];
+const EARN_RULES = [
+  '+20 when a place you added is confirmed (3 check-ins or a moderator)',
+  '+15 when our team upholds your report',
+  '+10 for a review after a check-in',
+  '+5 for a check-in',
+  '+2 when someone marks your answer helpful',
+  '−50 if a place you added turns out wrong; fake additions lose all points and posting rights',
+  'Posts and likes alone earn nothing, so spam never pays. At most 10 new places a day.',
+];
+const ME_START = { points: 175, month: 95, placesConfirmed: 4, placesPending: 0, checkins: 8, reviews: 4, helpfulReceived: 19, reportsUpheld: 2, founding: true };
+const LEADERS = {
+  Pune: [
+    { name: 'Faiz R.', prefs: ['halal'], month: 410, places: 14, lvl: 'City Champion', comm: 'Camp Food Circle' },
+    { name: 'Hetal P.', prefs: ['jain', 'veg'], month: 360, places: 11, lvl: 'Trusted Contributor', comm: 'Pune Jain Thali Club' },
+    { name: 'Imran S.', prefs: ['halal'], month: 255, places: 8, lvl: 'Trusted Contributor', comm: 'Camp Food Circle' },
+    { name: 'Rhea D.', prefs: ['vegan', 'veg'], month: 190, places: 6, lvl: 'Local Guide', comm: 'Green Pune Vegans' },
+    { name: 'Mitali S.', prefs: ['jain', 'veg'], month: 140, places: 4, lvl: 'Local Guide', comm: 'Pune Jain Thali Club' },
+    { name: 'Arif K.', prefs: ['halal', 'veg'], month: 70, places: 2, lvl: 'Food Scout', comm: 'Viman Nagar IT Foodies' },
+  ],
+  Ahmedabad: [
+    { name: 'Parth D.', prefs: ['jain', 'veg'], month: 430, places: 15, lvl: 'City Champion', comm: 'Amdavad Jain Rasoi Circle' },
+    { name: 'Sameer Q.', prefs: ['halal'], month: 300, places: 10, lvl: 'Trusted Contributor', comm: 'Old City Food Walkers' },
+    { name: 'Nisha T.', prefs: ['vegan'], month: 150, places: 5, lvl: 'Local Guide', comm: 'Amdavad Vegan Meetup' },
+    { name: 'Riya S.', prefs: ['jain', 'veg'], month: 120, places: 4, lvl: 'Food Scout', comm: 'Amdavad Jain Rasoi Circle' },
+  ],
+};
+const COMM_STATS = { camp: 48, vimanit: 21, punejain: 41, greenpune: 17, oldcity: 39, amdjain: 52, amdvegan: 12 };
+const CHALLENGES = [
+  { id: 'ch1', city: 'Pune', prefs: ['halal'], title: 'Map Kondhwa: 40 halal places', goal: 40, done: 27, ends: '31 Oct', reward: 'Kondhwa Mapper badge for everyone who adds a confirmed place' },
+  { id: 'ch2', city: 'Pune', prefs: ['jain', 'veg'], title: 'Jain thalis of Pune: 30 places', goal: 30, done: 18, ends: '31 Oct', reward: 'Thali Hunter badge, and a tasting invite for the top 3' },
+  { id: 'ch3', city: 'Pune', prefs: ['vegan'], title: 'Vegan Pune: 20 cafés', goal: 20, done: 9, ends: '30 Nov', reward: 'Green Mapper badge' },
+  { id: 'ch4', city: 'Ahmedabad', prefs: ['halal'], title: 'Old city halal map: 50 places', goal: 50, done: 33, ends: '31 Oct', reward: 'Old City Mapper badge' },
+  { id: 'ch5', city: 'Ahmedabad', prefs: ['jain', 'veg'], title: 'Chovihar dinners: 25 places', goal: 25, done: 14, ends: '30 Nov', reward: 'Sunset Supper badge, and a tasting invite for the top 3' },
+];
+const REWARDS = [
+  ['Food Scout (50 points)', 'Your name on the city leaderboard'],
+  ['Local Guide (200)', 'Partner offers, such as 10% off at participating restaurants, paid for by the restaurants'],
+  ['Trusted Contributor (500)', 'Your places go live at once as Community-reported'],
+  ['City Champion (1,000)', 'Invites to food walks and new-restaurant tastings'],
+  ['Monthly top 3 in each city', 'A thank-you feature on our Instagram and a TrustPlate kit'],
+];
 
 const NOTIF_DEFAULT = { asked: false, on: false, topics: { newPlaces: true, upgrades: true, offers: true } };
 const NOTIFS = [
@@ -1285,7 +1406,7 @@ function loadStored() {
   try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
 }
 function persist(s) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved, askOnOpen: s.askOnOpen, notif: s.notif, following: s.following, blocked: s.blocked, rulesAccepted: s.rulesAccepted })); } catch (e) { /* storage unavailable: the app still works */ }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved, askOnOpen: s.askOnOpen, notif: s.notif, following: s.following, blocked: s.blocked, rulesAccepted: s.rulesAccepted, me: s.me, joined: s.joined })); } catch (e) { /* storage unavailable: the app still works */ }
 }
 function initialState(useStored) {
   const st = useStored ? loadStored() : null;
@@ -1298,6 +1419,8 @@ function initialState(useStored) {
     posts: clone(POSTS), qa: clone(QA), lists: clone(LISTS), helpful: {}, savedLists: [],
     following: st && Array.isArray(st.following) ? st.following : ['camp', 'oldcity'],
     blocked: st && Array.isArray(st.blocked) ? st.blocked : [], rulesAccepted: !!(st && st.rulesAccepted),
+    me: st && st.me && typeof st.me.points === 'number' ? { ...ME_START, ...st.me } : clone(ME_START),
+    joined: st && Array.isArray(st.joined) ? st.joined : [], commTab: 'feed',
     prefs: st && Array.isArray(st.prefs) && st.prefs.length ? st.prefs : ['halal'],
     strict: st && st.strict ? { noAlcohol: !!st.strict.noAlcohol, noPork: !!st.strict.noPork } : { noAlcohol: false, noPork: false },
     city: st && CITIES[st.city] ? st.city : 'Pune',
@@ -1311,6 +1434,22 @@ function initialState(useStored) {
 }
 const OFFSETS = [[34, -30], [-42, 26], [50, 20], [-28, -44]];
 const BROWSE = ['explore', 'map', 'saved', 'community'];
+
+// Adds points and stats, then announces level-ups and new badges as toasts.
+function award(s, delta, patch, why) {
+  const before = s.me;
+  const me = { ...before, ...(patch ? patch(before) : {}), points: Math.max(0, before.points + delta), month: Math.max(0, before.month + delta) };
+  const toasts = [...s.toasts];
+  let nextId = s.nextId;
+  const say = (text) => { toasts.push({ id: nextId, text }); nextId += 1; };
+  if (why && delta) say((delta > 0 ? '+' : '') + delta + ' points: ' + why + '.');
+  const r0 = rankFor(before.points);
+  const r1 = rankFor(me.points);
+  if (r1.name !== r0.name && me.points > before.points) say('Level up: you are now a ' + r1.name + '! Unlocked: ' + r1.perk.toLowerCase() + '.');
+  BADGES.forEach((b) => { if (!b.test(before) && b.test(me)) say('New badge: ' + b.name + '.'); });
+  return { ...s, me, toasts: toasts.slice(-3), nextId };
+}
+
 
 /* ---------- State ---------- */
 function reducer(s, a) {
@@ -1327,6 +1466,7 @@ function reducer(s, a) {
         const pl = s.places.find((p) => p.id === a.placeId);
         if (pl) next.city = pl.city;
       }
+      if (a.commTab) next.commTab = a.commTab;
       if (a.ownerStep) next.owner = s.owner.status === 'draft' ? { ...s.owner, step: a.ownerStep } : { ...clone(OWNER_START), step: a.ownerStep };
       if (next.screen !== 'onboard') next.onboarded = true;
       return next;
@@ -1361,7 +1501,7 @@ function reducer(s, a) {
     case 'post': {
       const pl = a.data.placeId ? s.places.find((p) => p.id === a.data.placeId) : null;
       const prs = pl ? Object.keys(pl.levels).filter((pr) => s.prefs.includes(pr)) : [];
-      const post = { id: 'up' + s.nextId, city: s.city, communityId: a.data.communityId, prefs: prs.length ? prs : [...s.prefs], kind: a.data.kind, author: 'You (demo)', badge: pl && s.checkedIn[pl.id] ? 'visited' : null, text: a.data.text, placeId: a.data.placeId, when: 'Just now', helpful: 0, replies: 0, held: !!a.held };
+      const post = { id: 'up' + s.nextId, city: s.city, communityId: a.data.communityId, prefs: prs.length ? prs : [...s.prefs], kind: a.data.kind, author: 'You (demo)', lvl: rankFor(s.me.points).name, badge: pl && s.checkedIn[pl.id] ? 'visited' : null, text: a.data.text, placeId: a.data.placeId, when: 'Just now', helpful: 0, replies: 0, held: !!a.held };
       const next = { ...s, posts: [post, ...s.posts], sheet: null, nextId: s.nextId + 1, rulesAccepted: true };
       if (a.data.kind === 'question' && pl && !a.held) next.qa = [{ id: 'uq' + s.nextId, placeId: pl.id, author: 'You (demo)', text: a.data.text, when: 'Just now', answers: [] }, ...s.qa];
       if (a.held) {
@@ -1370,6 +1510,8 @@ function reducer(s, a) {
       }
       return next;
     }
+    case 'commTab': return { ...s, commTab: a.tab };
+    case 'join': return { ...s, joined: s.joined.includes(a.id) ? s.joined.filter((x) => x !== a.id) : [...s.joined, a.id] };
     case 'block': return { ...s, blocked: s.blocked.includes(a.author) ? s.blocked : [...s.blocked, a.author] };
     case 'unblock': return { ...s, blocked: s.blocked.filter((x) => x !== a.author) };
     case 'reportPost': return { ...s, sheet: null, nextId: s.nextId + 1, queue: [...s.queue, { id: 'q' + s.nextId, type: 'post', postId: a.id, reason: a.reason, by: 'You (demo)', submitted: 'Just now' }] };
@@ -1378,14 +1520,17 @@ function reducer(s, a) {
     case 'pin': return { ...s, pin: a.id };
     case 'open': return { ...s, screen: 'place', placeId: a.id, sheet: null, pin: null, from: BROWSE.includes(s.screen) ? s.screen : 'explore' };
     case 'sheet': return { ...s, sheet: a.sheet };
-    case 'checkIn': return { ...s, checkedIn: { ...s.checkedIn, [a.id]: true } };
+    case 'checkIn': {
+      const next = { ...s, checkedIn: { ...s.checkedIn, [a.id]: true } };
+      return s.checkedIn[a.id] ? next : award(next, 5, (m) => ({ checkins: m.checkins + 1 }), 'check-in');
+    }
     case 'save': {
       const has = s.saved.includes(a.id);
       return { ...s, saved: has ? s.saved.filter((x) => x !== a.id) : [...s.saved, a.id] };
     }
     case 'review':
-      return { ...s, sheet: null, places: s.places.map((p) => (p.id === a.id
-        ? { ...p, rating: p.rating || a.review.stars, reviewsCount: p.reviewsCount + 1, reviewsList: [a.review, ...p.reviewsList] } : p)) };
+      return award({ ...s, sheet: null, places: s.places.map((p) => (p.id === a.id
+        ? { ...p, rating: p.rating || a.review.stars, reviewsCount: p.reviewsCount + 1, reviewsList: [a.review, ...p.reviewsList] } : p)) }, 10, (m) => ({ reviews: m.reviews + 1 }), 'review after a check-in');
     case 'report':
       return { ...s, sheet: null, nextId: s.nextId + 1,
         queue: [...s.queue, { id: 'q' + s.nextId, type: 'report', placeId: a.id, reason: a.reason, by: 'You (demo)', submitted: 'Just now' }] };
@@ -1396,8 +1541,8 @@ function reducer(s, a) {
       const levels = {};
       a.data.prefs.forEach((pr) => { levels[pr] = { level: 'community', addedBy: by, confirmations: 0 }; });
       const place = { id: 'u' + s.nextId, city: s.city, name: a.data.name.trim(), area: a.data.area.trim() || 'Area not added', cuisine: a.data.cuisine.trim() || 'Restaurant', dish: a.data.dish || 'roll', price: '₹₹', rating: null, reviewsCount: 0, open: true, openTill: 'late', hours: 'Hours not added yet', phone: 'Not added yet', x: c.you.x + off[0], y: c.you.y + off[1], dist: 0.8, levels, tags: { ...a.data.tags }, menu: [], reviewsList: [] };
-      if (a.asModerator) return { ...s, places: [...s.places, place], nextId: s.nextId + 1 };
-      return { ...s, nextId: s.nextId + 1, queue: [...s.queue, { id: 'q' + s.nextId, type: 'community', place, by: 'You (demo)', confirmations: 0 }] };
+      if (a.asModerator) return award({ ...s, places: [...s.places, place], nextId: s.nextId + 1 }, 20, (m) => ({ placesConfirmed: m.placesConfirmed + 1 }), 'you added ' + place.name);
+      return { ...s, nextId: s.nextId + 1, me: { ...s.me, placesPending: s.me.placesPending + 1 }, queue: [...s.queue, { id: 'q' + s.nextId, type: 'community', place, by: 'You (demo)', confirmations: 0 }] };
     }
     case 'decide': {
       const item = s.queue.find((q) => q.id === a.itemId);
@@ -1435,7 +1580,11 @@ function reducer(s, a) {
         const prs = Object.keys(item.place.levels);
         note(item.place, prs, 'new', 'New near you: ' + item.place.name, (item.type === 'owner' ? 'Listed by the owner as ' : 'Added by the community as ') + prs.map((pr) => PREF_LABEL[pr]).join(', ') + '.');
       }
-      return { ...s, places, owner, queue, posts, notifs: notes.length ? [...notes, ...s.notifs] : s.notifs, nextId: s.nextId + notes.length };
+      let out = { ...s, places, owner, queue, posts, notifs: notes.length ? [...notes, ...s.notifs] : s.notifs, nextId: s.nextId + notes.length };
+      // The demo user's own suggestions and reports earn points once our team confirms them.
+      if (item.by === 'You (demo)' && item.type === 'community') out = award(out, a.ok ? 20 : 0, (m) => ({ placesPending: Math.max(0, m.placesPending - 1), placesConfirmed: m.placesConfirmed + (a.ok ? 1 : 0) }), a.ok ? item.place.name + ' was confirmed' : null);
+      if (item.by === 'You (demo)' && item.type === 'report' && a.ok === 'hide') out = award(out, 15, (m) => ({ reportsUpheld: m.reportsUpheld + 1 }), 'your report was upheld');
+      return out;
     }
     case 'owner': return { ...s, owner: { ...s.owner, ...a.patch } };
     case 'ownerReset': return { ...s, owner: clone(OWNER_START) };
@@ -1984,7 +2133,7 @@ function PostCard({ post, s, d }) {
   return html`<article className="post">
     <div className="post-h">
       <span className="rv-av">${initials(post.author)}</span>
-      <span className="post-who"><b>${post.author}</b><${Badge} b=${post.badge} /><small>${post.communityId ? commName(post.communityId) + ' · ' : ''}${post.when}</small></span>
+      <span className="post-who"><b>${post.author}</b><${Badge} b=${post.badge} />${post.lvl ? html`<span className="lvl-chip">${post.lvl}</span>` : null}<small>${post.communityId ? commName(post.communityId) + ' · ' : ''}${post.when}</small></span>
       <span className=${'kind ' + post.kind}>${KIND_LABEL[post.kind]}</span>
     </div>
     <p className="post-text">${post.text}</p>
@@ -2028,7 +2177,8 @@ function ListCard({ l, s, d }) {
 }
 
 function Community({ s, d }) {
-  const [tab, setTab] = useState('feed');
+  const tab = s.commTab;
+  const setTab = (k) => d({ type: 'commTab', tab: k });
   const [onlyFollowing, setOnlyFollowing] = useState(false);
   const comms = cityCommunities(s);
   const followed = comms.filter((c) => s.following.includes(c.id));
@@ -2040,7 +2190,7 @@ function Community({ s, d }) {
   });
   const lists = s.lists.filter((l) => l.city === s.city && l.prefs.some((pr) => s.prefs.includes(pr)));
   const follow = (c) => html`<button className="follow" aria-pressed=${s.following.includes(c.id)} onClick=${() => d({ type: 'follow', id: c.id })}>${s.following.includes(c.id) ? 'Following' : 'Follow'}</button>`;
-  const tabs = [['feed', 'Feed', posts.length], ['questions', 'Questions', questions.length], ['lists', 'Lists', lists.length]];
+  const tabs = [['feed', 'Feed', posts.length], ['questions', 'Questions', questions.length], ['lists', 'Lists', lists.length], ['leaders', 'Leaderboard', null]];
   return html`<div className="container page">
     <div className="page-h comm-head">
       <div><p className="eyebrow">Community · ${s.city}</p><h1>Food talk near you</h1><p>Tips, questions, food walks and lists from people who eat like you, only for your view (${viewLabel(s.prefs)}).</p></div>
@@ -2050,7 +2200,7 @@ function Community({ s, d }) {
       ${comms.map((c) => html`<span key=${c.id} className="comm-chip"><b>${c.name}</b>${follow(c)}</span>`)}
     </div>
     <div className="seg comm-tabs" role="group" aria-label="Community sections">
-      ${tabs.map(([k, label, n]) => html`<button key=${k} aria-pressed=${tab === k} onClick=${() => setTab(k)}>${label} · ${n}</button>`)}
+      ${tabs.map(([k, label, n]) => html`<button key=${k} aria-pressed=${tab === k} onClick=${() => setTab(k)}>${label}${n === null ? '' : ' · ' + n}</button>`)}
     </div>
     <div className="community-grid">
       <div className="comm-main">
@@ -2066,6 +2216,7 @@ function Community({ s, d }) {
         ${tab === 'questions' ? html`<div className="feed">
           ${questions.length ? questions.map((q) => html`<${QuestionCard} key=${q.id} q=${q} s=${s} d=${d} withPlace=${true} />`) : html`<${Empty} title="No questions yet" text="Open a place and ask the first one." />`}
         </div>` : null}
+        ${tab === 'leaders' ? html`<${Leaders} s=${s} d=${d} />` : null}
         ${tab === 'lists' ? html`<div className="lists">
           ${lists.length ? lists.map((l) => html`<${ListCard} key=${l.id} l=${l} s=${s} d=${d} />`) : html`<${Empty} title="No lists yet" text="Communities make lists of their favourite places." />`}
         </div>` : null}
@@ -2088,6 +2239,90 @@ function Community({ s, d }) {
         </div>
       </aside>
     </div>
+  </div>`;
+}
+
+
+function Leaders({ s, d }) {
+  const [mode, setMode] = useState('people');
+  const me = s.me;
+  const people = [...(LEADERS[s.city] || []).filter((l) => l.prefs.some((pr) => s.prefs.includes(pr))),
+    { name: 'You (demo)', month: me.month, places: me.placesConfirmed, lvl: rankFor(me.points).name, comm: '', me: true }].sort((a, b) => b.month - a.month);
+  const comms = cityCommunities(s).map((c) => ({ ...c, verified: COMM_STATS[c.id] || 0 })).sort((a, b) => b.verified - a.verified);
+  const chals = CHALLENGES.filter((c) => c.city === s.city && c.prefs.some((pr) => s.prefs.includes(pr)));
+  const medal = (i) => 'rank-n' + (i < 3 ? ' r' + (i + 1) : '');
+  return html`<div className="leaders">
+    <section className="lead-sec" aria-labelledby="h-chal">
+      <h2 className="sec-title" id="h-chal">Challenges this month</h2>
+      <div className="challenges">
+        ${chals.length ? chals.map((c) => {
+          const joined = s.joined.includes(c.id);
+          return html`<article key=${c.id} className="chal">
+            <b>${c.title}</b>
+            <small>${c.done} of ${c.goal} confirmed · ends ${c.ends}</small>
+            <div className="chal-bar" role="img" aria-label=${c.done + ' of ' + c.goal}><i style=${{ width: Math.round((c.done / c.goal) * 100) + '%' }}></i></div>
+            <small className="chal-reward">${I('sparkle')}${c.reward}</small>
+            <button className="btn sm" aria-pressed=${joined} onClick=${() => { d({ type: 'join', id: c.id }); if (!joined) d({ type: 'toast', text: 'Joined. Places you add count once they are confirmed.' }); }}>${joined ? I('check') : null}${joined ? 'Joined' : 'Join challenge'}</button>
+          </article>`;
+        }) : html`<p className="note">No challenges for your view this month.</p>`}
+      </div>
+    </section>
+    <section className="lead-sec" aria-labelledby="h-board">
+      <div className="results-h">
+        <div><h2 className="sec-title" id="h-board">Leaderboard · ${s.city}</h2><p className="note">This month, for your view. Only confirmed work counts.</p></div>
+        <div className="seg" role="group" aria-label="Leaderboard">
+          <button aria-pressed=${mode === 'people'} onClick=${() => setMode('people')}>${I('user')}People</button>
+          <button aria-pressed=${mode === 'communities'} onClick=${() => setMode('communities')}>${I('users')}Communities</button>
+        </div>
+      </div>
+      <div className="board">
+        ${mode === 'people'
+          ? people.map((p, i) => html`<div key=${p.name} className=${'board-row' + (p.me ? ' me' : '')}>
+              <span className=${medal(i)}>${i + 1}</span>
+              <span className="rv-av">${initials(p.name)}</span>
+              <span className="board-who"><b>${p.name}<span className="lvl-chip">${p.lvl}</span></b><small>${p.places} places confirmed${p.comm ? ' · ' + p.comm : ''}</small></span>
+              <span className="board-pts">${p.month}<small>points</small></span>
+            </div>`)
+          : comms.map((c, i) => html`<div key=${c.id} className="board-row">
+              <span className=${medal(i)}>${i + 1}</span>
+              <span className="comm-ic">${initials(c.name)}</span>
+              <span className="board-who"><b>${c.name}</b><small>${c.members.toLocaleString('en-IN')} members</small></span>
+              <span className="board-pts">${c.verified}<small>places confirmed</small></span>
+            </div>`)}
+      </div>
+    </section>
+    <section className="card" aria-labelledby="h-rewards">
+      <h2 className="card-h" id="h-rewards">Rewards and fair play</h2>
+      <ul className="rules">${REWARDS.map(([t, x]) => html`<li key=${t}>${I('star')}<span><b>${t}:</b> ${x}</span></li>`)}</ul>
+      <p className="note">No cash prizes, lucky draws or paid entries. Rewards come only from verified work, so it stays fair, halal and legal. Points never change a restaurant's trust level.</p>
+    </section>
+  </div>`;
+}
+
+function ContribCard({ s, d }) {
+  const me = s.me;
+  const r = rankFor(me.points);
+  const next = RANKS[RANKS.indexOf(r) + 1];
+  const pct = next ? Math.round(((me.points - r.min) / (next.min - r.min)) * 100) : 100;
+  return html`<div className="card contrib">
+    <div className="contrib-top">
+      <span className="contrib-av">${I('user')}</span>
+      <div className="contrib-name">
+        <h2 className="card-h">Demo user<span className="lvl-chip">${r.name}</span></h2>
+        <p className="note">${me.points} points · ${next ? (next.min - me.points) + ' more to ' + next.name + ': ' + next.perk.toLowerCase() : 'Top level reached'}</p>
+      </div>
+      <button className="btn outline sm" onClick=${() => d({ type: 'go', screen: 'community', commTab: 'leaders' })}>${I('star')}Leaderboard</button>
+    </div>
+    <div className="g-bar contrib-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow=${pct}><i style=${{ width: pct + '%' }}></i></div>
+    <div className="stats">${STAT_DEFS.map(([k, label]) => html`<div key=${k} className="stat"><b>${me[k]}</b><span>${label}</span></div>`)}</div>
+    <h3 className="mini-h">Badges · ${BADGES.filter((b) => b.test(me)).length} of ${BADGES.length}</h3>
+    <div className="badges">
+      ${BADGES.map((b) => {
+        const got = b.test(me);
+        return html`<div key=${b.id} className=${'bdg' + (got ? ' got' : '')}><span className="bdg-ic">${I(got ? b.icon : 'lock')}</span><b>${b.name}</b><small>${b.how}</small></div>`;
+      })}
+    </div>
+    <details className="earn"><summary>How you earn points</summary><ul>${EARN_RULES.map((x) => html`<li key=${x}>${x}</li>`)}</ul></details>
   </div>`;
 }
 
@@ -2115,7 +2350,7 @@ function AddPlace({ s, d }) {
     if (!f.name.trim()) { d({ type: 'toast', text: "Add the restaurant's name first." }); return; }
     if (!f.prefs.length) { d({ type: 'toast', text: 'Pick at least one: halal, Jain, pure veg or vegan.' }); return; }
     d({ type: 'suggest', data: f, asModerator: f.mod });
-    d({ type: 'toast', text: f.mod ? f.name.trim() + ' is live, credited to ' + community + '.' : 'Sent. It goes live after 3 check-in confirmations or a moderator approves it.' });
+    d({ type: 'toast', text: f.mod ? f.name.trim() + ' is live, credited to ' + community + '.' : 'Sent. It goes live after 3 check-in confirmations or a moderator approves it, and you get 20 points.' });
     if (f.mod) d({ type: 'go', screen: 'explore' });
   };
   return html`<div className="container page page-narrow">
@@ -2150,6 +2385,7 @@ function Profile({ s, d }) {
   return html`<div className="container page">
     <div className="page-h"><p className="eyebrow">Demo user · ${s.city}</p><h1>Your profile</h1><p>We never ask your religion. Only these food choices are stored.</p></div>
     <div className="profile-grid">
+      <${ContribCard} s=${s} d=${d} />
       <div className="card">
         <h2 className="card-h">Your food view</h2>
         <p className="note">This decides which places you see. Pick more than one if you like, for example pure veg and Jain.</p>
@@ -2684,7 +2920,9 @@ const GUIDE = [
   { c: 'Community', t: 'Food talk near you', b: 'Tips, questions, food walks and lists from local communities, filtered by your view. Food only: no religion or politics debates.', try: 'follow a community or mark a tip helpful.', acts: [{ type: 'go', role: 'diner', screen: 'community' }], target: ['.feed'] },
   { c: 'Community', t: 'Ask about a place', b: 'Each restaurant page has questions, answered by people who checked in and by the owner, each with a badge.', acts: [PLACE_NOOR], target: ['.qa'] },
   { c: 'Community', t: 'Problems go to Report', b: 'If a post accuses a restaurant, the app stops it and points to Report, so our team checks the facts with the restaurant first.', acts: [{ type: 'go', role: 'diner', screen: 'community', sheet: { type: 'compose', preset: { kind: 'tip', text: 'Copper Pot is not really halal, they lie about it', placeId: 'copper' } } }], target: ['.sheet .warnbox'] },
-  { c: 'Community', t: 'Add a place', b: 'Community moderators add places that go live at once as Community-reported. Other people’s suggestions need 3 check-in confirmations.', acts: [{ type: 'go', role: 'diner', screen: 'add' }], target: ['.main form.card'] },
+  { c: 'Community', t: 'Badges, leaderboards and challenges', b: 'Contributors earn points only when our checks confirm their work. Monthly leaderboards per city and view, community challenges, and rewards like partner offers and tasting invites. No cash prizes or lucky draws.', try: 'join a challenge.', acts: [{ type: 'go', role: 'diner', screen: 'community', commTab: 'leaders' }], target: ['.leaders'] },
+  { c: 'Community', t: 'Your contributor profile', b: 'Points, level, stats and badges. A wrong addition costs points, so mapping fast never beats mapping right.', acts: [{ type: 'go', role: 'diner', screen: 'profile' }], target: ['.contrib'] },
+  { c: 'Community', t: 'Add a place', b: 'Community moderators add places that go live at once as Community-reported. Other people’s suggestions need 3 check-in confirmations, and confirmed places earn 20 points.', acts: [{ type: 'go', role: 'diner', screen: 'add' }], target: ['.main form.card'] },
   { c: 'Restaurant owner', t: 'List for free', b: 'Owners list for free: name, area, what they serve and food facts. In the live app they sign in with a phone code first.', acts: [{ type: 'go', role: 'owner', ownerStep: 1 }], target: ['.ocard'] },
   { c: 'Restaurant owner', t: 'Add proof', b: 'Upload a certificate to become Certified, or book our visit (about ₹999) to become Checked by us.', acts: [{ type: 'go', role: 'owner', ownerStep: 3 }], target: ['.upload'] },
   { c: 'Restaurant owner', t: 'Track the status', b: 'We submitted a sample listing for you. It goes live as Owner-declared once our team approves it, then rises to Certified or Checked by us.', acts: [{ type: 'ownerTrack' }], target: ['.timeline'] },
@@ -2814,7 +3052,7 @@ function App() {
   const [s, d] = useReducer(reducer, null, () => initialState(true));
   const [drawer, setDrawer] = useState(false);
   const [guide, setGuide] = useState(null);
-  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved, s.askOnOpen, s.notif, s.following, s.blocked, s.rulesAccepted]);
+  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved, s.askOnOpen, s.notif, s.following, s.blocked, s.rulesAccepted, s.me, s.joined]);
   useEffect(() => {
     if (!s.toasts.length) return undefined;
     const t = setTimeout(() => d({ type: 'untoast', id: s.toasts[0].id }), 3400);
