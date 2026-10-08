@@ -930,6 +930,46 @@ html.embed::-webkit-scrollbar { display: none; }
 .lvl-chip .ic { width: 11px; height: 11px; }
 
 
+/* ---------- Support: easy to find, ads only by choice ---------- */
+.support-btn { height: 40px; border-radius: 999px; border: 0; background: color-mix(in srgb, var(--coral) 16%, var(--app)); color: #e5484d; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 14px 0 12px; font-weight: 800; font-size: 13.5px; flex: none; }
+.support-btn .ic { width: 18px; height: 18px; }
+.support-btn[aria-current="page"] { box-shadow: 0 0 0 2px #e5484d; }
+@media (max-width: 1280px) { .support-btn .lbl { display: none; } .support-btn { width: 40px; padding: 0; } }
+.support-strip { position: relative; margin-top: 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 48px 14px 16px; border-radius: 20px; background: color-mix(in srgb, var(--coral) 12%, var(--app)); border: 1px solid color-mix(in srgb, var(--coral) 35%, var(--line)); }
+.ss-ic { width: 40px; height: 40px; border-radius: 13px; background: linear-gradient(135deg, var(--coral), var(--coral-2)); color: #ffffff; display: grid; place-items: center; flex: none; }
+.ss-ic .ic { width: 20px; height: 20px; }
+.ss-txt { flex: 1; min-width: 200px; }
+.ss-txt b { display: block; font-size: 15px; font-weight: 800; }
+.ss-txt small { color: var(--muted); font-size: 13px; }
+.ss-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.ss-actions .btn .ic, .ad-card .btn .ic { width: 15px; height: 15px; }
+.ss-x { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; border: 0; background: transparent; color: var(--muted); display: grid; place-items: center; }
+.ss-x .ic { width: 16px; height: 16px; }
+.ad-card { margin-bottom: 24px; }
+.ad-card-top { display: flex; gap: 12px; align-items: flex-start; }
+.ad-card .btn { justify-self: start; }
+.adbox { position: relative; border-radius: 18px; overflow: hidden; background: var(--app-2); display: grid; gap: 6px; padding-bottom: 12px; }
+.ad-label { position: absolute; top: 10px; left: 10px; z-index: 3; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: #f5c542; color: #3a2a00; }
+.ad-art { height: 150px; display: grid; place-items: center; overflow: hidden; }
+.ad-art svg { width: 50%; height: 80%; position: relative; z-index: 1; }
+.adbox b, .adbox small { padding: 0 14px; }
+.adbox small { color: var(--muted); font-size: 12.5px; }
+.sponsor-scrim { position: fixed; inset: 0; z-index: 92; background: var(--scrim); display: grid; place-items: center; padding: 16px; animation: fade 0.2s ease; }
+.sponsor { position: relative; width: min(420px, 100%); max-height: 100%; overflow-y: auto; background: var(--app); border-radius: 28px; box-shadow: var(--shadow-2); animation: up 0.26s ease; }
+.sp-top { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: center; z-index: 4; }
+.sp-label { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.94); color: #1b2033; }
+.sp-skip { background: rgba(17, 22, 42, 0.8); color: #ffffff; box-shadow: none; }
+.sp-skip .ic { width: 15px; height: 15px; }
+.sp-art { height: 190px; display: grid; place-items: center; overflow: hidden; }
+.sp-art svg { width: 62%; height: 80%; position: relative; z-index: 1; }
+.sp-body { padding: 16px 18px 18px; display: grid; gap: 8px; justify-items: start; }
+.sp-body h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.sp-offer { margin: 0; display: flex; gap: 8px; align-items: center; font-weight: 800; color: var(--warn); }
+.sp-offer .ic { width: 18px; height: 18px; }
+.sp-body .btn { justify-self: stretch; }
+.sp-fine { font-size: 12px; }
+
+
 /* ---------- View picker groups ---------- */
 .pref-groups { display: grid; gap: 14px; }
 .pref-group { display: grid; gap: 8px; }
@@ -1004,6 +1044,7 @@ const ICONS = {
   arrow: { d: ['M5 12h14', 'M13 6l6 6-6 6'] },
   lock: { d: ['M7.5 11V8a4.5 4.5 0 0 1 9 0v3', 'M5.5 11h13v9.5h-13z'] },
   reset: { d: ['M4.5 12a7.5 7.5 0 1 0 2.2-5.3', 'M4.5 4.5v4h4'] },
+  play: { d: ['M8 5.5v13l10.5-6.5z'], fill: true },
   bell: { d: ['M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z', 'M10 20.5a2 2 0 0 0 4 0'] },
   tag: { d: ['M3.5 12.6V4h8.6l8.4 8.4-8 8z'], c: [[8, 8, 1.6]] },
   chat: { d: ['M4.5 5h15v10.5H10l-4.5 3.8v-3.8h-1z'] },
@@ -1330,7 +1371,17 @@ const REWARDS = [
 ];
 
 /* Public support: optional, never buys trust (sample numbers) */
-const SUPPORT_START = { raised: 9450, goal: 15000, supporters: 126, mine: null };
+const SUPPORT_START = { raised: 9450, goal: 15000, supporters: 126, mine: null, adViews: 2431, adsToday: 0, stripHidden: false };
+const AD_DAILY_CAP = 5;
+const AD_RATE = 0.25; // rupees per rewarded ad view: an estimate, to replace with real AdMob numbers once live
+const SPONSOR_OFFERS = {
+  noor: '10% off Friday lunch', kondhwa: 'Mandi for two at ₹699', annapurna: 'Free shrikhand with a Jain thali this week',
+  greenbowl: 'Oat milk coffee at ₹99 this month', tulsi: 'Jain dosa combo at ₹149', punjab: 'Family tandoor platter at ₹799',
+  navjain: 'Early chovihar dinner from 5:30 pm', satellite: 'Unlimited Gujarati thali at ₹349', juhapura: 'Free firni with any kebab platter',
+  bodakdev: 'Second smoothie half price', tandoor: 'Kulcha combo at ₹249',
+};
+
+
 const TIERS = [
   { id: 'chai', name: 'Chai', amount: 49, perks: ['Supporter badge on your profile'] },
   { id: 'thali', name: 'Thali', amount: 199, perks: ['Supporter badge', 'Early access to new cities'], popular: true },
@@ -1340,8 +1391,8 @@ const ONE_TIME = [100, 500, 1000];
 const SPEND = [['Field visits and certificate checks', 40], ['Servers, maps and storage', 25], ['Moderation and safety', 20], ['Community food walks and events', 10], ['Payment fees', 5]];
 const PROMISES = [
   'Support never buys a trust level, a ranking or a badge for any restaurant.',
+  'Ads only when you choose to watch one, and never on trust details; alcohol, betting, dating, religion and politics ads are blocked.',
   'We publish what we receive and spend every quarter.',
-  'No ads on trust details or certificates.',
   'Cancel a monthly plan anytime, in two taps.',
   'Always optional: every feature stays free.',
 ];
@@ -1546,7 +1597,7 @@ function loadStored() {
   try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
 }
 function persist(s) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved, askOnOpen: s.askOnOpen, notif: s.notif, following: s.following, blocked: s.blocked, rulesAccepted: s.rulesAccepted, me: s.me, joined: s.joined, supportMine: s.support.mine })); } catch (e) { /* storage unavailable: the app still works */ }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ prefs: s.prefs, strict: s.strict, city: s.city, onboarded: s.onboarded, saved: s.saved, askOnOpen: s.askOnOpen, notif: s.notif, following: s.following, blocked: s.blocked, rulesAccepted: s.rulesAccepted, me: s.me, joined: s.joined, supportMine: s.support.mine, stripHidden: s.support.stripHidden, sponsorAt: s.sponsorAt })); } catch (e) { /* storage unavailable: the app still works */ }
 }
 function initialState(useStored) {
   const st = useStored ? loadStored() : null;
@@ -1561,7 +1612,9 @@ function initialState(useStored) {
     blocked: st && Array.isArray(st.blocked) ? st.blocked : [], rulesAccepted: !!(st && st.rulesAccepted),
     me: st && st.me && typeof st.me.points === 'number' ? { ...ME_START, ...st.me } : clone(ME_START),
     joined: st && Array.isArray(st.joined) ? st.joined : [], commTab: 'feed',
-    support: { ...SUPPORT_START, mine: st && st.supportMine ? st.supportMine : null },
+    support: { ...SUPPORT_START, mine: st && st.supportMine ? st.supportMine : null, stripHidden: !!(st && st.stripHidden) },
+    sponsorAt: st && st.sponsorAt ? st.sponsorAt : 0,
+    sponsor: onboarded && !askOnOpen && !(st && st.sponsorAt && Date.now() - st.sponsorAt < 864e5) ? 'auto' : null,
     prefs: st && Array.isArray(st.prefs) && st.prefs.length ? st.prefs : ['veg'],
     strict: st && st.strict ? { noAlcohol: !!st.strict.noAlcohol, noPork: !!st.strict.noPork } : { noAlcohol: false, noPork: false },
     city: st && CITIES[st.city] ? st.city : 'Pune',
@@ -1606,7 +1659,7 @@ function reducer(s, a) {
         if (sheet.preset) sheet.preset = { ...sheet.preset, placeId: fix(sheet.preset.placeId), text: sheet.preset.text === 'auto-accuse' ? accuseText(ap, s.prefs) : sheet.preset.text };
       }
       const placeId = a.placeId ? fix(a.placeId) : null;
-      const next = { ...s, role: a.role || s.role, sheet, pin: null };
+      const next = { ...s, role: a.role || s.role, sheet, pin: null, sponsor: null };
       if (a.screen) {
         if (a.screen === 'place' && s.screen !== 'place') next.from = BROWSE.includes(s.screen) ? s.screen : 'explore';
         next.screen = a.screen;
@@ -1663,6 +1716,10 @@ function reducer(s, a) {
     case 'commTab': return { ...s, commTab: a.tab };
     case 'join': return { ...s, joined: s.joined.includes(a.id) ? s.joined.filter((x) => x !== a.id) : [...s.joined, a.id] };
     case 'support': return { ...s, sheet: null, support: { ...s.support, raised: s.support.raised + a.amount, supporters: s.support.supporters + (s.support.mine ? 0 : 1), mine: { amount: a.amount, monthly: a.monthly, showName: a.showName } } };
+    case 'adWatched': return { ...s, sponsorAt: Date.now(), support: { ...s.support, adViews: s.support.adViews + 1, adsToday: s.support.adsToday + 1 } };
+    case 'hideStrip': return { ...s, support: { ...s.support, stripHidden: true } };
+    case 'sponsorShow': return { ...s, sponsor: 'auto', sheet: null };
+    case 'sponsorClose': return { ...s, sponsor: null, sponsorAt: Date.now() };
     case 'block': return { ...s, blocked: s.blocked.includes(a.author) ? s.blocked : [...s.blocked, a.author] };
     case 'unblock': return { ...s, blocked: s.blocked.filter((x) => x !== a.author) };
     case 'reportPost': return { ...s, sheet: null, nextId: s.nextId + 1, queue: [...s.queue, { id: 'q' + s.nextId, type: 'post', postId: a.id, reason: a.reason, by: 'You (demo)', submitted: 'Just now' }] };
@@ -1912,6 +1969,7 @@ function TopNav({ s, d }) {
       </div>
       <div className="nav-actions">
         <button className="btn outline sm nav-cta" onClick=${() => d({ type: 'go', screen: 'add' })} aria-label="Add a place">${I('plus')}<span className="lbl">Add a place</span></button>
+        <button className="support-btn" aria-current=${s.screen === 'support' ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: 'support' })} aria-label="Support TrustPlate">${I('heartFill')}<span className="lbl">Support</span></button>
         <button className="bell" onClick=${() => d({ type: 'sheet', sheet: { type: 'notifs' } })} aria-label=${unread ? 'Updates near you, ' + unread + ' new' : 'Updates near you'}>${I('bell')}${unread ? html`<span className="bell-dot">${unread}</span>` : null}</button>
         <button className="avatar" aria-current=${s.screen === 'profile' ? 'page' : undefined} onClick=${() => d({ type: 'go', screen: 'profile' })} aria-label="Your profile and preferences">${I('user')}</button>
       </div>
@@ -2004,6 +2062,7 @@ function Explore({ s, d }) {
         ${alertsBanner}
         <${Banner} tone="b-coral" dish=${isNonVeg(s.prefs) ? 'roll' : 'dosa'} title="Know a great place?" sub="Add it for your community" cta="Add a place" onClick=${() => d({ type: 'go', screen: 'add' })} />
       </div>
+      ${s.support.stripHidden ? null : html`<${SupportStrip} s=${s} d=${d} />`}
       <section className="cats-sec" aria-labelledby="h-cats">
         <h2 className="sec-title" id="h-cats">What's on your mind?</h2>
         <div className="cats" role="group" aria-label="Dishes">
@@ -2494,7 +2553,9 @@ function ContribCard({ s, d }) {
 /* ---------- Support ---------- */
 function Support({ s, d }) {
   const sp = s.support;
-  const pct = Math.min(100, Math.round((sp.raised / sp.goal) * 100));
+  const adIncome = Math.round(sp.adViews * AD_RATE);
+  const total = sp.raised + adIncome;
+  const pct = Math.min(100, Math.round((total / sp.goal) * 100));
   const rupees = (n) => '₹' + n.toLocaleString('en-IN');
   return html`<div>
     <section className="support-hero"><div className="container">
@@ -2502,13 +2563,20 @@ function Support({ s, d }) {
       <h1>Keep food trust free for everyone.</h1>
       <p>TrustPlate is free for diners, and restaurants list for free. We are not profitable yet, and we will never sell trust levels. Support from the people who use it pays for the servers, the maps and the visits that check kitchens.</p>
       <div className="goal">
-        <div className="goal-top"><b>${rupees(sp.raised)}</b><span>of ${rupees(sp.goal)} this month · ${sp.supporters} supporters</span></div>
+        <div className="goal-top"><b>${rupees(total)}</b><span>of ${rupees(sp.goal)} this month · ${sp.supporters} supporters</span></div>
         <div className="goal-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow=${pct}><i style=${{ width: pct + '%' }}></i></div>
-        <small>The goal covers this month's running costs. Sample numbers in this demo.</small>
+        <small>Includes about ${rupees(adIncome)} from ${sp.adViews.toLocaleString('en-IN')} support ad views. The goal covers this month's running costs. Sample numbers in this demo.</small>
       </div>
     </div></section>
     <div className="container page">
       ${sp.mine ? html`<div className="thanks">${I('heartFill')}<span><b>Thank you for supporting TrustPlate.</b> ${rupees(sp.mine.amount)}${sp.mine.monthly ? ' a month' : ' once'}. Your supporter badge is on your profile.</span></div>` : null}
+      <section className="card ad-card">
+        <div className="ad-card-top"><span className="ss-ic">${I('play')}</span>
+          <div><h2 className="card-h">Can't pay? Watch a short ad</h2>
+          <p className="note">Free for you: one short ad, only when you choose, up to ${AD_DAILY_CAP} a day. ${sp.adViews.toLocaleString('en-IN')} views by supporters this month.</p></div></div>
+        <button className="btn primary" onClick=${() => watchAd(s, d)}>${I('play')}Watch an ad to support</button>
+      </section>
+
       <h2 className="sec-title">Support every month</h2>
       <div className="support-tiers">
         ${TIERS.map((t) => html`<article key=${t.id} className=${'tier' + (t.popular ? ' popular' : '')}>
@@ -2544,6 +2612,51 @@ function Support({ s, d }) {
       </div>
       <p className="note legal">TrustPlate is a company, not a charity, so support payments are not tax-deductible donations. We do not collect zakat or any religious giving.</p>
     </div>
+  </div>`;
+}
+
+
+// One support ad, only when the user chooses; capped per day.
+function watchAd(s, d) {
+  if (s.support.adsToday >= AD_DAILY_CAP) { d({ type: 'toast', text: 'That is ' + AD_DAILY_CAP + ' ads today. Thank you! Come back tomorrow.' }); return; }
+  d({ type: 'sheet', sheet: { type: 'ad' } });
+}
+
+function SupportStrip({ s, d }) {
+  return html`<section className="support-strip" aria-label="Support TrustPlate">
+    <span className="ss-ic">${I('heartFill')}</span>
+    <div className="ss-txt"><b>Free for everyone, built on public trust.</b><small>Support TrustPlate: watch one short ad, or give ₹49 a month.</small></div>
+    <div className="ss-actions">
+      <button className="btn sm outline" onClick=${() => watchAd(s, d)}>${I('play')}Watch an ad</button>
+      <button className="btn sm primary" onClick=${() => d({ type: 'go', screen: 'support' })}>Support</button>
+    </div>
+    <button className="ss-x" onClick=${() => d({ type: 'hideStrip' })} aria-label="Hide this message">${I('x')}</button>
+  </section>`;
+}
+
+// A sponsored place, at most once a day, never with the opening prompt; Skip is always there.
+function SponsorSplash({ s, d }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') d({ type: 'sponsorClose' }); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  const p = autoPlace(s);
+  if (!p) return null;
+  const top = topPref(p, s.prefs);
+  return html`<div className="sponsor-scrim" onClick=${(e) => { if (e.target === e.currentTarget) d({ type: 'sponsorClose' }); }}>
+    <section className="sponsor" role="dialog" aria-modal="true" aria-label="Sponsored place">
+      <div className="sp-top"><span className="sp-label">Sponsored</span><button className="btn sm sp-skip" onClick=${() => d({ type: 'sponsorClose' })}>Skip${I('x')}</button></div>
+      <div className=${'sp-art dishbg d-' + p.dish}>${Dish(p.dish)}</div>
+      <div className="sp-body">
+        <${TrustPill} pref=${top} level=${p.levels[top].level} />
+        <h2>${p.name}</h2>
+        <p className="sp-offer">${I('tag')}${SPONSOR_OFFERS[p.id] || 'Featured near you'}</p>
+        <p className="note">${p.cuisine} · ${p.area} · ${p.dist.toFixed(1)} km</p>
+        <button className="btn primary block" onClick=${() => { d({ type: 'sponsorClose' }); d({ type: 'open', id: p.id }); }}>See the place</button>
+        <p className="note sp-fine">Restaurants pay for this spot. It matches your view, never changes a trust level and shows at most once a day. Watching one support ad hides it for 24 hours.</p>
+      </div>
+    </section>
   </div>`;
 }
 
@@ -2962,8 +3075,39 @@ function SupportSheet({ d, sheet, close }) {
 }
 
 
+const AD_SECONDS = 8;
+function AdSheet({ d, close }) {
+  const [left, setLeft] = useState(AD_SECONDS);
+  const done = left <= 0;
+  useEffect(() => {
+    if (done) return undefined;
+    const t = setTimeout(() => setLeft((x) => x - 1), 1000);
+    return () => clearTimeout(t);
+  }, [left]);
+  useEffect(() => { if (done) d({ type: 'adWatched' }); }, [done]);
+  if (done) {
+    return html`<div className="sbody">
+      <div className="locating"><span className="done-ic">${I('check')}</span><h3>Thank you!</h3>
+        <p className="note">Your view added to this month's goal, and you won't see a sponsored card for 24 hours.</p></div>
+      <button className="btn primary block" onClick=${close}>Done</button>
+    </div>`;
+  }
+  return html`<div className="sbody">
+    <div className="adbox">
+      <span className="ad-label">Ad</span>
+      <div className="ad-art dishbg d-chai">${Dish('chai')}</div>
+      <b>Sample support ad</b>
+      <small>In the live app a short video ad plays here (Google AdMob rewarded ad). Alcohol, betting, dating, religion and politics ads are blocked.</small>
+    </div>
+    <div className="g-bar" role="progressbar" aria-valuemin="0" aria-valuemax=${AD_SECONDS} aria-valuenow=${AD_SECONDS - left}><i style=${{ width: Math.round(((AD_SECONDS - left) / AD_SECONDS) * 100) + '%' }}></i></div>
+    <p className="note">${left} seconds left. Closing now means this view is not counted.</p>
+    <button className="btn block" onClick=${close}>Close</button>
+  </div>`;
+}
+
+
 const PLACE_SHEETS = { checkin: [CheckInSheet, 'Check in'], review: [ReviewSheet, 'Write a review'], report: [ReportSheet, 'Report a problem'], order: [OrderSheet, 'Order online'], directions: [DirectionsSheet, 'Get directions'] };
-const APP_SHEETS = { prefs: [PrefsSheet, 'Your food view'], alerts: [AlertsSheet, 'Alerts'], notifs: [NotifSheet, 'Updates near you'], compose: [ComposeSheet, 'Share with the community'], reportPost: [ReportPostSheet, 'Report a post'], list: [ListSheet, 'List'], support: [SupportSheet, 'Support TrustPlate'] };
+const APP_SHEETS = { prefs: [PrefsSheet, 'Your food view'], alerts: [AlertsSheet, 'Alerts'], notifs: [NotifSheet, 'Updates near you'], compose: [ComposeSheet, 'Share with the community'], reportPost: [ReportPostSheet, 'Report a post'], list: [ListSheet, 'List'], support: [SupportSheet, 'Support TrustPlate'], ad: [AdSheet, 'Support ad'] };
 
 function Sheets({ s, d }) {
   const sheetRef = useRef(null);
@@ -3178,6 +3322,8 @@ const GUIDE = [
   { c: 'Restaurant owner', t: 'Track the status', b: 'We submitted a sample listing for you. It goes live as Owner-declared once our team approves it, then rises to Certified or Checked by us.', acts: [{ type: 'ownerTrack' }], target: ['.timeline'] },
   { c: 'Our team', t: 'The private review queue', b: 'Certificates, visits, reports, reported posts and new listings. Approve one and the app updates at once, and diners with alerts are notified.', try: 'approve the sample listing, then press Back.', acts: [{ type: 'role', role: 'admin' }], target: ['.qgrid'] },
   { c: 'Support', t: 'Funded by the people who use it', b: 'TrustPlate stays free and never sells trust. People who value it can support it monthly or once, and support never changes a trust level or ranking.', try: 'pick a plan; no money moves in the demo.', acts: [{ type: 'go', role: 'diner', screen: 'support' }], target: ['.support-tiers'] },
+  { c: 'Support', t: 'Support for free: watch an ad', b: 'People who cannot pay can watch one short ad, only when they choose, up to 5 a day. Ads never appear on trust details, and alcohol, betting, dating, religion and politics ads are blocked.', acts: [{ type: 'go', role: 'diner', screen: 'support', sheet: { type: 'ad' } }], target: ['.sheet'] },
+  { c: 'Support', t: 'A sponsored place, once a day', b: 'At most once a day the app may open with a sponsored place that matches your view. Skip it anytime; paying never changes a trust level.', acts: [{ type: 'go', role: 'diner', screen: 'explore' }, { type: 'sponsorShow' }], target: ['.sponsor'] },
   { c: 'Done', t: "That's TrustPlate", b: 'Explore on your own, or open All steps to jump anywhere. Reset puts the sample data back.', acts: [{ type: 'go', role: 'diner', screen: 'explore' }] },
 ];
 const GUIDE_BRIEF = GUIDE.map((g) => ({ c: g.c, t: g.t }));
@@ -3238,7 +3384,7 @@ function Guide({ s, i, onGo, onEnd, onAll }) {
   try {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    if (vw < 700) pos = s.sheet || (rect && rect.y + rect.h / 2 > vh * 0.55) ? 'top' : 'bottom';
+    if (vw < 700) pos = s.sheet || s.sponsor || (rect && rect.y + rect.h / 2 > vh * 0.55) ? 'top' : 'bottom';
     else pos = rect && rect.x + rect.w / 2 > vw * 0.6 && rect.y + rect.h / 2 > vh * 0.45 ? 'left' : 'right';
   } catch (e) { /* no window while testing */ }
   return html`<div>
@@ -3303,7 +3449,7 @@ function App() {
   const [s, d] = useReducer(reducer, null, () => initialState(true));
   const [drawer, setDrawer] = useState(false);
   const [guide, setGuide] = useState(null);
-  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved, s.askOnOpen, s.notif, s.following, s.blocked, s.rulesAccepted, s.me, s.joined, s.support]);
+  useEffect(() => { persist(s); }, [s.prefs, s.strict, s.city, s.onboarded, s.saved, s.askOnOpen, s.notif, s.following, s.blocked, s.rulesAccepted, s.me, s.joined, s.support, s.sponsorAt]);
   useEffect(() => {
     if (!s.toasts.length) return undefined;
     const t = setTimeout(() => d({ type: 'untoast', id: s.toasts[0].id }), 3400);
@@ -3378,6 +3524,7 @@ function App() {
     ${showFooter ? html`<${Footer} d=${d} />` : null}
     ${showTabs ? html`<${MobileTabs} s=${s} d=${d} />` : null}
     ${showBar ? html`<${PlaceBar} s=${s} d=${d} />` : null}
+    ${s.sponsor ? html`<${SponsorSplash} s=${s} d=${d} />` : null}
     <${Sheets} s=${s} d=${d} />
     ${guide !== null && !drawer ? html`<${Guide} s=${s} i=${guide} onGo=${setGuide} onEnd=${endGuide} onAll=${() => setDrawer(true)} />` : null}
     ${drawer ? html`<${Tour} guide=${guide} onPick=${startGuide} onClose=${() => setDrawer(false)} />` : null}
