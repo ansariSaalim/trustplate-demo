@@ -191,6 +191,7 @@ h1, h2, h3 { text-wrap: balance; }
 .p-jain i { background: var(--sun-2); }
 .p-veg i { background: var(--veg); }
 .p-vegan i { background: var(--lv-checked); }
+.p-jhatka i { background: var(--coral); }
 .chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .chips::-webkit-scrollbar { display: none; }
 .fchip { flex: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--chip); border-radius: 12px; padding: 8px 12px; font-size: 13px; font-weight: 700; color: var(--ink); }
@@ -420,7 +421,7 @@ input[type="radio"], input[type="checkbox"] { width: 18px; height: 18px; accent-
 .checklist { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
 .checklist li { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
 .checklist .ic { width: 17px; height: 17px; color: var(--ok); }
-.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
 @media (max-width: 760px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .fact { border-radius: 16px; background: var(--app-2); padding: 12px; display: grid; gap: 7px; align-content: start; }
 .fact-ic { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; }
@@ -929,6 +930,12 @@ html.embed::-webkit-scrollbar { display: none; }
 .lvl-chip .ic { width: 11px; height: 11px; }
 
 
+/* ---------- View picker groups ---------- */
+.pref-groups { display: grid; gap: 14px; }
+.pref-group { display: grid; gap: 8px; }
+.pref-group .mini-h { margin: 0; }
+.choice-group { display: grid; gap: 6px; }
+
 /* ---------- Responsive polish ---------- */
 @media (max-width: 767px) {
   .linkbtn { padding: 7px 2px; }
@@ -938,7 +945,7 @@ html.embed::-webkit-scrollbar { display: none; }
   .report { padding: 8px 0; }
 }
 @media (min-width: 761px) {
-  .prefcards.compact { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .prefcards.compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .sheet:has(.prefcards.compact) { max-width: 660px; }
 }
 @media (min-width: 1600px) { .container { max-width: 1400px; } }
@@ -1119,13 +1126,19 @@ function Dish(kind) {
 
 /* ---------- Sample data (all made up) ---------- */
 const PREFS = [
-  { id: 'halal', label: 'Halal', dish: 'biryani' },
-  { id: 'jain', label: 'Jain', dish: 'thali' },
-  { id: 'veg', label: 'Pure veg', dish: 'dosa' },
-  { id: 'vegan', label: 'Vegan', dish: 'bowl' },
+  { id: 'veg', label: 'Pure veg', dish: 'dosa', group: 'veg' },
+  { id: 'jain', label: 'Jain', dish: 'thali', group: 'veg' },
+  { id: 'vegan', label: 'Vegan', dish: 'bowl', group: 'veg' },
+  { id: 'halal', label: 'Halal', dish: 'biryani', group: 'nonveg' },
+  { id: 'jhatka', label: 'Jhatka', dish: 'kebab', group: 'nonveg' },
 ];
-const PREF_LABEL = { halal: 'Halal', jain: 'Jain', veg: 'Pure veg', vegan: 'Vegan' };
-const PREF_HINT = { halal: 'Certified, checked or declared halal', jain: 'No onion, garlic or root vegetables', veg: 'Vegetarian-only kitchens', vegan: 'No dairy, eggs or honey' };
+const PREF_GROUPS = [['veg', 'Veg'], ['nonveg', 'Non-veg']];
+const PREF_LABEL = { halal: 'Halal', jhatka: 'Jhatka', jain: 'Jain', veg: 'Pure veg', vegan: 'Vegan' };
+const PREF_HINT = { halal: 'Certified, checked or declared halal', jhatka: 'Meat from jhatka (single-strike) slaughter', jain: 'No onion, garlic or root vegetables', veg: 'Vegetarian-only kitchens', vegan: 'No dairy, eggs or honey' };
+// Filters appear only where they mean something: pork only for halal; alcohol for halal, jhatka and Jain.
+const showPork = (prefs) => prefs.includes('halal');
+const showAlcohol = (prefs) => prefs.some((p) => p === 'halal' || p === 'jhatka' || p === 'jain');
+const isNonVeg = (prefs) => prefs.some((p) => p === 'halal' || p === 'jhatka');
 const LEVELS = {
   certified: { rank: 4, label: 'Certified', icon: 'shield', about: 'Valid certificate from a recognised body. We check it and track its expiry.' },
   checked: { rank: 3, label: 'Checked by us', icon: 'checkCircle', about: 'Our team visited and checked the kitchen and suppliers.' },
@@ -1145,6 +1158,7 @@ const VISIT_CHECKS = {
   jain: ['Veg-only kitchen', 'Separate Jain preparation', 'No root vegetables in Jain dishes'],
   veg: ['Veg-only kitchen', 'No eggs in the kitchen'],
   vegan: ['No dairy', 'No eggs', 'Veg-only kitchen'],
+  jhatka: ['Jhatka meat supplier named', 'Supplier bills seen', 'Kitchen staff confirm the jhatka method'],
 };
 const COMMUNITY = { Pune: 'Camp Food Circle', Ahmedabad: 'Old City Food Walkers' };
 const ADD_DEFAULT = {
@@ -1155,8 +1169,15 @@ const OWNER_TAGS = [
   ['alcohol', 'We serve alcohol'], ['pork', 'Pork is on the menu'], ['sepHalal', 'Separate halal kitchen'],
   ['vegOnly', 'Veg-only kitchen'], ['noOnionGarlic', 'Jain dishes without onion or garlic'],
 ];
-const REASONS = ['Not halal as listed', 'Pork found or served', 'Not Jain or veg as listed', 'Closed or moved', 'Wrong details'];
-const HINTS = ['Search "biryani"', 'Search "Jain thali"', 'Search "kebab rolls"', 'Search "vegan bowl"'];
+
+const HINTS_BY = {
+  halal: ['Search "biryani"', 'Search "kebab rolls"'], jhatka: ['Search "tandoori chicken"', 'Search "mutton tikka"'],
+  veg: ['Search "masala dosa"', 'Search "paneer"'], jain: ['Search "Jain thali"', 'Search "Jain dosa"'], vegan: ['Search "vegan bowl"', 'Search "oat milk chai"'],
+};
+const hintsFor = (prefs) => {
+  const h = prefs.flatMap((p) => HINTS_BY[p] || []);
+  return h.length ? h : ['Search places or dishes'];
+};
 const viewLabel = (prefs) => prefs.map((p) => PREF_LABEL[p]).join(' + ');
 
 /* The live app asks the phone which of these apps are installed; the demo pretends Zomato and Google Maps are. */
@@ -1182,6 +1203,7 @@ const COMMUNITIES = [
   { id: 'vimanit', city: 'Pune', name: 'Viman Nagar IT Foodies', prefs: ['halal', 'veg'], members: 860, about: 'Office lunches and late-night food' },
   { id: 'punejain', city: 'Pune', name: 'Pune Jain Thali Club', prefs: ['jain', 'veg'], members: 2100, about: 'Strictly Jain and pure veg places' },
   { id: 'greenpune', city: 'Pune', name: 'Green Pune Vegans', prefs: ['vegan', 'veg'], members: 540, about: 'Vegan finds across Pune' },
+  { id: 'punefood', city: 'Pune', name: 'Pune Punjabi Food Circle', prefs: ['jhatka'], members: 690, about: 'Tandoor and dhaba finds' },
   { id: 'oldcity', city: 'Ahmedabad', name: 'Old City Food Walkers', prefs: ['halal'], members: 980, about: 'Food walks in the walled city' },
   { id: 'amdjain', city: 'Ahmedabad', name: 'Amdavad Jain Rasoi Circle', prefs: ['jain', 'veg'], members: 3200, about: 'Jain food and chovihar dinners' },
   { id: 'amdvegan', city: 'Ahmedabad', name: 'Amdavad Vegan Meetup', prefs: ['vegan'], members: 410, about: 'Plant-based cafés' },
@@ -1196,6 +1218,7 @@ const POSTS = [
   { id: 'p7', city: 'Ahmedabad', communityId: 'oldcity', prefs: ['halal'], kind: 'event', author: 'Old City Food Walkers', badge: 'mod', text: 'Friday evening food walk from Relief Road. Every stop is listed in the app with its trust level.', when: '4 h', helpful: 37, replies: 15 },
   { id: 'p8', city: 'Ahmedabad', communityId: 'amdjain', prefs: ['jain', 'veg'], kind: 'tip', author: 'Parth D.', badge: 'visited', lvl: 'City Champion', text: 'Navrangpura Jain Rasoi now serves an early chovihar dinner from 5:30 pm.', placeId: 'navjain', when: '6 h', helpful: 52, replies: 8 },
   { id: 'p9', city: 'Ahmedabad', communityId: 'amdvegan', prefs: ['vegan'], kind: 'question', author: 'Nisha T.', text: 'Is the thepla wrap at Bodakdev Vegan Co. made without ghee?', placeId: 'bodakdev', when: '1 day', helpful: 4, replies: 2 },
+  { id: 'p11', city: 'Pune', communityId: 'punefood', prefs: ['jhatka'], kind: 'tip', author: 'Gurpreet S.', badge: 'visited', lvl: 'Local Guide', text: 'Punjab Da Dhaba shows its jhatka supplier bills if you ask. The tandoori chicken is the thing to order.', placeId: 'punjab', when: '8 h', helpful: 15, replies: 4 },
   { id: 'p10', city: 'Pune', communityId: 'vimanit', prefs: ['halal', 'veg'], kind: 'tip', author: 'Quick Deals 24', text: 'Selling a second-hand bike, message me for the price.', when: '1 h', helpful: 0, replies: 0, held: true },
 ];
 const QA = [
@@ -1228,7 +1251,7 @@ const KIND_LABEL = { tip: 'Tip', question: 'Question', event: 'Food walk' };
 const BADGE_LABEL = { owner: 'Owner', visited: 'Visited', mod: 'Moderator' };
 const POST_REASONS = ['Not about food', 'Rude or hateful', 'Religion or politics debate', 'Accuses a restaurant without proof', 'Alcohol, drugs or anything illegal', 'Personal details or phone numbers', 'Spam or selling'];
 // Public accusations go to Report instead, so our team checks the facts with the restaurant first.
-const ACCUSE = /(\b(not|isn'?t|never|fake|fraud|lying|lies|liars?|cheat\w*)\b[^.!?]{0,40}\b(halal|jain|veg|vegan)\b)|(\b(halal|jain|veg|vegan)\b[^.!?]{0,40}\b(fake|fraud|lie|lies|lying|liars?|cheat\w*)\b)/i;
+const ACCUSE = /(\b(not|isn'?t|never|fake|fraud|lying|lies|liars?|cheat\w*)\b[^.!?]{0,40}\b(halal|jhatka|jain|veg|vegan)\b)|(\b(halal|jhatka|jain|veg|vegan)\b[^.!?]{0,40}\b(fake|fraud|lie|lies|lying|liars?|cheat\w*)\b)/i;
 // Everything else risky is held for our team instead of going live: the live app adds an ML filter for Hindi, Urdu, Marathi and Gujarati.
 const AUTO_CHECKS = [
   { re: /\b(religio\w*|politic\w*|election|boycott\w*|jihad\w*|kafir\w*|riots?)\b/i, title: 'This looks like a religion or politics topic.', text: 'TrustPlate is for food talk only. Our team checks posts like this before they appear.' },
@@ -1280,6 +1303,7 @@ const LEADERS = {
     { name: 'Imran S.', prefs: ['halal'], month: 255, places: 8, lvl: 'Trusted Contributor', comm: 'Camp Food Circle' },
     { name: 'Rhea D.', prefs: ['vegan', 'veg'], month: 190, places: 6, lvl: 'Local Guide', comm: 'Green Pune Vegans' },
     { name: 'Mitali S.', prefs: ['jain', 'veg'], month: 140, places: 4, lvl: 'Local Guide', comm: 'Pune Jain Thali Club' },
+    { name: 'Gurpreet S.', prefs: ['jhatka'], month: 180, places: 6, lvl: 'Local Guide', comm: 'Pune Punjabi Food Circle' },
     { name: 'Arif K.', prefs: ['halal', 'veg'], month: 70, places: 2, lvl: 'Food Scout', comm: 'Viman Nagar IT Foodies' },
   ],
   Ahmedabad: [
@@ -1289,7 +1313,7 @@ const LEADERS = {
     { name: 'Riya S.', prefs: ['jain', 'veg'], month: 120, places: 4, lvl: 'Food Scout', comm: 'Amdavad Jain Rasoi Circle' },
   ],
 };
-const COMM_STATS = { camp: 48, vimanit: 21, punejain: 41, greenpune: 17, oldcity: 39, amdjain: 52, amdvegan: 12 };
+const COMM_STATS = { punefood: 14, camp: 48, vimanit: 21, punejain: 41, greenpune: 17, oldcity: 39, amdjain: 52, amdvegan: 12 };
 const CHALLENGES = [
   { id: 'ch1', city: 'Pune', prefs: ['halal'], title: 'Map Kondhwa: 40 halal places', goal: 40, done: 27, ends: '31 Oct', reward: 'Kondhwa Mapper badge for everyone who adds a confirmed place' },
   { id: 'ch2', city: 'Pune', prefs: ['jain', 'veg'], title: 'Jain thalis of Pune: 30 places', goal: 30, done: 18, ends: '31 Oct', reward: 'Thali Hunter badge, and a tasting invite for the top 3' },
@@ -1329,6 +1353,7 @@ const NOTIFS = [
   { id: 'n3', city: 'Pune', prefs: ['halal'], kind: 'new', placeId: 'bawarchi', title: 'New near you: Bawarchi Corner', text: 'Added by Viman Nagar IT Foodies as Community halal.', when: '3 days ago', unread: false },
   { id: 'n4', city: 'Pune', prefs: ['jain'], kind: 'upgrade', placeId: 'annapurna', title: 'Annapurna Jain Bhojanalay passed our visit', text: 'Now Checked by us for Jain: no root vegetables.', when: 'Yesterday', unread: true },
   { id: 'n5', city: 'Pune', prefs: ['veg', 'vegan'], kind: 'new', placeId: 'greenbowl', title: 'New near you: Green Bowl Vegan Kitchen', text: 'Veg-only kitchen in Baner, checked by our team.', when: '4 days ago', unread: true },
+  { id: 'n9', city: 'Pune', prefs: ['jhatka'], kind: 'upgrade', placeId: 'punjab', title: 'Punjab Da Dhaba is now Checked by us', text: 'Our team checked its jhatka meat supplier.', when: '1 day ago', unread: true },
   { id: 'n6', city: 'Ahmedabad', prefs: ['jain', 'veg'], kind: 'offer', placeId: 'navjain', title: 'Navrangpura Jain Rasoi: Paryushan thali', text: 'Special Jain menu this week, from a certified kitchen.', when: 'Today', unread: true },
   { id: 'n7', city: 'Ahmedabad', prefs: ['halal'], kind: 'new', placeId: 'juhapura', title: 'New certified halal place: Juhapura Kebab Co.', text: 'Certificate checked by our team.', when: '2 days ago', unread: true },
   { id: 'n8', city: 'Ahmedabad', prefs: ['vegan'], kind: 'upgrade', placeId: 'bodakdev', title: 'Bodakdev Vegan Co. is now Checked by us', text: 'Our team checked: no dairy, no eggs.', when: '5 days ago', unread: false },
@@ -1422,6 +1447,13 @@ const PLACES = [
   { id: 'juhapura', city: 'Ahmedabad', name: 'Juhapura Kebab Co.', area: 'Juhapura', cuisine: 'Kebabs · Rolls', dish: 'roll', price: '₹', rating: 4.4, reviewsCount: 260, open: true, openTill: '1 am', hours: '5:00 pm – 1:00 am', phone: '+91 00000 20166', x: 80, y: 332, dist: 6.1,
     levels: { halal: { level: 'certified', issuer: 'Demo Halal Board', number: 'DEMO-HAL-2026-0310', validUntil: '15 Jan 2027', validISO: '2027-01-15' } },
     tags: { alcohol: false, pork: false }, menu: ['Bara kebab', 'Chicken roll', 'Firni'], reviewsList: [] },
+  { id: 'punjab', city: 'Pune', name: 'Punjab Da Dhaba', area: 'Viman Nagar', cuisine: 'Punjabi · Tandoor', dish: 'kebab', price: '₹₹', rating: 4.3, reviewsCount: 204, open: true, openTill: '11:30 pm', hours: '12:00 pm – 11:30 pm', phone: '+91 00000 10215', x: 284, y: 108, dist: 5.2,
+    levels: { jhatka: { level: 'checked', visited: '18 Sep 2026', checks: VISIT_CHECKS.jhatka } },
+    tags: { alcohol: false, pork: false }, menu: ['Tandoori chicken', 'Mutton rogan josh', 'Dal makhani'],
+    reviewsList: [{ name: 'Gurpreet S.', stars: 5, text: 'They showed the supplier bill for jhatka mutton. Great tandoor.', confirm: 'Confirmed jhatka', when: '4 days ago' }] },
+  { id: 'tandoor', city: 'Ahmedabad', name: 'Amritsari Tandoor House', area: 'Ashram Road', cuisine: 'Punjabi · Grills', dish: 'kebab', price: '₹₹', rating: 4.1, reviewsCount: 97, open: true, openTill: '11 pm', hours: '12:00 pm – 11:00 pm', phone: '+91 00000 20171', x: 196, y: 250, dist: 1.8,
+    levels: { jhatka: { level: 'owner', note: 'The owner says all mutton and chicken is jhatka.' } },
+    tags: { alcohol: true, pork: false }, menu: ['Amritsari kulcha', 'Butter chicken', 'Mutton tikka'], reviewsList: [] },
 ];
 
 const QUEUE = [
@@ -1453,8 +1485,8 @@ function visiblePlaces(s) {
   const list = s.places
     .filter((p) => p.city === s.city && !p.hidden)
     .filter((p) => s.prefs.some((pr) => p.levels[pr]))
-    .filter((p) => !(s.strict.noAlcohol && p.tags.alcohol))
-    .filter((p) => !(s.strict.noPork && p.tags.pork))
+    .filter((p) => !(s.strict.noAlcohol && showAlcohol(s.prefs) && p.tags.alcohol))
+    .filter((p) => !(s.strict.noPork && showPork(s.prefs) && p.tags.pork))
     .filter((p) => !s.filters.certifiedOnly || bestRank(p, s.prefs) === 4)
     .filter((p) => !s.filters.openNow || p.open)
     .filter((p) => !s.filters.topRated || (p.rating || 0) >= 4.3)
@@ -1464,15 +1496,37 @@ function visiblePlaces(s) {
   if (s.sort === 'rating') return list.sort((a, b) => (b.rating || 0) - (a.rating || 0) || a.dist - b.dist);
   return list.sort((a, b) => bestRank(b, s.prefs) - bestRank(a, s.prefs) || a.dist - b.dist);
 }
-function tagList(p) {
+// Card tags speak to the viewer's own view: a pure veg user never sees pork mentioned.
+function tagList(p, prefs) {
+  const view = prefs || [];
   const t = [];
   if (p.tags.vegOnly) t.push(['Veg-only kitchen', 't-veg']);
-  if (p.tags.noOnionGarlic) t.push(['Jain: no onion, garlic', 't-veg']);
-  if (p.tags.sepHalal) t.push(['Separate halal kitchen', 't-ok']);
-  if (p.tags.alcohol) t.push(['Serves alcohol', 't-alcohol']);
-  if (p.tags.pork) t.push(['Pork on menu', 't-pork']);
-  if (!p.tags.vegOnly && !p.tags.alcohol && !p.tags.pork) t.push(['No alcohol · No pork', 't-ok']);
+  if (p.tags.noOnionGarlic && view.includes('jain')) t.push(['Jain: no onion, garlic', 't-veg']);
+  if (p.tags.sepHalal && view.includes('halal')) t.push(['Separate halal kitchen', 't-ok']);
+  const alc = showAlcohol(view);
+  const pork = showPork(view);
+  if (alc && pork && !p.tags.alcohol && !p.tags.pork) t.push(['No alcohol · No pork', 't-ok']);
+  else {
+    if (alc) t.push(p.tags.alcohol ? ['Serves alcohol', 't-alcohol'] : ['No alcohol', 't-ok']);
+    if (pork) t.push(p.tags.pork ? ['Pork on menu', 't-pork'] : ['No pork', 't-ok']);
+  }
   return t;
+}
+
+// Tour steps can ask for 'auto': the most trusted place for the current view, so views never mix.
+function autoPlace(s) {
+  const inCity = s.places.filter((p) => p.city === s.city && !p.hidden);
+  const fit = inCity.filter((p) => s.prefs.some((pr) => p.levels[pr])).sort((a, b) => bestRank(b, s.prefs) - bestRank(a, s.prefs) || a.dist - b.dist);
+  return fit[0] || inCity[0] || s.places[0];
+}
+function accuseText(p, prefs) {
+  return p.name + ' is not really ' + PREF_LABEL[topPref(p, prefs)].toLowerCase() + ', they lie about it';
+}
+function reportReasons(p, prefs) {
+  const mine = Object.keys(p.levels).filter((pr) => prefs.includes(pr));
+  const list = (mine.length ? mine : Object.keys(p.levels)).map((pr) => 'Not ' + PREF_LABEL[pr].toLowerCase() + ' as listed');
+  if (mine.includes('halal')) list.push('Pork found or served');
+  return [...list, 'Closed or moved', 'Wrong details'];
 }
 function validity(iso) {
   const end = Date.parse(iso + 'T00:00:00');
@@ -1485,7 +1539,7 @@ const initials = (n) => n.split(' ').map((w) => w[0]).filter((ch) => /[A-Za-z]/.
 function visibleNotifs(s) {
   return s.notifs.filter((n) => n.city === s.city && n.prefs.some((pr) => s.prefs.includes(pr)) && (n.kind !== 'offer' || s.notif.topics.offers));
 }
-const filtersActive = (s) => s.filters.certifiedOnly || s.filters.openNow || s.filters.topRated || s.strict.noAlcohol || s.strict.noPork || !!s.cat || !!s.query || s.sort !== 'trust';
+const filtersActive = (s) => s.filters.certifiedOnly || s.filters.openNow || s.filters.topRated || (s.strict.noAlcohol && showAlcohol(s.prefs)) || (s.strict.noPork && showPork(s.prefs)) || !!s.cat || !!s.query || s.sort !== 'trust';
 
 const STORE_KEY = 'trustplate-web-v1';
 function loadStored() {
@@ -1508,13 +1562,13 @@ function initialState(useStored) {
     me: st && st.me && typeof st.me.points === 'number' ? { ...ME_START, ...st.me } : clone(ME_START),
     joined: st && Array.isArray(st.joined) ? st.joined : [], commTab: 'feed',
     support: { ...SUPPORT_START, mine: st && st.supportMine ? st.supportMine : null },
-    prefs: st && Array.isArray(st.prefs) && st.prefs.length ? st.prefs : ['halal'],
+    prefs: st && Array.isArray(st.prefs) && st.prefs.length ? st.prefs : ['veg'],
     strict: st && st.strict ? { noAlcohol: !!st.strict.noAlcohol, noPork: !!st.strict.noPork } : { noAlcohol: false, noPork: false },
     city: st && CITIES[st.city] ? st.city : 'Pune',
     saved: st && Array.isArray(st.saved) ? st.saved : [],
     screen: onboarded ? 'explore' : 'onboard', from: 'explore',
     filters: { certifiedOnly: false, openNow: false, topRated: false }, sort: 'trust', cat: null, query: '',
-    placeId: null, sheet: onboarded && askOnOpen ? { type: 'prefs', launch: true } : null, checkedIn: {}, pin: null,
+    placeId: null, sheet: onboarded && askOnOpen ? { type: 'prefs', launch: true, fresh: !(st && Array.isArray(st.prefs) && st.prefs.length) } : null, checkedIn: {}, pin: null,
     places: clone(PLACES), queue: clone(QUEUE), owner: clone(OWNER_START),
     toasts: [], nextId: 1,
   };
@@ -1543,14 +1597,23 @@ function reducer(s, a) {
   switch (a.type) {
     case 'role': return { ...s, role: a.role, sheet: null, pin: null };
     case 'go': {
-      const next = { ...s, role: a.role || s.role, sheet: a.sheet || null, pin: null };
+      const usesAuto = a.placeId === 'auto' || (a.sheet && (a.sheet.id === 'auto' || (a.sheet.preset && a.sheet.preset.placeId === 'auto')));
+      const ap = usesAuto ? autoPlace(s) : null;
+      const fix = (v) => (v === 'auto' && ap ? ap.id : v);
+      let sheet = a.sheet ? { ...a.sheet } : null;
+      if (sheet && ap) {
+        if (sheet.id) sheet.id = fix(sheet.id);
+        if (sheet.preset) sheet.preset = { ...sheet.preset, placeId: fix(sheet.preset.placeId), text: sheet.preset.text === 'auto-accuse' ? accuseText(ap, s.prefs) : sheet.preset.text };
+      }
+      const placeId = a.placeId ? fix(a.placeId) : null;
+      const next = { ...s, role: a.role || s.role, sheet, pin: null };
       if (a.screen) {
         if (a.screen === 'place' && s.screen !== 'place') next.from = BROWSE.includes(s.screen) ? s.screen : 'explore';
         next.screen = a.screen;
       }
-      if (a.placeId) {
-        next.placeId = a.placeId;
-        const pl = s.places.find((p) => p.id === a.placeId);
+      if (placeId) {
+        next.placeId = placeId;
+        const pl = s.places.find((p) => p.id === placeId);
         if (pl) next.city = pl.city;
       }
       if (a.commTab) next.commTab = a.commTab;
@@ -1559,7 +1622,7 @@ function reducer(s, a) {
       return next;
     }
     case 'back': return { ...s, screen: s.from || 'explore', sheet: null };
-    case 'finishOnboarding': return { ...s, onboarded: true, screen: 'explore', prefs: a.prefs, strict: a.strict, city: a.city, cat: null, askOnOpen: a.askOnOpen === undefined ? s.askOnOpen : a.askOnOpen };
+    case 'finishOnboarding': return { ...s, onboarded: true, screen: 'explore', prefs: a.prefs, strict: a.strict || s.strict, city: a.city, cat: null, askOnOpen: a.askOnOpen === undefined ? s.askOnOpen : a.askOnOpen };
     case 'togglePref': {
       const has = s.prefs.includes(a.id);
       const prefs = has ? s.prefs.filter((p) => p !== a.id) : [...s.prefs, a.id];
@@ -1574,7 +1637,7 @@ function reducer(s, a) {
     case 'banner':
       if (a.id === 'certified') return { ...s, filters: { ...s.filters, certifiedOnly: true }, cat: null, screen: 'explore' };
       return s;
-    case 'savePrefs': return { ...s, prefs: a.prefs.length ? a.prefs : s.prefs, strict: a.strict, askOnOpen: a.askOnOpen, sheet: null, cat: null, pin: null };
+    case 'savePrefs': return { ...s, prefs: a.prefs.length ? a.prefs : s.prefs, strict: a.strict || s.strict, askOnOpen: a.askOnOpen, sheet: null, cat: null, pin: null };
     case 'askOnOpen': return { ...s, askOnOpen: !s.askOnOpen };
     case 'notifOn': return { ...s, notif: { asked: true, on: true, topics: a.topics || s.notif.topics }, sheet: null };
     case 'notifLater': return { ...s, notif: { ...s.notif, asked: true }, sheet: null };
@@ -1751,8 +1814,8 @@ function FilterChips({ s, d }) {
   return html`<div className="chips" role="group" aria-label="Sort and filters">
     <button className="fchip" onClick=${() => d({ type: 'sort' })} aria-label=${'Sort: ' + SORT_LABEL[s.sort] + '. Tap to change'}>${I('sort')}${SORT_LABEL[s.sort]}</button>
     <button className="fchip" aria-pressed=${s.filters.certifiedOnly} onClick=${() => d({ type: 'filter', key: 'certifiedOnly' })}>${I('shield')}Certified</button>
-    <button className="fchip" aria-pressed=${s.strict.noAlcohol} onClick=${() => d({ type: 'strict', key: 'noAlcohol' })}>${I('wine')}No alcohol</button>
-    <button className="fchip" aria-pressed=${s.strict.noPork} onClick=${() => d({ type: 'strict', key: 'noPork' })}>${I('ban')}No pork</button>
+    ${showAlcohol(s.prefs) ? html`<button className="fchip" aria-pressed=${s.strict.noAlcohol} onClick=${() => d({ type: 'strict', key: 'noAlcohol' })}>${I('wine')}No alcohol</button>` : null}
+    ${showPork(s.prefs) ? html`<button className="fchip" aria-pressed=${s.strict.noPork} onClick=${() => d({ type: 'strict', key: 'noPork' })}>${I('ban')}No pork</button>` : null}
     <button className="fchip" aria-pressed=${s.filters.openNow} onClick=${() => d({ type: 'filter', key: 'openNow' })}>${I('clock')}Open now</button>
     <button className="fchip" aria-pressed=${s.filters.topRated} onClick=${() => d({ type: 'filter', key: 'topRated' })}>${I('star')}4.3+</button>
   </div>`;
@@ -1780,7 +1843,7 @@ function PlaceCard({ p, s, d, prefs, preview }) {
       <div className="pline">${p.area} · ${openText(p)}</div>
       <div className="ptags">
         ${others.map((pr) => html`<${TrustPill} key=${pr} pref=${pr} level=${p.levels[pr].level} />`)}
-        ${tagList(p).slice(0, 2).map(([label, cls]) => html`<span key=${label} className=${'ptag ' + cls}>${label}</span>`)}
+        ${tagList(p, ps).slice(0, 2).map(([label, cls]) => html`<span key=${label} className=${'ptag ' + cls}>${label}</span>`)}
       </div>
     </div>
   </article>`;
@@ -1816,7 +1879,7 @@ function TopNav({ s, d }) {
     let reduce = false;
     try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* ignore */ }
     if (reduce) return undefined;
-    const t = setInterval(() => setHint((h) => (h + 1) % HINTS.length), 2600);
+    const t = setInterval(() => setHint((h) => (h + 1) % 60), 2600);
     return () => clearInterval(t);
   }, []);
   if (s.role !== 'diner') {
@@ -1841,7 +1904,7 @@ function TopNav({ s, d }) {
         </button>
         <label className="searchbar" htmlFor="search">
           ${I('search')}
-          <input id="search" type="search" placeholder=${HINTS[hint]} aria-label="Search places or dishes" value=${s.query}
+          <input id="search" type="search" placeholder=${hintsFor(s.prefs)[hint % hintsFor(s.prefs).length]} aria-label="Search places or dishes" value=${s.query}
             onChange=${(e) => d({ type: 'query', value: e.target.value })}
             onFocus=${() => { if (!BROWSE.includes(s.screen)) d({ type: 'go', screen: 'explore' }); }} />
           <span className="mic">${I('mic')}</span>
@@ -1876,6 +1939,8 @@ function Banner({ tone, dish, title, sub, cta, onClick }) {
 
 function Filters({ s, d }) {
   const opt = (id, label, checked, onChange, extra) => html`<label className="fopt" htmlFor=${id}><input id=${id} type="checkbox" checked=${checked} onChange=${onChange} />${label}${extra || null}</label>`;
+  const alc = showAlcohol(s.prefs);
+  const pork = showPork(s.prefs);
   return html`<aside className="filters" aria-label="Filters">
     <div className="filters-h"><b>${I('sliders')}Filters</b>${filtersActive(s) ? html`<button className="linkbtn" onClick=${() => d({ type: 'resetFilters' })}>Clear all</button>` : null}</div>
     <div className="fgroup">
@@ -1887,11 +1952,11 @@ function Filters({ s, d }) {
       <h3>Sort by</h3>
       ${SORTS.map((k) => html`<label key=${k} className="fopt" htmlFor=${'sort-' + k}><input type="radio" name="sort" id=${'sort-' + k} checked=${s.sort === k} onChange=${() => d({ type: 'setSort', sort: k })} />${SORT_LABEL[k]}</label>`)}
     </div>
-    <div className="fgroup">
+    ${alc || pork ? html`<div className="fgroup">
       <h3>Hide places with</h3>
-      ${opt('f-alc', 'Alcohol served', s.strict.noAlcohol, () => d({ type: 'strict', key: 'noAlcohol' }))}
-      ${opt('f-pork', 'Pork on the menu', s.strict.noPork, () => d({ type: 'strict', key: 'noPork' }))}
-    </div>
+      ${alc ? opt('f-alc', 'Alcohol served', s.strict.noAlcohol, () => d({ type: 'strict', key: 'noAlcohol' })) : null}
+      ${pork ? opt('f-pork', 'Pork on the menu', s.strict.noPork, () => d({ type: 'strict', key: 'noPork' })) : null}
+    </div>` : null}
     <div className="fgroup">
       <h3>Trust and more</h3>
       ${opt('f-cert', 'Certified only', s.filters.certifiedOnly, () => d({ type: 'filter', key: 'certifiedOnly' }))}
@@ -1933,9 +1998,11 @@ function Explore({ s, d }) {
     <div className="container">
       <div className="mobile-prefs"><${YourView} s=${s} d=${d} /></div>
       <div className="banners">
-        <${Banner} tone="b-brand" dish=${viewDish} title="Certified near you" sub=${certCount + (certCount === 1 ? ' place' : ' places') + ' for ' + view + ', certificates checked'} cta="Show me" onClick=${() => d({ type: 'banner', id: 'certified' })} />
+        ${certCount
+          ? html`<${Banner} tone="b-brand" dish=${viewDish} title="Certified near you" sub=${certCount + (certCount === 1 ? ' place' : ' places') + ' for ' + view + ', certificates checked'} cta="Show me" onClick=${() => d({ type: 'banner', id: 'certified' })} />`
+          : html`<${Banner} tone="b-brand" dish=${viewDish} title="Checked by our team" sub=${'Places for ' + view + ' that our team visited'} cta="Show me" onClick=${() => d({ type: 'resetFilters' })} />`}
         ${alertsBanner}
-        <${Banner} tone="b-coral" dish="roll" title="Know a great place?" sub="Add it for your community" cta="Add a place" onClick=${() => d({ type: 'go', screen: 'add' })} />
+        <${Banner} tone="b-coral" dish=${isNonVeg(s.prefs) ? 'roll' : 'dosa'} title="Know a great place?" sub="Add it for your community" cta="Add a place" onClick=${() => d({ type: 'go', screen: 'add' })} />
       </div>
       <section className="cats-sec" aria-labelledby="h-cats">
         <h2 className="sec-title" id="h-cats">What's on your mind?</h2>
@@ -2098,18 +2165,18 @@ function TrustCard({ pref, info, active }) {
   </div>`;
 }
 
-function FactTiles({ p }) {
-  const tiles = [
-    { label: 'Alcohol', value: p.tags.alcohol ? 'Served' : 'Not served', tone: p.tags.alcohol ? 'warn' : 'good', icon: 'wine' },
-    { label: 'Pork', value: p.tags.pork ? 'On the menu' : 'Not on menu', tone: p.tags.pork ? 'bad' : 'good', icon: 'ban' },
-  ];
+function FactTiles({ p, prefs }) {
+  const view = prefs || [];
+  const tiles = [];
   if (p.tags.vegOnly) {
     tiles.push({ label: 'Kitchen', value: 'Veg only', tone: 'good', icon: 'leaf' });
     tiles.push({ label: 'Jain dishes', value: p.tags.noOnionGarlic ? 'No onion, garlic' : 'Not offered', tone: p.tags.noOnionGarlic ? 'good' : 'plain', icon: 'leaf' });
   } else {
-    tiles.push({ label: 'Halal kitchen', value: p.tags.sepHalal ? 'Separate' : 'Shared', tone: p.tags.sepHalal ? 'good' : 'plain', icon: 'store' });
     tiles.push({ label: 'Kitchen', value: 'Serves meat', tone: 'plain', icon: 'store' });
+    if (view.includes('halal')) tiles.push({ label: 'Halal kitchen', value: p.tags.sepHalal ? 'Separate' : 'Shared', tone: p.tags.sepHalal ? 'good' : 'plain', icon: 'store' });
   }
+  if (showAlcohol(view)) tiles.push({ label: 'Alcohol', value: p.tags.alcohol ? 'Served' : 'Not served', tone: p.tags.alcohol ? 'warn' : 'good', icon: 'wine' });
+  if (showPork(view)) tiles.push({ label: 'Pork', value: p.tags.pork ? 'On the menu' : 'Not on menu', tone: p.tags.pork ? 'bad' : 'good', icon: 'ban' });
   return html`<div className="facts">${tiles.map((t) => html`<div key=${t.label} className=${'fact ' + t.tone}><span className="fact-ic">${I(t.icon)}</span><small>${t.label}</small><b>${t.value}</b></div>`)}</div>`;
 }
 
@@ -2152,7 +2219,7 @@ function Place({ s, d }) {
         </section>
         <section className="pblock" aria-labelledby="h-facts">
           <h2 className="pblock-h" id="h-facts">Food facts</h2>
-          <${FactTiles} p=${p} />
+          <${FactTiles} p=${p} prefs=${s.prefs} />
         </section>
         ${p.menu.length ? html`<section className="pblock" aria-labelledby="h-menu"><h2 className="pblock-h" id="h-menu">Popular here</h2>
           <div className="menu">${p.menu.map((m) => html`<span key=${m} className="menu-item">${m}</span>`)}</div></section>` : null}
@@ -2496,7 +2563,7 @@ function Saved({ s, d }) {
 }
 
 function AddPlace({ s, d }) {
-  const [f, setF] = useState({ ...ADD_DEFAULT[s.city], prefs: ['halal'], tags: { alcohol: false, pork: false }, mod: true });
+  const [f, setF] = useState({ ...ADD_DEFAULT[s.city], prefs: [s.prefs[0]], tags: { alcohol: false, pork: false }, mod: true });
   const set = (patch) => setF({ ...f, ...patch });
   const community = COMMUNITY[s.city];
   const submit = (e) => {
@@ -2519,12 +2586,12 @@ function AddPlace({ s, d }) {
             ${PREFS.map((p) => html`<button type="button" key=${p.id} aria-pressed=${f.prefs.includes(p.id)} onClick=${() => set({ prefs: f.prefs.includes(p.id) ? f.prefs.filter((x) => x !== p.id) : [...f.prefs, p.id] })}>${p.label}</button>`)}
           </div>
         </div>
-        <div className="field full">Food facts
+        ${isNonVeg(f.prefs) ? html`<div className="field full">Food facts
           <div className="choice" role="group" aria-label="Food facts">
             <button type="button" aria-pressed=${f.tags.alcohol} onClick=${() => set({ tags: { ...f.tags, alcohol: !f.tags.alcohol } })}>Serves alcohol</button>
-            <button type="button" aria-pressed=${f.tags.pork} onClick=${() => set({ tags: { ...f.tags, pork: !f.tags.pork } })}>Pork on menu</button>
+            ${showPork(f.prefs) ? html`<button type="button" aria-pressed=${f.tags.pork} onClick=${() => set({ tags: { ...f.tags, pork: !f.tags.pork } })}>Pork on menu</button>` : null}
           </div>
-        </div>
+        </div>` : null}
       </div>
       <label className="togglecard" htmlFor="a-mod"><span>Post as moderator of ${community}<small>Demo community. Moderators' places go live at once.</small></span>
         <${Toggle} id="a-mod" label=${'Post as moderator of ' + community} checked=${f.mod} onChange=${() => set({ mod: !f.mod })} /></label>
@@ -2543,11 +2610,10 @@ function Profile({ s, d }) {
       <div className="card">
         <h2 className="card-h">Your food view</h2>
         <p className="note">This decides which places you see. Pick more than one if you like, for example pure veg and Jain.</p>
-        <div className="choice" role="group" aria-label="Your food view">
-          ${PREFS.map((p) => html`<button key=${p.id} aria-pressed=${s.prefs.includes(p.id)} onClick=${() => d({ type: 'togglePref', id: p.id })}>${p.label}</button>`)}
-        </div>
-        <label className="togglecard" htmlFor="pf-alcohol"><span>Hide places that serve alcohol</span><${Toggle} id="pf-alcohol" label="Hide places that serve alcohol" checked=${s.strict.noAlcohol} onChange=${() => d({ type: 'strict', key: 'noAlcohol' })} /></label>
-        <label className="togglecard" htmlFor="pf-pork"><span>Hide places with pork on the menu</span><${Toggle} id="pf-pork" label="Hide places with pork on the menu" checked=${s.strict.noPork} onChange=${() => d({ type: 'strict', key: 'noPork' })} /></label>
+        ${PREF_GROUPS.map(([g, label]) => html`<div key=${g} className="choice-group"><span className="mini-h">${label}</span>
+          <div className="choice" role="group" aria-label=${label}>${PREFS.filter((p) => p.group === g).map((p) => html`<button key=${p.id} aria-pressed=${s.prefs.includes(p.id)} onClick=${() => d({ type: 'togglePref', id: p.id })}>${p.label}</button>`)}</div>
+        </div>`)}
+        <p className="note">More filters are on the Explore and Map pages, and they only appear when they fit your view.</p>
         <label className="togglecard" htmlFor="pf-ask"><span>Ask when I open the app<small>"What are you looking for today?"</small></span><${Toggle} id="pf-ask" label="Ask what I'm looking for when I open the app" checked=${s.askOnOpen} onChange=${() => d({ type: 'askOnOpen' })} /></label>
         <div className="choice" role="group" aria-label="City">${Object.keys(CITIES).map((c) => html`<button key=${c} aria-pressed=${s.city === c} onClick=${() => d({ type: 'city', city: c })}>${I('pin', 'tiny')}${c}</button>`)}</div>
       </div>
@@ -2572,8 +2638,7 @@ function Profile({ s, d }) {
 }
 
 function Onboard({ s, d }) {
-  const [prefs, setPrefs] = useState(s.prefs);
-  const [strict, setStrict] = useState(s.strict);
+  const [prefs, setPrefs] = useState([]);
   const [city, setCity] = useState(s.city);
   const [dontAsk, setDontAsk] = useState(!s.askOnOpen);
   const toggle = (id) => setPrefs((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
@@ -2582,24 +2647,16 @@ function Onboard({ s, d }) {
       <p className="eyebrow">Welcome to TrustPlate</p>
       <h1>Eat out without having to ask.</h1>
       <p>Places near you that match how you eat, with proof you can check.</p>
-      <span className="float f1 dishbg d-biryani" aria-hidden="true">${Dish('biryani')}</span>
-      <span className="float f2 dishbg d-thali" aria-hidden="true">${Dish('thali')}</span>
+      <span className="float f1 dishbg d-thali" aria-hidden="true">${Dish('thali')}</span>
+      <span className="float f2 dishbg d-dosa" aria-hidden="true">${Dish('dosa')}</span>
       <span className="float f3 dishbg d-bowl" aria-hidden="true">${Dish('bowl')}</span>
     </div>
     <div className="onbw-panel">
       <h2>How do you eat?</h2>
-      <div className="prefcards" role="group" aria-label="How do you eat?">
-        ${PREFS.map((p) => html`<button key=${p.id} className="pc" aria-pressed=${prefs.includes(p.id)} onClick=${() => toggle(p.id)}>
-          <span className="tick">${I('check')}</span>
-          <span className=${'pc-img dishbg d-' + p.dish}>${Dish(p.dish)}</span>
-          <b>${p.label}</b><small>${PREF_HINT[p.id]}</small>
-        </button>`)}
-      </div>
-      <label className="togglecard" htmlFor="ob-alcohol"><span>Hide places that serve alcohol</span><${Toggle} id="ob-alcohol" label="Hide places that serve alcohol" checked=${strict.noAlcohol} onChange=${() => setStrict({ ...strict, noAlcohol: !strict.noAlcohol })} /></label>
-      <label className="togglecard" htmlFor="ob-pork"><span>Hide places with pork on the menu</span><${Toggle} id="ob-pork" label="Hide places with pork on the menu" checked=${strict.noPork} onChange=${() => setStrict({ ...strict, noPork: !strict.noPork })} /></label>
+      <${PrefPicker} prefs=${prefs} onToggle=${toggle} />
       <div className="choice" role="group" aria-label="City">${Object.keys(CITIES).map((c) => html`<button key=${c} aria-pressed=${city === c} onClick=${() => setCity(c)}>${I('pin', 'tiny')}${c}</button>`)}</div>
       <label className="checkrow" htmlFor="ob-ask"><input id="ob-ask" type="checkbox" checked=${dontAsk} onChange=${() => setDontAsk(!dontAsk)} />Don't ask me again when I open the app</label>
-      <button className="btn primary block" disabled=${!prefs.length} onClick=${() => d({ type: 'finishOnboarding', prefs, strict, city, askOnOpen: !dontAsk })}>Show places near me${I('arrow')}</button>
+      <button className="btn primary block" disabled=${!prefs.length} onClick=${() => d({ type: 'finishOnboarding', prefs, city, askOnOpen: !dontAsk })}>Show places near me${I('arrow')}</button>
       <p className="note">We never ask your religion. Change your view anytime in your profile.</p>
     </div>
   </div>`;
@@ -2676,8 +2733,9 @@ function ReviewSheet({ p, s, d, close }) {
   </form>`;
 }
 
-function ReportSheet({ p, d, close }) {
-  const [reason, setReason] = useState(REASONS[0]);
+function ReportSheet({ p, s, d, close }) {
+  const reasons = reportReasons(p, s.prefs);
+  const [reason, setReason] = useState(reasons[0]);
   const submit = (e) => {
     e.preventDefault();
     d({ type: 'report', id: p.id, reason });
@@ -2686,7 +2744,7 @@ function ReportSheet({ p, d, close }) {
   return html`<form onSubmit=${submit}>
     <h3>What's wrong with this listing?</h3>
     <div className="radios" role="radiogroup" aria-label="Reason">
-      ${REASONS.map((r, i) => html`<label key=${r} className="radio" htmlFor=${'reason-' + i}><input type="radio" name="reason" id=${'reason-' + i} checked=${reason === r} onChange=${() => setReason(r)} />${r}</label>`)}
+      ${reasons.map((r, i) => html`<label key=${r} className="radio" htmlFor=${'reason-' + i}><input type="radio" name="reason" id=${'reason-' + i} checked=${reason === r} onChange=${() => setReason(r)} />${r}</label>`)}
     </div>
     <button className="btn primary block" type="submit">Send report</button>
     <button className="btn block" type="button" onClick=${close}>Cancel</button>
@@ -2728,27 +2786,35 @@ function DirectionsSheet({ p, d, close }) {
 }
 
 // Asked each time the app opens (until "Don't ask me again"), and from "Change" anywhere your view shows.
-function PrefsSheet({ s, d, launch }) {
-  const [prefs, setPrefs] = useState(s.prefs);
-  const [strict, setStrict] = useState(s.strict);
+// The view picker: Veg and Non-veg groups, nothing else. Alcohol and pork are filters inside the app.
+function PrefPicker({ prefs, onToggle, compact }) {
+  return html`<div className="pref-groups">
+    ${PREF_GROUPS.map(([g, label]) => html`<div key=${g} className="pref-group">
+      <h4 className="mini-h">${label}</h4>
+      <div className=${'prefcards' + (compact ? ' compact' : '')} role="group" aria-label=${label}>
+        ${PREFS.filter((p) => p.group === g).map((p) => html`<button key=${p.id} className="pc" aria-pressed=${prefs.includes(p.id)} onClick=${() => onToggle(p.id)}>
+          <span className="tick">${I('check')}</span>
+          <span className=${'pc-img dishbg d-' + p.dish}>${Dish(p.dish)}</span>
+          <b>${p.label}</b><small>${PREF_HINT[p.id]}</small>
+        </button>`)}
+      </div>
+    </div>`)}
+  </div>`;
+}
+
+// Asked each time the app opens (until "Don't ask me again"), and from "Change" anywhere your view shows.
+function PrefsSheet({ s, d, launch, sheet }) {
+  const [prefs, setPrefs] = useState(sheet && sheet.fresh ? [] : s.prefs);
   const [dontAsk, setDontAsk] = useState(!s.askOnOpen);
   const toggle = (id) => setPrefs((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
   const save = () => {
-    d({ type: 'savePrefs', prefs, strict, askOnOpen: !dontAsk });
+    d({ type: 'savePrefs', prefs, askOnOpen: !dontAsk });
     d({ type: 'toast', text: 'Showing ' + viewLabel(prefs) + ' places.' + (dontAsk ? ' Change it anytime in your profile.' : '') });
   };
   return html`<div className="sbody">
     <h3>${launch ? 'What are you looking for today?' : 'Change your view'}</h3>
     <p className="note">Pick one or more. You only see places that match, and your view stays until you change it.</p>
-    <div className="prefcards compact" role="group" aria-label="Your food view">
-      ${PREFS.map((p) => html`<button key=${p.id} className="pc" aria-pressed=${prefs.includes(p.id)} onClick=${() => toggle(p.id)}>
-        <span className="tick">${I('check')}</span>
-        <span className=${'pc-img dishbg d-' + p.dish}>${Dish(p.dish)}</span>
-        <b>${p.label}</b><small>${PREF_HINT[p.id]}</small>
-      </button>`)}
-    </div>
-    <label className="togglecard" htmlFor="ps-alcohol"><span>Hide places that serve alcohol</span><${Toggle} id="ps-alcohol" label="Hide places that serve alcohol" checked=${strict.noAlcohol} onChange=${() => setStrict({ ...strict, noAlcohol: !strict.noAlcohol })} /></label>
-    <label className="togglecard" htmlFor="ps-pork"><span>Hide places with pork on the menu</span><${Toggle} id="ps-pork" label="Hide places with pork on the menu" checked=${strict.noPork} onChange=${() => setStrict({ ...strict, noPork: !strict.noPork })} /></label>
+    <${PrefPicker} prefs=${prefs} onToggle=${toggle} compact=${true} />
     <label className="checkrow" htmlFor="ps-ask"><input id="ps-ask" type="checkbox" checked=${dontAsk} onChange=${() => setDontAsk(!dontAsk)} />Don't ask me again when I open the app</label>
     <button className="btn primary block" disabled=${!prefs.length} onClick=${save}>${prefs.length ? 'Show ' + viewLabel(prefs) + ' places' : 'Pick at least one'}</button>
   </div>`;
@@ -3086,24 +3152,24 @@ function AdminPage({ s, d }) {
 }
 
 /* ---------- Guided tour: one linear walk through the whole product ---------- */
-const PLACE_NOOR = { type: 'go', role: 'diner', screen: 'place', placeId: 'noor' };
+const PLACE_NOOR = { type: 'go', role: 'diner', screen: 'place', placeId: 'auto' };
 const GUIDE = [
   { c: 'Welcome', t: 'Welcome to TrustPlate', b: 'A two-minute walk through the app, one screen at a time. Everything here is sample data. Use Next and Back, or tap around: the guide waits for you.', acts: [{ type: 'go', role: 'diner', screen: 'explore' }] },
-  { c: 'Diner', t: 'Choose your view', b: 'When the app opens it asks what you are looking for: halal, Jain, pure veg or vegan, one or more. We never ask your religion.', try: 'pick one or more, then save.', acts: [{ type: 'go', role: 'diner', screen: 'explore', sheet: { type: 'prefs', launch: true } }], target: ['.sheet .prefcards'] },
+  { c: 'Diner', t: 'Choose your view', b: 'When the app opens it asks what you are looking for: veg (pure veg, Jain, vegan) or non-veg (halal, jhatka), one or more. We never ask your religion.', try: 'pick one or more, then save.', acts: [{ type: 'go', role: 'diner', screen: 'explore', sheet: { type: 'prefs', launch: true } }], target: ['.sheet .prefcards'] },
   { c: 'Diner', t: 'Your view stays fixed', b: 'It stays the same until you change it here or in your profile, so halal never mixes with other views by a stray tap.', acts: [{ type: 'go', role: 'diner', screen: 'explore' }], target: ['.hero .yourview', '.mobile-prefs .yourview'] },
   { c: 'Diner', t: 'Most trusted first', b: 'Every card shows the trust level for your view: Certified, Checked by us, Owner-declared or Community. The most trusted come first, then the nearest.', acts: [{ type: 'go', role: 'diner', screen: 'explore' }], target: ['.grid .pcard'] },
-  { c: 'Diner', t: 'Filters for your own standard', b: 'Hide places that serve alcohol or pork, or show only certified places, places open now or the top rated.', acts: [{ type: 'go', role: 'diner', screen: 'explore' }], target: ['.filters', '.results .chips'] },
+  { c: 'Diner', t: 'Filters for your own standard', b: 'Filters follow your view: a pork filter appears only for halal, and an alcohol filter for halal, jhatka and Jain. Certified only, open now and top rated work for everyone.', acts: [{ type: 'go', role: 'diner', screen: 'explore' }], target: ['.filters', '.results .chips'] },
   { c: 'Diner', t: 'See them on the map', b: 'The same places on a map. Pin colours show the trust level.', try: 'tap a pin.', acts: [{ type: 'go', role: 'diner', screen: 'map' }], target: ['.mapcanvas'] },
   { c: 'Diner', t: 'Check the proof', b: 'Each place shows why you can trust it: the certificate issuer, number and expiry, or what our team checked on its visit.', acts: [PLACE_NOOR], target: ['.trust-grid'] },
   { c: 'Diner', t: 'Plain food facts', b: 'Alcohol, pork, a separate halal kitchen, a veg-only kitchen. People decide by their own standard.', acts: [PLACE_NOOR], target: ['.facts'] },
-  { c: 'Diner', t: 'Order and directions', b: "We don't deliver. Order and Directions open Zomato, Swiggy or Google Maps if they are on your phone, or their websites if not.", acts: [{ ...PLACE_NOOR, sheet: { type: 'order', id: 'noor' } }], target: ['.sheet .applist'] },
-  { c: 'Diner', t: 'Check in, then review', b: 'Only people who were really there can review. The app checks you are at the restaurant, then asks if the food matched the listing.', acts: [{ ...PLACE_NOOR, sheet: { type: 'checkin', id: 'noor' } }], target: ['.sheet'] },
+  { c: 'Diner', t: 'Order and directions', b: "We don't deliver. Order and Directions open Zomato, Swiggy or Google Maps if they are on your phone, or their websites if not.", acts: [{ ...PLACE_NOOR, sheet: { type: 'order', id: 'auto' } }], target: ['.sheet .applist'] },
+  { c: 'Diner', t: 'Check in, then review', b: 'Only people who were really there can review. The app checks you are at the restaurant, then asks if the food matched the listing.', acts: [{ ...PLACE_NOOR, sheet: { type: 'checkin', id: 'auto' } }], target: ['.sheet'] },
   { c: 'Diner', t: 'Alerts for your view', b: 'New places near you, trust upgrades and offers, only for your view and a few a week at most.', acts: [{ type: 'go', role: 'diner', screen: 'explore', sheet: { type: 'alerts' } }], target: ['.sheet'] },
   { c: 'Diner', t: 'Updates in the bell', b: 'The bell collects updates for your view, like a place that just passed our visit.', try: 'tap an update to open that place.', acts: [{ type: 'go', role: 'diner', screen: 'explore', sheet: { type: 'notifs' } }], target: ['.sheet .notif-list'] },
-  { c: 'Diner', t: 'Report a problem', b: 'Reports go to our team. Nothing is removed automatically, so nobody can mass-report a place off the map.', acts: [{ type: 'go', role: 'diner', screen: 'place', placeId: 'copper', sheet: { type: 'report', id: 'copper' } }], target: ['.sheet .radios'] },
+  { c: 'Diner', t: 'Report a problem', b: 'Reports go to our team. Nothing is removed automatically, so nobody can mass-report a place off the map.', acts: [{ type: 'go', role: 'diner', screen: 'place', placeId: 'auto', sheet: { type: 'report', id: 'auto' } }], target: ['.sheet .radios'] },
   { c: 'Community', t: 'Food talk near you', b: 'Tips, questions, food walks and lists from local communities, filtered by your view. Food only: no religion or politics debates.', try: 'follow a community or mark a tip helpful.', acts: [{ type: 'go', role: 'diner', screen: 'community' }], target: ['.feed'] },
   { c: 'Community', t: 'Ask about a place', b: 'Each restaurant page has questions, answered by people who checked in and by the owner, each with a badge.', acts: [PLACE_NOOR], target: ['.qa'] },
-  { c: 'Community', t: 'Problems go to Report', b: 'If a post accuses a restaurant, the app stops it and points to Report, so our team checks the facts with the restaurant first.', acts: [{ type: 'go', role: 'diner', screen: 'community', sheet: { type: 'compose', preset: { kind: 'tip', text: 'Copper Pot is not really halal, they lie about it', placeId: 'copper' } } }], target: ['.sheet .warnbox'] },
+  { c: 'Community', t: 'Problems go to Report', b: 'If a post accuses a restaurant, the app stops it and points to Report, so our team checks the facts with the restaurant first.', acts: [{ type: 'go', role: 'diner', screen: 'community', sheet: { type: 'compose', preset: { kind: 'tip', text: 'auto-accuse', placeId: 'auto' } } }], target: ['.sheet .warnbox'] },
   { c: 'Community', t: 'Badges, leaderboards and challenges', b: 'Contributors earn points only when our checks confirm their work. Monthly leaderboards per city and view, community challenges, and rewards like partner offers and tasting invites. No cash prizes or lucky draws.', try: 'join a challenge.', acts: [{ type: 'go', role: 'diner', screen: 'community', commTab: 'leaders' }], target: ['.leaders'] },
   { c: 'Community', t: 'Your contributor profile', b: 'Points, level, stats and badges. A wrong addition costs points, so mapping fast never beats mapping right.', acts: [{ type: 'go', role: 'diner', screen: 'profile' }], target: ['.contrib'] },
   { c: 'Community', t: 'Add a place', b: 'Community moderators add places that go live at once as Community-reported. Other people’s suggestions need 3 check-in confirmations, and confirmed places earn 20 points.', acts: [{ type: 'go', role: 'diner', screen: 'add' }], target: ['.main form.card'] },
