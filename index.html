@@ -60,7 +60,7 @@
   --shadow-2: 0 18px 50px rgba(17, 22, 42, 0.18);
   --font: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   --gutter: clamp(16px, 4vw, 40px);
-  --nav-h: 119px;
+  --nav-h: 120px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -92,7 +92,7 @@
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3); --shadow-2: 0 18px 50px rgba(0, 0, 0, 0.55);
   color-scheme: dark;
 }
-@media (max-width: 860px) { :root { --nav-h: 118px; } }
+@media (max-width: 860px) { :root { --nav-h: 119px; } }
 
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; }
@@ -345,7 +345,9 @@ input[type="radio"], input[type="checkbox"] { width: 18px; height: 18px; accent-
 .footer-links button:hover { color: var(--brand); }
 
 /* ---------- Map ---------- */
-.mapview { display: grid; grid-template-columns: 440px minmax(0, 1fr); height: calc(100dvh - var(--nav-h)); min-height: 540px; }
+.app { --demo-h: 47px; }
+.app.embed { --demo-h: 0px; }
+.mapview { display: grid; grid-template-columns: 440px minmax(0, 1fr); height: calc(100dvh - var(--nav-h) - var(--demo-h)); min-height: 540px; }
 .maplist { background: var(--app); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
 .maplist-h { padding: 18px 20px 14px; border-bottom: 1px solid var(--line); display: grid; gap: 12px; }
 .maplist-items { overflow-y: auto; padding: 12px 14px 22px; display: grid; gap: 10px; align-content: start; }
@@ -376,7 +378,7 @@ input[type="radio"], input[type="checkbox"] { width: 18px; height: 18px; accent-
   .map-top { top: 62px; justify-content: center; }
   .map-top .seg { display: none; }
 }
-@media (max-width: 860px) { .mapview { height: calc(100dvh - var(--nav-h) - 74px); min-height: 460px; } }
+@media (max-width: 860px) { .mapview { height: calc(100dvh - var(--nav-h) - var(--demo-h) - 74px); min-height: 460px; } }
 
 /* ---------- Restaurant page ---------- */
 .place { padding-block: 18px 64px; }
@@ -520,7 +522,7 @@ input[type="radio"], input[type="checkbox"] { width: 18px; height: 18px; accent-
 .linkrow:focus-visible { outline: 2px solid var(--brand); }
 
 /* ---------- Onboarding ---------- */
-.onbw { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: calc(100dvh - var(--nav-h)); }
+.onbw { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: calc(100dvh - var(--nav-h) - var(--demo-h)); }
 .onbw-hero { position: relative; overflow: hidden; background: linear-gradient(160deg, var(--brand-fill), var(--brand-2)); color: var(--on-brand); padding: clamp(28px, 5vw, 72px); display: flex; flex-direction: column; justify-content: center; }
 .onbw-hero .eyebrow { color: var(--on-brand); opacity: 0.8; }
 .onbw-hero h1 { position: relative; z-index: 1; margin: 12px 0 10px; font-size: clamp(34px, 4.6vw, 60px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; max-width: 11ch; }
@@ -911,7 +913,8 @@ html.embed::-webkit-scrollbar { display: none; }
 .thanks { display: flex; gap: 10px; align-items: flex-start; padding: 14px 16px; border-radius: 18px; background: var(--ok-soft); color: var(--ink); margin-bottom: 20px; font-size: 14.5px; }
 .thanks .ic { color: #e5484d; flex: none; margin-top: 2px; }
 .support-tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px; margin: 16px 0 26px; }
-.tier { position: relative; background: var(--app); border: 1.5px solid var(--line); border-radius: 22px; padding: 20px 18px 18px; display: grid; gap: 10px; align-content: start; box-shadow: var(--shadow-1); }
+.tier { position: relative; background: var(--app); border: 1.5px solid var(--line); border-radius: 22px; padding: 20px 18px 18px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow-1); }
+.tier > .btn { margin-top: auto; }
 .tier.popular { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft), var(--shadow-1); }
 .tier-tag { position: absolute; top: -11px; left: 18px; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; background: var(--brand-fill); color: var(--on-brand); }
 .tier-name { font-size: 16px; font-weight: 800; }
@@ -945,6 +948,10 @@ html.embed::-webkit-scrollbar { display: none; }
 .ss-actions .btn .ic, .ad-card .btn .ic { width: 15px; height: 15px; }
 .ss-x { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; border: 0; background: transparent; color: var(--muted); display: grid; place-items: center; }
 .ss-x .ic { width: 16px; height: 16px; }
+.support-strip.bottom { margin-top: 22px; }
+.main:has(> .mapview) { padding-bottom: 0 !important; }
+@media (max-width: 860px) { .support-strip.top { display: none; } }
+@media (min-width: 861px) { .support-strip.bottom { display: none; } }
 .ad-card { margin-bottom: 24px; }
 .ad-card-top { display: flex; gap: 12px; align-items: flex-start; }
 .ad-card .btn { justify-self: start; }
@@ -975,6 +982,17 @@ html.embed::-webkit-scrollbar { display: none; }
 .pref-group { display: grid; gap: 8px; }
 .pref-group .mini-h { margin: 0; }
 .choice-group { display: grid; gap: 6px; }
+
+/* ---------- Touch polish ---------- */
+button, a, label, summary { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+@media (max-width: 760px) { input, select, textarea { font-size: 16px !important; } }
+.sheet, .tour, .sponsor, .maplist-items { overscroll-behavior: contain; }
+body.locked { overflow: hidden; }
+@media (hover: none) {
+  .pcard:hover { transform: none; box-shadow: var(--shadow-1); }
+  .banner:hover { transform: none; box-shadow: none; }
+  .cat:hover .cat-img { transform: none; }
+}
 
 /* ---------- Responsive polish ---------- */
 @media (max-width: 767px) {
@@ -1203,8 +1221,8 @@ const VISIT_CHECKS = {
 };
 const COMMUNITY = { Pune: 'Camp Food Circle', Ahmedabad: 'Old City Food Walkers' };
 const ADD_DEFAULT = {
-  Pune: { name: 'Mount Road Kebab Stop', area: 'Camp', cuisine: 'Kebabs · Rolls', dish: 'roll' },
-  Ahmedabad: { name: 'Lal Darwaja Chai & Bun', area: 'Relief Road', cuisine: 'Tea · Snacks', dish: 'chai' },
+  Pune: { veg: { name: 'Green Leaf Thali House', area: 'Kothrud', cuisine: 'Maharashtrian thali', dish: 'thali' }, nonveg: { name: 'Mount Road Kebab Stop', area: 'Camp', cuisine: 'Kebabs · Rolls', dish: 'roll' } },
+  Ahmedabad: { veg: { name: 'Sabarmati Dosa Corner', area: 'Navrangpura', cuisine: 'South Indian · Snacks', dish: 'dosa' }, nonveg: { name: 'Relief Road Kebab Stall', area: 'Relief Road', cuisine: 'Kebabs · Rolls', dish: 'roll' } },
 };
 const OWNER_TAGS = [
   ['alcohol', 'We serve alcohol'], ['pork', 'Pork is on the menu'], ['sepHalal', 'Separate halal kitchen'],
@@ -1384,9 +1402,11 @@ const SPONSOR_OFFERS = {
 
 const TIERS = [
   { id: 'chai', name: 'Chai', amount: 49, perks: ['Supporter badge on your profile'] },
-  { id: 'thali', name: 'Thali', amount: 199, perks: ['Supporter badge', 'Early access to new cities'], popular: true },
-  { id: 'patron', name: 'Patron', amount: 999, perks: ['Supporter badge', 'Early access to new cities', 'Invite to our yearly community food walk'] },
+  { id: 'paratha', name: 'Paratha', amount: 99, perks: ['Supporter badge', 'No sponsored cards'] },
+  { id: 'thali', name: 'Thali', amount: 199, perks: ['Supporter badge', 'No sponsored cards', 'Early access to new cities'], popular: true },
+  { id: 'patron', name: 'Patron', amount: 999, perks: ['Supporter badge', 'No sponsored cards', 'Early access to new cities', 'Invite to our yearly community food walk'] },
 ];
+const adFree = (mine) => !!(mine && mine.monthly && mine.amount >= 99);
 const ONE_TIME = [100, 500, 1000];
 const SPEND = [['Field visits and certificate checks', 40], ['Servers, maps and storage', 25], ['Moderation and safety', 20], ['Community food walks and events', 10], ['Payment fees', 5]];
 const PROMISES = [
@@ -1614,7 +1634,7 @@ function initialState(useStored) {
     joined: st && Array.isArray(st.joined) ? st.joined : [], commTab: 'feed',
     support: { ...SUPPORT_START, mine: st && st.supportMine ? st.supportMine : null, stripHidden: !!(st && st.stripHidden) },
     sponsorAt: st && st.sponsorAt ? st.sponsorAt : 0,
-    sponsor: onboarded && !askOnOpen && !(st && st.sponsorAt && Date.now() - st.sponsorAt < 864e5) ? 'auto' : null,
+    sponsor: onboarded && !askOnOpen && !adFree(st && st.supportMine) && !(st && st.sponsorAt && Date.now() - st.sponsorAt < 864e5) ? 'auto' : null,
     prefs: st && Array.isArray(st.prefs) && st.prefs.length ? st.prefs : ['veg'],
     strict: st && st.strict ? { noAlcohol: !!st.strict.noAlcohol, noPork: !!st.strict.noPork } : { noAlcohol: false, noPork: false },
     city: st && CITIES[st.city] ? st.city : 'Pune',
@@ -1715,7 +1735,7 @@ function reducer(s, a) {
     }
     case 'commTab': return { ...s, commTab: a.tab };
     case 'join': return { ...s, joined: s.joined.includes(a.id) ? s.joined.filter((x) => x !== a.id) : [...s.joined, a.id] };
-    case 'support': return { ...s, sheet: null, support: { ...s.support, raised: s.support.raised + a.amount, supporters: s.support.supporters + (s.support.mine ? 0 : 1), mine: { amount: a.amount, monthly: a.monthly, showName: a.showName } } };
+    case 'support': return { ...s, sheet: null, sponsor: null, support: { ...s.support, raised: s.support.raised + a.amount, supporters: s.support.supporters + (s.support.mine ? 0 : 1), mine: { amount: a.amount, monthly: a.monthly, showName: a.showName } } };
     case 'adWatched': return { ...s, sponsorAt: Date.now(), support: { ...s.support, adViews: s.support.adViews + 1, adsToday: s.support.adsToday + 1 } };
     case 'hideStrip': return { ...s, support: { ...s.support, stripHidden: true } };
     case 'sponsorShow': return { ...s, sponsor: 'auto', sheet: null };
@@ -2090,6 +2110,7 @@ function Explore({ s, d }) {
               : html`<${Empty} title="No places match" text="Try removing a filter or a dish, or add a place for everyone."
                   action=${html`<button className="btn outline sm" onClick=${() => d({ type: 'resetFilters' })}>Clear filters</button>`} />`}
           </div>
+          ${s.support.stripHidden ? null : html`<${SupportStrip} s=${s} d=${d} where="bottom" />`}
         </section>
       </div>
     </div>
@@ -2622,8 +2643,8 @@ function watchAd(s, d) {
   d({ type: 'sheet', sheet: { type: 'ad' } });
 }
 
-function SupportStrip({ s, d }) {
-  return html`<section className="support-strip" aria-label="Support TrustPlate">
+function SupportStrip({ s, d, where }) {
+  return html`<section className=${'support-strip ' + (where || 'top')} aria-label="Support TrustPlate">
     <span className="ss-ic">${I('heartFill')}</span>
     <div className="ss-txt"><b>Free for everyone, built on public trust.</b><small>Support TrustPlate: watch one short ad, or give ₹49 a month.</small></div>
     <div className="ss-actions">
@@ -2654,7 +2675,7 @@ function SponsorSplash({ s, d }) {
         <p className="sp-offer">${I('tag')}${SPONSOR_OFFERS[p.id] || 'Featured near you'}</p>
         <p className="note">${p.cuisine} · ${p.area} · ${p.dist.toFixed(1)} km</p>
         <button className="btn primary block" onClick=${() => { d({ type: 'sponsorClose' }); d({ type: 'open', id: p.id }); }}>See the place</button>
-        <p className="note sp-fine">Restaurants pay for this spot. It matches your view, never changes a trust level and shows at most once a day. Watching one support ad hides it for 24 hours.</p>
+        <p className="note sp-fine">Restaurants pay for this spot. It matches your view, never changes a trust level and shows at most once a day. Watching one support ad hides it for 24 hours, and Paratha supporters and above never see it.</p>
       </div>
     </section>
   </div>`;
@@ -2676,7 +2697,7 @@ function Saved({ s, d }) {
 }
 
 function AddPlace({ s, d }) {
-  const [f, setF] = useState({ ...ADD_DEFAULT[s.city], prefs: [s.prefs[0]], tags: { alcohol: false, pork: false }, mod: true });
+  const [f, setF] = useState({ ...ADD_DEFAULT[s.city][isNonVeg([s.prefs[0]]) ? 'nonveg' : 'veg'], prefs: [s.prefs[0]], tags: { alcohol: false, pork: false }, mod: true });
   const set = (patch) => setF({ ...f, ...patch });
   const community = COMMUNITY[s.city];
   const submit = (e) => {
@@ -3064,7 +3085,7 @@ function SupportSheet({ d, sheet, close }) {
       <button aria-pressed=${!monthly} onClick=${() => setMonthly(false)}>Once</button>
     </div>
     <div className="choice" role="group" aria-label="Amount">
-      ${(monthly ? [49, 199, 999] : [100, 500, 1000]).map((a) => html`<button key=${a} aria-pressed=${n === a} onClick=${() => setAmount(String(a))}>₹${a.toLocaleString('en-IN')}</button>`)}
+      ${(monthly ? TIERS.map((x) => x.amount) : ONE_TIME).map((a) => html`<button key=${a} aria-pressed=${n === a} onClick=${() => setAmount(String(a))}>₹${a.toLocaleString('en-IN')}</button>`)}
     </div>
     <label className="field" htmlFor="sup-amt">Or your own amount (rupees)<input id="sup-amt" type="number" inputMode="numeric" min="10" step="1" value=${amount} onChange=${(e) => setAmount(e.target.value)} /></label>
     <label className="checkrow" htmlFor="sup-name"><input id="sup-name" type="checkbox" checked=${showName} onChange=${() => setShowName(!showName)} />Show my name on the supporters list</label>
@@ -3456,6 +3477,8 @@ function App() {
     return () => clearTimeout(t);
   }, [s.toasts]);
   useEffect(() => { try { window.scrollTo(0, 0); } catch (e) { /* ignore */ } }, [s.screen, s.placeId, s.role]);
+  // Keep the page still behind an open sheet, drawer or sponsored card.
+  useEffect(() => { try { document.body.classList.toggle('locked', !!(s.sheet || s.sponsor || drawer)); } catch (e) { /* ignore */ } }, [s.sheet, s.sponsor, drawer]);
   // Each guide step puts the app on the screen it explains.
   useEffect(() => { if (guide !== null) GUIDE[guide].acts.forEach((a) => d(a)); }, [guide]);
   useEffect(() => {
@@ -3507,7 +3530,7 @@ function App() {
   else if (s.screen === 'place') body = html`<${Place} s=${s} d=${d} />`;
   else if (s.screen === 'map') body = html`<${MapView} s=${s} d=${d} />`;
   else if (s.screen === 'saved') body = html`<${Saved} s=${s} d=${d} />`;
-  else if (s.screen === 'add') body = html`<${AddPlace} key=${'add-' + s.city} s=${s} d=${d} />`;
+  else if (s.screen === 'add') body = html`<${AddPlace} key=${'add-' + s.city + s.prefs[0]} s=${s} d=${d} />`;
   else if (s.screen === 'profile') body = html`<${Profile} s=${s} d=${d} />`;
   else if (s.screen === 'community') body = html`<${Community} s=${s} d=${d} />`;
   else if (s.screen === 'support') body = html`<${Support} s=${s} d=${d} />`;
