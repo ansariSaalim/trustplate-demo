@@ -1022,6 +1022,31 @@ body.locked { overflow: hidden; }
 @media (min-width: 1600px) { .container { max-width: 1400px; } }
 
 
+
+/* ---------- Food photos and photo cards ---------- */
+.dishbg > .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; opacity: 0; transition: opacity 0.4s ease; }
+.dishbg > .photo.in { opacity: 1; }
+.photo-card .pimg { position: relative; aspect-ratio: 4 / 3; }
+.photo-card .pimg .tpill { z-index: 4; }
+.pimg-fade { position: absolute; inset: 0; z-index: 3; pointer-events: none; background: linear-gradient(to top, rgba(8, 10, 20, 0.88) 0%, rgba(8, 10, 20, 0.55) 30%, rgba(8, 10, 20, 0) 60%), linear-gradient(to bottom, rgba(8, 10, 20, 0.32) 0%, rgba(8, 10, 20, 0) 26%); }
+.pimg-over { position: absolute; left: 14px; right: 14px; bottom: 12px; z-index: 4; display: grid; gap: 3px; color: #ffffff; pointer-events: none; }
+.pimg-over .prow { align-items: center; }
+.pimg-over h3 { color: #ffffff; font-size: 19px; line-height: 1.2; text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35); min-width: 0; }
+.pimg-over .vegmark { background: #ffffff; border-radius: 3px; }
+.pimg-over .rate { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
+.pimg-over .rate.new { background: rgba(255, 255, 255, 0.22); color: #ffffff; border: 0; }
+.pover-line { font-size: 13.5px; font-weight: 500; color: rgba(255, 255, 255, 0.88); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.photo-card .pbody { padding: 11px 14px 14px; gap: 2px; }
+.photo-card .pline .ic { width: 14px; height: 14px; color: var(--muted); }
+.card-hit { position: absolute; inset: 0; z-index: 3; border: 0; padding: 0; margin: 0; background: transparent; border-radius: inherit; cursor: pointer; }
+.card-hit:focus-visible { outline: 3px solid var(--brand); outline-offset: -3px; }
+.photo-card .heart { z-index: 5; }
+.photo-card .ptags { z-index: 4; pointer-events: none; }
+.hero-fade { position: absolute; inset: 0; z-index: 3; pointer-events: none; background: linear-gradient(to bottom, rgba(8, 10, 20, 0.38) 0%, rgba(8, 10, 20, 0) 30%, rgba(8, 10, 20, 0) 70%, rgba(8, 10, 20, 0.22) 100%); }
+.place-hero .fab-left, .place-hero .fab-right { z-index: 5; }
+.cat-img, .pc-img, .mthumb, .pp-thumb, .list-tiles span, .sp-art { position: relative; }
+@media (min-width: 641px) { .photo-card:hover .photo.in { transform: scale(1.04); } .dishbg > .photo { transition: opacity 0.4s ease, transform 0.5s ease; } }
+
 /* ---------- Mobile feel: ripples, press feedback, skeletons, spinners ---------- */
 .waves-effect:where(.orow, .linkrow, .banner, .post-place, .notif, .step, .list-open, .loc, .linkbtn) { position: relative; overflow: hidden; }
 .waves-effect:not(.waves-light) .waves-ripple { background: radial-gradient(rgba(35, 70, 232, 0.16) 0, rgba(35, 70, 232, 0.22) 40%, rgba(35, 70, 232, 0.26) 50%, rgba(35, 70, 232, 0.28) 60%, rgba(35, 70, 232, 0) 70%); }
@@ -1941,6 +1966,39 @@ function VegMark({ veg }) {
 function openText(p) {
   return p.open ? html`<span className="okt">Open till ${p.openTill}</span>` : html`<span className="badt">Closed · opens ${p.opens}</span>`;
 }
+/* ---------- Food photos ---------- */
+// Free photos from Unsplash (Unsplash License). Veg places only ever get veg dishes; meat dishes are chicken.
+const PHOTOS = {
+  biryani: ['1589302168068-964664d93dc0', '1559528896-c5310744cce8'],
+  thali: ['1742281257687-092746ad6021', '1742281257707-0c7f7e5ca9c6'],
+  dosa: ['1668236543090-82eba5ee5976', '1694849789325-914b71ab4075'],
+  kebab: ['1610057099431-d73a1c9d2f2f', '1705359573325-f2006d5e459f'],
+  roll: ['1626700051175-6818013e1d4f'],
+  bowl: ['1512621776951-a57141f2eefd'],
+  chai: ['1761483281417-778013dc0177'],
+};
+const photoSrc = (id, w) => 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&w=' + w + '&q=70';
+// The same place always gets the same photo; places sharing a dish get different ones where we have them.
+function photoOf(dish, key) {
+  const list = PHOTOS[dish] || [];
+  if (!list.length) return null;
+  let h = 0;
+  for (const ch of String(key || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return list[h % list.length];
+}
+// The drawn dish stays underneath, so a photo that fails to load still leaves a picture.
+function Photo({ dish, id, alt, sizes, eager }) {
+  const pid = photoOf(dish, id);
+  const [state, setState] = useState('loading');
+  const ref = useRef(null);
+  useEffect(() => { const el = ref.current; if (el && el.complete && el.naturalWidth) setState('done'); }, [pid]);
+  if (!pid || state === 'error') return null;
+  return html`<img ref=${ref} className=${'photo' + (state === 'done' ? ' in' : '')} src=${photoSrc(pid, 640)}
+    srcSet=${[320, 480, 640, 960, 1400].map((w) => photoSrc(pid, w) + ' ' + w + 'w').join(', ')}
+    sizes=${sizes || '(max-width: 640px) 100vw, 360px'} alt=${alt || ''} loading=${eager ? 'eager' : 'lazy'} decoding="async"
+    onLoad=${() => setState('done')} onError=${() => setState('error')} />`;
+}
+
 /* ---------- Mobile feel: loading states, busy buttons, ripples, carousels, celebrations ---------- */
 const REDUCED = (() => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
 // A screen loads briefly when it opens, the way the live app will on a real network.
@@ -2086,21 +2144,26 @@ function PlaceCard({ p, s, d, prefs, preview }) {
   const top = topPref(p, ps);
   const others = ps.filter((pr) => p.levels[pr] && pr !== top);
   const saved = s.saved.includes(p.id);
-  return html`<article className="pcard">
+  return html`<article className="pcard photo-card">
+    ${preview ? null : html`<button className="card-hit" aria-label=${'Open ' + p.name} onClick=${() => d({ type: 'open', id: p.id })}></button>`}
     <div className=${'pimg dishbg d-' + p.dish}>
       <span className="pimg-art">${Dish(p.dish)}</span>
+      <${Photo} dish=${p.dish} id=${p.id} alt=${p.cuisine + ' at ' + p.name} />
+      <span className="pimg-fade"></span>
       <${TrustPill} pref=${top} level=${p.levels[top].level} solid=${true} />
       ${preview ? null : html`<button className=${'heart' + (saved ? ' on' : '')} aria-pressed=${saved} aria-label=${saved ? 'Remove ' + p.name + ' from saved' : 'Save ' + p.name}
         onClick=${() => { d({ type: 'save', id: p.id }); d({ type: 'toast', text: saved ? 'Removed from saved' : 'Saved to your list' }); }}>${I(saved ? 'heartFill' : 'heart')}</button>`}
-      <span className="pimg-meta">${I('pin')}${p.dist.toFixed(1)} km</span>
+      <div className="pimg-over">
+        <div className="prow">
+          <h3><${VegMark} veg=${!!p.tags.vegOnly} />${p.name}</h3>
+          <${Rating} p=${p} />
+        </div>
+        <div className="pover-line">${p.cuisine} · ${p.price} for two</div>
+      </div>
     </div>
     <div className="pbody">
-      <div className="prow">
-        <h3><${VegMark} veg=${!!p.tags.vegOnly} />${preview ? p.name : html`<button className="cardlink" onClick=${() => d({ type: 'open', id: p.id })}>${p.name}</button>`}</h3>
-        <${Rating} p=${p} />
-      </div>
-      <div className="pline">${p.cuisine} · ${p.price} for two</div>
-      <div className="pline">${p.area} · ${openText(p)}</div>
+      <div className="pline">${I('pin')}${p.dist.toFixed(1)} km · ${p.area}</div>
+      <div className="pline">${openText(p)}</div>
       <div className="ptags">
         ${others.map((pr) => html`<${TrustPill} key=${pr} pref=${pr} level=${p.levels[pr].level} />`)}
         ${tagList(p, ps).slice(0, 2).map(([label, cls]) => html`<span key=${label} className=${'ptag ' + cls}>${label}</span>`)}
@@ -2271,7 +2334,7 @@ function Explore({ s, d }) {
         <h2 className="sec-title" id="h-cats">What's on your mind?</h2>
         <div className="cats" role="group" aria-label="Dishes">
           ${cats.map((c) => html`<button key=${c.id} className="cat" aria-pressed=${s.cat === c.id} onClick=${() => d({ type: 'cat', id: c.id })}>
-            <span className=${'cat-img dishbg d-' + c.id}>${Dish(c.id)}</span><span>${c.label}</span></button>`)}
+            <span className=${'cat-img dishbg d-' + c.id}>${Dish(c.id)}<${Photo} dish=${c.id} id=${c.id} sizes="100px" /></span><span>${c.label}</span></button>`)}
         </div>
       </section>
       <div className="browse">
@@ -2368,7 +2431,7 @@ function MapView({ s, d }) {
         ${list.length ? list.map((p) => {
           const top = topPref(p, s.prefs);
           return html`<div key=${p.id} data-id=${p.id} className=${'mrow' + (p.id === selId ? ' active' : '')} onMouseEnter=${() => d({ type: 'pin', id: p.id })}>
-            <div className=${'mthumb dishbg d-' + p.dish}>${Dish(p.dish)}</div>
+            <div className=${'mthumb dishbg d-' + p.dish}>${Dish(p.dish)}<${Photo} dish=${p.dish} id=${p.id} sizes="100px" /></div>
             <div className="mbody">
               <h3><button className="cardlink" onClick=${() => d({ type: 'open', id: p.id })}>${p.name}</button></h3>
               <div className="pline"><${Rating} p=${p} /> ${p.dist.toFixed(1)} km · ${p.price} · ${p.area}</div>
@@ -2386,7 +2449,7 @@ function MapView({ s, d }) {
         ${list.length ? list.map((p) => {
           const top = topPref(p, s.prefs);
           return html`<div key=${p.id} data-id=${p.id} className=${'mini' + (p.id === selId ? ' active' : '')}>
-            <div className=${'mthumb dishbg d-' + p.dish}>${Dish(p.dish)}</div>
+            <div className=${'mthumb dishbg d-' + p.dish}>${Dish(p.dish)}<${Photo} dish=${p.dish} id=${p.id} sizes="100px" /></div>
             <div className="mbody">
               <h3><button className="cardlink" onClick=${() => d({ type: 'open', id: p.id })}>${p.name}</button></h3>
               <div className="pline"><${Rating} p=${p} /> ${p.dist.toFixed(1)} km · ${p.price}</div>
@@ -2465,6 +2528,8 @@ function Place({ s, d }) {
     </nav>
     <div className=${'place-hero dishbg d-' + p.dish}>
       <div className="hero-dish">${Dish(p.dish)}</div>
+      <${Photo} dish=${p.dish} id=${p.id} alt=${p.cuisine + ' at ' + p.name} sizes="(max-width: 1260px) 100vw, 1180px" eager=${true} />
+      <span className="hero-fade"></span>
       <button className="fab-btn fab-left" onClick=${() => d({ type: 'back' })} aria-label="Back">${I('back')}</button>
       <div className="fab-right">
         <button className="fab-btn" onClick=${() => say('The live app opens your share menu here.')} aria-label="Share">${I('share')}</button>
@@ -2551,7 +2616,7 @@ function Badge({ b }) {
 function MiniPlace({ p, s, d }) {
   const top = topPref(p, s.prefs);
   return html`<button className="post-place" onClick=${() => d({ type: 'open', id: p.id })}>
-    <span className=${'pp-thumb dishbg d-' + p.dish}>${Dish(p.dish)}</span>
+    <span className=${'pp-thumb dishbg d-' + p.dish}>${Dish(p.dish)}<${Photo} dish=${p.dish} id=${p.id} sizes="60px" /></span>
     <span className="pp-body"><b>${p.name}</b><small>${p.area} · ${p.dist.toFixed(1)} km</small></span>
     <${TrustPill} pref=${top} level=${p.levels[top].level} />
   </button>`;
@@ -2599,7 +2664,7 @@ function ListCard({ l, s, d }) {
   const saved = s.savedLists.includes(l.id);
   return html`<article className="listcard">
     <button className="list-open" onClick=${() => d({ type: 'sheet', sheet: { type: 'list', id: l.id } })}>
-      <span className="list-tiles">${ps.slice(0, 3).map((p) => html`<span key=${p.id} className=${'dishbg d-' + p.dish}>${Dish(p.dish)}</span>`)}</span>
+      <span className="list-tiles">${ps.slice(0, 3).map((p) => html`<span key=${p.id} className=${'dishbg d-' + p.dish}>${Dish(p.dish)}<${Photo} dish=${p.dish} id=${p.id} sizes="120px" /></span>`)}</span>
       <span className="list-body"><b>${l.title}</b><small>by ${l.by} · ${ps.length} places · ${l.saves + (saved ? 1 : 0)} saves</small></span>
     </button>
     <div className="list-foot"><button className="pa" aria-pressed=${saved} onClick=${() => d({ type: 'saveList', id: l.id })}>${I(saved ? 'heartFill' : 'heart')}${saved ? 'Saved' : 'Save list'}</button></div>
@@ -2855,7 +2920,7 @@ function SponsorSplash({ s, d }) {
   return html`<div className="sponsor-scrim" onClick=${(e) => { if (e.target === e.currentTarget) d({ type: 'sponsorClose' }); }}>
     <section className="sponsor" role="dialog" aria-modal="true" aria-label="Sponsored place">
       <div className="sp-top"><span className="sp-label">Sponsored</span><button className="btn sm sp-skip" onClick=${() => d({ type: 'sponsorClose' })}>Skip${I('x')}</button></div>
-      <div className=${'sp-art dishbg d-' + p.dish}>${Dish(p.dish)}</div>
+      <div className=${'sp-art dishbg d-' + p.dish}>${Dish(p.dish)}<${Photo} dish=${p.dish} id=${p.id} sizes="420px" eager=${true} /></div>
       <div className="sp-body">
         <${TrustPill} pref=${top} level=${p.levels[top].level} />
         <h2>${p.name}</h2>
@@ -3002,7 +3067,7 @@ function MobileTabs({ s, d }) {
 
 function Footer({ d }) {
   return html`<footer className="footer"><div className="container footer-inner">
-    <span>TrustPlate demo · every restaurant, certificate and review here is sample data.</span>
+    <span>TrustPlate demo · every restaurant, certificate and review here is sample data. Food photos from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>.</span>
     <div className="footer-links">
       <button onClick=${() => d({ type: 'go', screen: 'add' })}>Add a place</button>
       <button onClick=${() => d({ type: 'role', role: 'owner' })}>For restaurants</button>
@@ -3121,7 +3186,7 @@ function PrefPicker({ prefs, onToggle, compact }) {
       <div className=${'prefcards' + (compact ? ' compact' : '')} role="group" aria-label=${label}>
         ${PREFS.filter((p) => p.group === g).map((p) => html`<button key=${p.id} className="pc" aria-pressed=${prefs.includes(p.id)} onClick=${() => onToggle(p.id)}>
           <span className="tick">${I('check')}</span>
-          <span className=${'pc-img dishbg d-' + p.dish}>${Dish(p.dish)}</span>
+          <span className=${'pc-img dishbg d-' + p.dish}>${Dish(p.dish)}<${Photo} dish=${p.dish} id=${'pref-' + p.id} sizes="200px" /></span>
           <b>${p.label}</b><small>${PREF_HINT[p.id]}</small>
         </button>`)}
       </div>
