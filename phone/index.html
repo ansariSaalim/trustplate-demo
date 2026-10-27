@@ -7,58 +7,41 @@
 <meta property="og:title" content="TrustPlate: phone app preview">
 <meta property="og:description" content="Clickable phone preview of the TrustPlate app. Sample data only.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#2346e8">
+<meta name="theme-color" content="#4f2d9e">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TrustPlate Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..100,400..700&display=swap">
 <style>
 /* Layout: the TrustPlate web app shown at phone size inside a device frame, with a guide panel beside it on wide screens; on a real phone the app fills the screen */
 :root {
-  --page: #eef0f6;
-  --panel: #ffffff;
-  --panel-2: #f4f5f9;
-  --ink: #11162a;
-  --muted: #687089;
-  --line: #e3e6ee;
-  --brand: #2346e8;
-  --brand-fill: #2346e8;
-  --brand-soft: #e9edff;
-  --on-brand: #ffffff;
-  --sun: #ffc233;
-  --on-sun: #2b1d00;
-  --screen: #ffffff;
-  --bezel: #0b0d14;
-  --lv-certified: #2346e8;
-  --lv-checked: #0f8a6e;
-  --lv-owner: #4b5468;
-  --lv-community: #7146d4;
-  --shadow: 0 30px 80px rgba(17, 22, 42, 0.25);
-  --font: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --page: #edeeea; --panel: #ffffff; --panel-2: #f5f5f2; --ink: #17191c; --muted: #5d6168; --line: #d9dad4; --line-2: #c4c6bf;
+  --brand: #4f2d9e; --brand-fill: #4f2d9e; --brand-soft: #efeaf8; --on-brand: #ffffff; --sun: #e3a008; --on-sun: #231800;
+  --screen: #edeeea; --bezel: #17191c; --shadow: 0 30px 70px rgba(23, 25, 28, 0.22);
+  --r-1: 6px; --r-2: 12px;
+  --font: "Anek Latin", "Segoe UI", system-ui, -apple-system, sans-serif;
   --k: 1;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --page: #06080f; --panel: #10141f; --panel-2: #0c1019; --ink: #eef1f8; --muted: #9aa3ba; --line: #232a3d;
-    --brand: #8296ff; --brand-fill: #4a62f2; --brand-soft: #1b2350; --screen: #10141f; --bezel: #000000;
-    --lv-certified: #3a55e6; --shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    --page: #0c0d0f; --panel: #1b1c1f; --panel-2: #222327; --ink: #ecebe6; --muted: #a3a5a8; --line: #303236; --line-2: #45474c;
+    --brand: #b9a2f0; --brand-fill: #6b48c9; --brand-soft: #2a2340; --screen: #121315; --bezel: #000000; --shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --page: #06080f; --panel: #10141f; --panel-2: #0c1019; --ink: #eef1f8; --muted: #9aa3ba; --line: #232a3d;
-  --brand: #8296ff; --brand-fill: #4a62f2; --brand-soft: #1b2350; --screen: #10141f; --bezel: #000000;
-  --lv-certified: #3a55e6; --shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  --page: #0c0d0f; --panel: #1b1c1f; --panel-2: #222327; --ink: #ecebe6; --muted: #a3a5a8; --line: #303236; --line-2: #45474c;
+  --brand: #b9a2f0; --brand-fill: #6b48c9; --brand-soft: #2a2340; --screen: #121315; --bezel: #000000; --shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; }
+body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--font); font-size: 15.5px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 button { font: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 .stage { min-height: 100dvh; display: flex; align-items: center; justify-content: center; gap: 56px; padding: 20px 24px; }
 .phone-wrap { flex: none; width: calc(414px * var(--k)); height: calc(868px * var(--k)); }
-.phone { width: 414px; height: 868px; transform: scale(var(--k)); transform-origin: top left; border-radius: 62px; background: var(--bezel); padding: 12px; box-shadow: var(--shadow), inset 0 0 0 2px #2a2f3d; }
+.phone { width: 414px; height: 868px; transform: scale(var(--k)); transform-origin: top left; border-radius: 62px; background: var(--bezel); padding: 12px; box-shadow: var(--shadow), inset 0 0 0 2px #2c2e33; }
 .screen { position: relative; width: 390px; height: 844px; border-radius: 50px; overflow: hidden; background: var(--screen); }
 .status { position: relative; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 4px 30px 0 36px; font-weight: 700; font-size: 15px; background: var(--screen); color: var(--ink); }
 .island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 118px; height: 32px; border-radius: 20px; background: #000000; }
@@ -67,35 +50,38 @@ button { font: inherit; color: inherit; cursor: pointer; }
 iframe { display: block; width: 390px; height: 800px; border: 0; background: var(--screen); }
 .side { width: min(440px, 100%); max-height: calc(100dvh - 40px); overflow-y: auto; display: grid; gap: 16px; align-content: start; padding: 4px; }
 .brand { display: flex; align-items: center; gap: 12px; }
-.logo-mark { width: 44px; height: 44px; border-radius: 14px; background: var(--brand-fill); color: var(--on-brand); display: grid; place-items: center; box-shadow: 0 8px 20px rgba(35, 70, 232, 0.3); }
-.brand b { display: block; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
-.brand b span { color: var(--brand); }
-.brand small { color: var(--muted); font-weight: 700; font-size: 13px; }
+.logo-mark { width: 40px; height: 40px; color: var(--brand-fill); flex: none; transform: rotate(-8deg); }
+.logo-mark svg { display: block; width: 100%; height: 100%; }
+.brand b { display: block; font-size: 30px; font-weight: 700; font-stretch: 75%; line-height: 1; }
+.brand small { color: var(--muted); font-weight: 500; font-size: 14px; }
 .lead { margin: 0; color: var(--muted); }
-.lead a { color: var(--brand); font-weight: 700; }
-.box { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 16px; display: grid; gap: 10px; }
-.box-h { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 15px; font-weight: 800; }
-.tag { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--sun); color: var(--on-sun); }
-.seg { display: flex; background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px; padding: 3px; }
-.seg button { flex: 1; border: 0; background: transparent; padding: 8px 6px; border-radius: 11px; font-weight: 700; font-size: 13.5px; color: var(--muted); }
+.lead a { color: var(--brand); font-weight: 600; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-2); padding: 16px; display: grid; gap: 10px; }
+.box-h { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 16px; font-weight: 650; }
+.tag { font-size: 12.5px; font-weight: 500; padding: 1px 7px; border-radius: var(--r-1); border: 1px solid var(--line-2); color: var(--muted); }
+.seg { display: flex; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--r-1); padding: 2px; }
+.seg button { flex: 1; border: 0; background: transparent; padding: 8px 6px; border-radius: 4px; font-weight: 600; font-size: 14px; color: var(--muted); }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--panel); }
 .small { margin: 0; font-size: 12.5px; color: var(--muted); }
-.go { border: 0; border-radius: 14px; padding: 12px 16px; font-weight: 800; font-size: 15px; background: var(--brand-fill); color: var(--on-brand); box-shadow: 0 10px 22px rgba(35, 70, 232, 0.28); }
+.go { border: 0; border-radius: var(--r-1); padding: 12px 16px; font-weight: 600; font-size: 15px; background: var(--brand-fill); color: var(--on-brand); }
 .go-row { display: flex; gap: 8px; }
 .go-row .go { flex: 1; }
-.end { border: 1.5px solid var(--line); background: var(--panel); border-radius: 14px; padding: 10px 14px; font-weight: 700; font-size: 14px; }
-.reset { justify-self: start; border: 1.5px solid var(--line); background: var(--panel); border-radius: 12px; padding: 8px 14px; font-weight: 700; font-size: 13.5px; }
-.flow-ic { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); }
+.end { border: 1px solid var(--line-2); background: var(--panel); border-radius: var(--r-1); padding: 10px 14px; font-weight: 600; font-size: 14px; }
+.reset { justify-self: start; border: 1px solid var(--line-2); background: var(--panel); border-radius: var(--r-1); padding: 8px 14px; font-weight: 600; font-size: 14px; }
+.flow-ic { width: 30px; height: 30px; border-radius: var(--r-1); display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.step { width: 100%; border: 0; background: transparent; text-align: left; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; padding: 7px; border-radius: 12px; font-weight: 700; font-size: 14px; }
+.step { width: 100%; border: 0; background: transparent; text-align: left; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; padding: 7px; border-radius: var(--r-1); font-weight: 600; font-size: 14.5px; }
 .step:hover { background: var(--panel-2); }
-.step .n { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--panel-2); color: var(--muted); font-size: 12px; font-weight: 800; }
+.step .n { width: 26px; height: 26px; border-radius: var(--r-1); display: grid; place-items: center; background: var(--panel-2); color: var(--muted); font-size: 13px; font-weight: 600; }
 .step small { display: block; color: var(--muted); font-weight: 500; font-size: 12.5px; line-height: 1.35; margin-top: 1px; }
 .step[aria-current="step"] { background: var(--brand-soft); }
 .step[aria-current="step"] .n { background: var(--brand-fill); color: var(--on-brand); }
-.lv { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 13px; color: var(--muted); }
-.lv i { width: 12px; height: 12px; border-radius: 4px; margin-top: 4px; }
-.lv b { color: var(--ink); }
+.lv { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 13.5px; color: var(--muted); }
+.lv-mark { justify-self: start; font-size: 12.5px; font-weight: 600; padding: 3px 7px; border-radius: var(--r-1); border: 1.5px solid currentColor; color: var(--brand); line-height: 1.2; white-space: nowrap; }
+.lv-mark.certified { background: var(--brand-fill); border-color: var(--brand-fill); color: var(--on-brand); }
+.lv-mark.checked { border: 3px double currentColor; padding-block: 2px; }
+.lv-mark.owner { color: var(--muted); border-style: dashed; }
+.lv-mark.community { color: var(--muted); border-style: dotted; border-width: 2px; }
 @media (max-width: 980px) {
   .stage { flex-direction: column; gap: 24px; padding-block: 24px 40px; }
   .side { max-height: none; overflow: visible; }
@@ -139,10 +125,10 @@ iframe { display: block; width: 390px; height: 800px; border: 0; background: var
 const WEB_LINK = '../';
 const ROLES = [['diner', 'Diner'], ['owner', 'Restaurant owner'], ['admin', 'Our team']];
 const LEVELS = [
-  ['var(--lv-certified)', 'Certified', 'valid certificate, checked by us, expiry tracked'],
-  ['var(--lv-checked)', 'Checked by us', 'our team visited the kitchen'],
-  ['var(--lv-owner)', 'Owner-declared', "the owner's word, not checked yet"],
-  ['var(--lv-community)', 'Community', 'added or confirmed by trusted communities'],
+  ['certified', 'Certified', 'valid certificate, checked by us, expiry tracked'],
+  ['checked', 'Checked by us', 'our team visited the kitchen'],
+  ['owner', 'Owner-declared', "the owner's word, not checked yet"],
+  ['community', 'Community', 'added or confirmed by trusted communities'],
 ];
 const frame = document.getElementById('app');
 const side = document.getElementById('side');
@@ -165,12 +151,12 @@ function render() {
   });
   const steps = chapters.map((ch) => '<section class="box"><h2 class="box-h">' + esc(ch.c) + '</h2><ol class="steps">' + ch.items.map(([st, i]) =>
     '<li><button class="step" data-a="' + act({ type: 'guide', step: i }) + '"' + (g === i ? ' aria-current="step"' : '') + '><span class="n">' + (i + 1) + '</span><span>' + esc(st.t) + '</span></button></li>').join('') + '</ol></section>').join('');
-  const levels = LEVELS.map(([c, t, d]) => '<div class="lv"><i style="background:' + c + '"></i><span><b>' + esc(t) + '</b>: ' + esc(d) + '</span></div>').join('');
+  const levels = LEVELS.map(([c, t, d]) => '<div class="lv"><span class="lv-mark ' + c + '">' + esc(t) + '</span><span>' + esc(d.charAt(0).toUpperCase() + d.slice(1)) + '</span></div>').join('');
   const tour = g === null
     ? '<button class="go" data-a="' + act({ type: 'guide', step: 0 }) + '">Start the guided tour</button>'
     : '<div class="go-row"><button class="go" data-a="' + act({ type: 'guide', step: Math.min(g + 1, state.steps.length - 1) }) + '">Next step</button><button class="end" data-a="' + act({ type: 'guideEnd' }) + '">End tour</button></div>';
   side.innerHTML =
-    '<div class="brand"><span class="logo-mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v5.6c0 4.4-3.1 8.2-7.5 9.4-4.4-1.2-7.5-5-7.5-9.4V6z"/><path d="M8.8 12.2l2.3 2.3 4.3-4.6"/></svg></span><div><b>Trust<span>Plate</span></b><small>Phone app preview · sample data</small></div></div>' +
+    '<div class="brand"><span class="logo-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="currentColor"/><circle cx="16" cy="16" r="11.5" fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="1.6 1.9"/><path d="M10.6 16.4l3.6 3.5 7.2-7.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>TrustPlate</b><small>Phone app preview with sample data</small></div></div>' +
     '<p class="lead">The TrustPlate app at phone size: the same app as the <a href="' + esc(WEB_LINK) + '" target="_blank" rel="noopener">web version</a>. The guided tour walks through every screen with Next and Back, inside the phone.</p>' +
     '<section class="box"><h2 class="box-h">Guided tour' + (g === null ? '' : ' <span class="tag">Step ' + (g + 1) + ' of ' + state.steps.length + '</span>') + '</h2>' + tour + '</section>' +
     '<section class="box"><h2 class="box-h">View as <span class="tag">Demo only</span></h2><div class="seg" role="group" aria-label="View as (demo only)">' + roles + '</div>' +
